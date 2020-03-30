@@ -12,7 +12,9 @@
                 </div>
                 <div class="panel-body">
                         {% if unsuccessful %}
-                            <p style="color:red">Wrong login or password</p>
+                            <div class="alert alert-danger" align="center">
+                                Wrong login or password!
+                            </div>
                         {% endif %}
                         <form role="form" action="#" method="post">
                             <fieldset>

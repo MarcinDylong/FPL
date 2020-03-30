@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import IndexView, LoginView, BlankView, ButtonsView, FlotView, FormsView, GridView, IconsView, MorrisView, \
-                   NotificationsView, PanelsView, TablesView, TypographyView
+                   NotificationsView, PanelsView, TablesView, TypographyView, LogoutView
 
 app_name = 'fantasy_pl'
 
@@ -19,4 +19,5 @@ urlpatterns = [
     path('panels/', PanelsView.as_view(), name="panels"),
     path('tables/', TablesView.as_view(), name="tables"),
     path('typography/', TypographyView.as_view(), name="typography"),
+    path('logout/', LogoutView, name='logout'),
 ]

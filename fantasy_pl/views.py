@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.views import View
 from .forms import LoginForm
@@ -8,7 +8,7 @@ class IndexView(View):
 
     def get(self, request):
         # user =
-        ctx = {'title': ''}
+        ctx = {'title': 'Landing page'}
         return render(request, "components/index.html", ctx)
 
 
@@ -81,6 +81,10 @@ class LoginView(View):
 
         return redirect('')
 
+
+def LogoutView(request):
+    logout(request)
+    return redirect('/')
 
 class MorrisView(View):
 
