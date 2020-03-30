@@ -1,1 +1,4 @@
 Django==3.0.4
+fpl==0.6.18
+pandas==1.0.1
+numpy==1.18.1

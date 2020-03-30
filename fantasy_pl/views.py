@@ -1,13 +1,93 @@
-from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-
-# Create your views here.
-
 
 
 class IndexView(View):
 
-    def get(self,request):
+    def get(self, request):
+        ctx = {'title': ''}
+        return render(request, "components/index.html", ctx)
 
-        return HttpResponse("Działa?")
+
+class BlankView(View):
+
+    def get(self, request):
+        ctx = {'title': "Blank Page"}
+        return render(request, "components/blank.html", ctx)
+
+
+class ButtonsView(View):
+
+    def get(self, request):
+        ctx = {'title': "Buttons"}
+        return render(request, "components/buttons.html", ctx)
+
+
+class FlotView(View):
+
+    def get(self, request):
+        ctx = {'title': "Flot Charts"}
+        return render(request, "components/flot.html", ctx)
+
+
+class FormsView(View):
+
+    def get(self, request):
+        ctx = {'title': "Forms"}
+        return render(request, "components/forms.html", ctx)
+
+
+class GridView(View):
+
+    def get(self, request):
+        ctx = {'title': "Grid"}
+        return render(request, "components/grid.html", ctx)
+
+
+class IconsView(View):
+
+    def get(self, request):
+        ctx = {'title': "Icons"}
+        return render(request, "components/icons.html", ctx)
+
+
+class LoginView(View):
+
+    def get(self, request):
+        ctx = {'title': "Log in"}
+        return render(request, "components/login.html", ctx)
+
+
+class MorrisView(View):
+
+    def get(self, request):
+        ctx = {'title': "Morris charts"}
+        return render(request, "components/morris.html", ctx)
+
+
+class NotificationsView(View):
+
+    def get(self, request):
+        ctx = {'title': "Notifications"}
+        return render(request, "components/notifications.html", ctx)
+
+
+class PanelsView(View):
+
+    def get(self, request):
+        ctx = {'title': "Panels and wells"}
+        return render(request, "components/panels-wells.html", ctx)
+
+
+class TablesView(View):
+
+    def get(self, request):
+        ctx = {'title': "Tables"}
+        return render(request, "components/tables.html", ctx)
+
+
+class TypographyView(View):
+
+    def get(self, request):
+        ctx = {'title': "Typography"}
+        return render(request, "components/typography.html", ctx)
