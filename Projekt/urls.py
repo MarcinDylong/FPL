@@ -7,7 +7,7 @@ from fantasy_pl.views import IndexView
 app_name = 'fantasy_pl'
 
 urlpatterns = [
-    path('', include(('fantasy_pl.urls', 'fantasy_pl'), namespace='dashboard')),
+    path('', include(('fantasy_pl.urls', 'fantasy_pl'), namespace='fpl')),
     path('admin/', admin.site.urls),
 
 ]
