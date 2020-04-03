@@ -1,13 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
+from .models import Team
 from .forms import LoginForm
+from .getters import read_json, get_data
 
 
 class IndexView(View):
 
     def get(self, request):
         # user =
+        # teams = Team.objects.all()
         ctx = {'title': 'Landing page'}
         return render(request, "components/index.html", ctx)
 
@@ -86,10 +90,82 @@ def LogoutView(request):
     logout(request)
     return redirect('/')
 
+class PopulateTeamsView(PermissionRequiredMixin,View):
+    permission_required = 'fantasy_pl.add_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self, request):
+        data = read_json()
+        teams = data['teams']
+        try:
+            for t in teams:
+                team = Team()
+                team.id = int(t['id'])
+                team.code = t['code']
+                team.draw = t['draw']
+                team.form = t['form']
+                team.loss = t['loss']
+                team.name = t['name']
+                team.played = t['played']
+                team.points = t['points']
+                team.position = t['position']
+                team.short_name = t['short_name']
+                team.strength = t['strength']
+                team.team_division = t['team_division']
+                team.unavailable = t['unavailable']
+                team.win = t['win']
+                team.strength_overall_home = t['strength_overall_home']
+                team.strength_overall_away = t['strength_overall_away']
+                team.strength_attack_home = t['strength_attack_home']
+                team.strength_attack_away = t['strength_attack_away']
+                team.strength_defence_home = t['strength_defence_home']
+                team.strength_defence_away = t['strength_defence_away']
+                team.save()
+        except:
+            return render(request, "components/blank.html", {'name': "Błąd"})
+
+        return redirect('/index')
+
+
+class UpdateTeamsView(PermissionRequiredMixin,View):
+    permission_required = 'fantasy_pl.change_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self, request):
+        data = read_json()
+        teams = data['teams']
+        # try:
+        for t in teams:
+            team = Team.objects.get(id=t['id'])
+            team.draw = t['draw']
+            team.form = t['form']
+            team.loss = t['loss']
+            team.played = t['played']
+            team.points = t['points']
+            team.position = t['position']
+            team.strength = t['strength']
+            team.unavailable = t['unavailable']
+            team.win = t['win']
+            team.strength_overall_home = t['strength_overall_home']
+            team.strength_overall_away = t['strength_overall_away']
+            team.strength_attack_home = t['strength_attack_home']
+            team.strength_attack_away = t['strength_attack_away']
+            team.strength_defence_home = t['strength_defence_home']
+            team.strength_defence_away = t['strength_defence_away']
+            team.save()
+        # except:
+        #     return render(request, "components/blank.html", {'name': "Błąd"})
+
+        return redirect('/index')
+        # return render(request, "components/blank.html", data)
+
+
+
 class MorrisView(View):
 
     def get(self, request):
-        ctx = {'title': "Morris charts"}
+        data = {'title': "Morris charts"}
+        ctx = data['teams'][0]
         return render(request, "components/morris.html", ctx)
 
 

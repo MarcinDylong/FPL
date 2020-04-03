@@ -5,10 +5,10 @@ from django.db import models
 
 
 class Team(models.Model):
+    id = models.IntegerField(primary_key=True)
     code = models.IntegerField()
     draw = models.IntegerField()
     form = models.TextField(max_length=64, null=True)
-    # id = models.IntegerField()
     loss = models.IntegerField()
     name = models.CharField(max_length=32)
     played = models.IntegerField()
@@ -25,3 +25,8 @@ class Team(models.Model):
     strength_attack_away = models.IntegerField()
     strength_defence_home = models.IntegerField()
     strength_defence_away = models.IntegerField()
+
+    def __str__(self):
+        return self.name
+
+
