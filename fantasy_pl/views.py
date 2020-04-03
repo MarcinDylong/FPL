@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Team
+from .models import Team, Player
 from .forms import LoginForm
 from .getters import read_json, get_data
 
@@ -23,39 +23,39 @@ class BlankView(View):
         return render(request, "components/blank.html", ctx)
 
 
-class ButtonsView(View):
-
-    def get(self, request):
-        ctx = {'title': "Buttons"}
-        return render(request, "components/buttons.html", ctx)
-
-
-class FlotView(View):
-
-    def get(self, request):
-        ctx = {'title': "Flot Charts"}
-        return render(request, "components/flot.html", ctx)
-
-
-class FormsView(View):
-
-    def get(self, request):
-        ctx = {'title': "Forms"}
-        return render(request, "components/forms.html", ctx)
-
-
-class GridView(View):
-
-    def get(self, request):
-        ctx = {'title': "Grid"}
-        return render(request, "components/grid.html", ctx)
-
-
-class IconsView(View):
-
-    def get(self, request):
-        ctx = {'title': "Icons"}
-        return render(request, "components/icons.html", ctx)
+# class ButtonsView(View):
+#
+#     def get(self, request):
+#         ctx = {'title': "Buttons"}
+#         return render(request, "components/buttons.html", ctx)
+#
+#
+# class FlotView(View):
+#
+#     def get(self, request):
+#         ctx = {'title': "Flot Charts"}
+#         return render(request, "components/flot.html", ctx)
+#
+#
+# class FormsView(View):
+#
+#     def get(self, request):
+#         ctx = {'title': "Forms"}
+#         return render(request, "components/forms.html", ctx)
+#
+#
+# class GridView(View):
+#
+#     def get(self, request):
+#         ctx = {'title': "Grid"}
+#         return render(request, "components/grid.html", ctx)
+#
+#
+# class IconsView(View):
+#
+#     def get(self, request):
+#         ctx = {'title': "Icons"}
+#         return render(request, "components/icons.html", ctx)
 
 
 # class LoginView(View):
@@ -89,6 +89,7 @@ class LoginView(View):
 def LogoutView(request):
     logout(request)
     return redirect('/')
+
 
 class PopulateTeamsView(PermissionRequiredMixin,View):
     permission_required = 'fantasy_pl.add_team'
@@ -134,64 +135,145 @@ class UpdateTeamsView(PermissionRequiredMixin,View):
     def get(self, request):
         data = read_json()
         teams = data['teams']
-        # try:
-        for t in teams:
-            team = Team.objects.get(id=t['id'])
-            team.draw = t['draw']
-            team.form = t['form']
-            team.loss = t['loss']
-            team.played = t['played']
-            team.points = t['points']
-            team.position = t['position']
-            team.strength = t['strength']
-            team.unavailable = t['unavailable']
-            team.win = t['win']
-            team.strength_overall_home = t['strength_overall_home']
-            team.strength_overall_away = t['strength_overall_away']
-            team.strength_attack_home = t['strength_attack_home']
-            team.strength_attack_away = t['strength_attack_away']
-            team.strength_defence_home = t['strength_defence_home']
-            team.strength_defence_away = t['strength_defence_away']
-            team.save()
-        # except:
-        #     return render(request, "components/blank.html", {'name': "Błąd"})
+        try:
+            for t in teams:
+                team = Team.objects.get(id=t['id'])
+                team.draw = t['draw']
+                team.form = t['form']
+                team.loss = t['loss']
+                team.played = t['played']
+                team.points = t['points']
+                team.position = t['position']
+                team.strength = t['strength']
+                team.unavailable = t['unavailable']
+                team.win = t['win']
+                team.strength_overall_home = t['strength_overall_home']
+                team.strength_overall_away = t['strength_overall_away']
+                team.strength_attack_home = t['strength_attack_home']
+                team.strength_attack_away = t['strength_attack_away']
+                team.strength_defence_home = t['strength_defence_home']
+                team.strength_defence_away = t['strength_defence_away']
+                team.save()
+        except:
+            return render(request, "components/blank.html", {'name': "Błąd"})
 
         return redirect('/index')
-        # return render(request, "components/blank.html", data)
 
 
 
-class MorrisView(View):
-
-    def get(self, request):
-        data = {'title': "Morris charts"}
-        ctx = data['teams'][0]
-        return render(request, "components/morris.html", ctx)
-
-
-class NotificationsView(View):
+class PopulatePlayersView(PermissionRequiredMixin,View):
+    permission_required = 'fantasy_pl.add_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        ctx = {'title': "Notifications"}
-        return render(request, "components/notifications.html", ctx)
+        data = read_json()
+        players = data['elements']
+        try:
+            for p in players:
+                player = Player()
+                player.chance_of_playing_next_round = p['chance_of_playing_next_round']
+                player.chance_of_playing_this_round = p['chance_of_playing_this_round']
+                player.code = p['code']
+                player.cost_change_event = p['cost_change_event']
+                player.cost_change_event_fall = p['cost_change_event_fall']
+                player.cost_change_start = p['cost_change_start']
+                player.cost_change_start_fall = p['cost_change_start_fall']
+                player.dreamteam_count = p['dreamteam_count']
+                player.element_type = p['element_type']
+                player.ep_next = float(p['ep_next'])
+                player.ep_this = float(p['ep_this'])
+                player.event_points = p['event_points']
+                player.first_name = p['first_name']
+                player.form = p['form']
+                player.id = p['id']
+                player.in_dreamteam = p['in_dreamteam']
+                player.news = p['news']
+                player.news_added = p['news_added']
+                player.now_cost = p['now_cost']
+                player.points_per_game = p['points_per_game']
+                player.second_name = p['second_name']
+                player.selected_by_percent = p['selected_by_percent']
+                player.special = p['special']
+                player.team = Team.objects.get(id=p['team'])
+                player.total_points = p['total_points']
+                player.value_form = float(p['value_form'])
+                player.value_season = float(p['value_season'])
+                player.minutes = p['minutes']
+                player.goals_scored = p['goals_scored']
+                player.assists = p['assists']
+                player.clean_sheets = p['clean_sheets']
+                player.goals_conceded = p['goals_conceded']
+                player.own_goals = p['own_goals']
+                player.penalties_saved = p['penalties_saved']
+                player.penalties_missed = p['penalties_missed']
+                player.yellow_cards = p['yellow_cards']
+                player.red_cards = p['red_cards']
+                player.saves = p['saves']
+                player.bonus = p['bonus']
+                player.bps = p['bps']
+                player.influence = float(p['influence'])
+                player.creativity = float(p['creativity'])
+                player.threat = float(p['threat'])
+                player.ict_index = float(p['ict_index'])
+                player.save()
+        except:
+            return render(request, "components/blank.html", {'name': "Błąd"})
+
+        return redirect('/index')
 
 
-class PanelsView(View):
+class UpdatePlayersView(PermissionRequiredMixin,View):
+    permission_required = 'fantasy_pl.change_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        ctx = {'title': "Panels and wells"}
-        return render(request, "components/panels-wells.html", ctx)
+        data = read_json()
+        players = data['elements']
+        try:
+            for p in players:
+                player = Player.objects.get(id=p['id'])
+                player.chance_of_playing_next_round = p['chance_of_playing_next_round']
+                player.chance_of_playing_this_round = p['chance_of_playing_this_round']
+                player.cost_change_event = p['cost_change_event']
+                player.cost_change_event_fall = p['cost_change_event_fall']
+                player.cost_change_start = p['cost_change_start']
+                player.cost_change_start_fall = p['cost_change_start_fall']
+                player.dreamteam_count = p['dreamteam_count']
+                player.element_type = p['element_type']
+                player.ep_next = float(p['ep_next'])
+                player.ep_this = float(p['ep_this'])
+                player.event_points = p['event_points']
+                player.form = p['form']
+                player.in_dreamteam = p['in_dreamteam']
+                player.news = p['news']
+                player.news_added = p['news_added']
+                player.now_cost = p['now_cost']
+                player.points_per_game = p['points_per_game']
+                player.selected_by_percent = p['selected_by_percent']
+                player.special = p['special']
+                player.team = Team.objects.get(id=p['team'])
+                player.total_points = p['total_points']
+                player.value_form = float(p['value_form'])
+                player.value_season = float(p['value_season'])
+                player.minutes = p['minutes']
+                player.goals_scored = p['goals_scored']
+                player.assists = p['assists']
+                player.clean_sheets = p['clean_sheets']
+                player.goals_conceded = p['goals_conceded']
+                player.own_goals = p['own_goals']
+                player.penalties_saved = p['penalties_saved']
+                player.penalties_missed = p['penalties_missed']
+                player.yellow_cards = p['yellow_cards']
+                player.red_cards = p['red_cards']
+                player.saves = p['saves']
+                player.bonus = p['bonus']
+                player.bps = p['bps']
+                player.influence = float(p['influence'])
+                player.creativity = float(p['creativity'])
+                player.threat = float(p['threat'])
+                player.ict_index = float(p['ict_index'])
+                player.save()
+        except:
+            return render(request, "components/blank.html", {'name': "Błąd"})
 
-
-class TablesView(View):
-
-    def get(self, request):
-        ctx = {'title': "Tables"}
-        return render(request, "components/tables.html", ctx)
-
-
-class TypographyView(View):
-
-    def get(self, request):
-        ctx = {'title': "Typography"}
-        return render(request, "components/typography.html", ctx)
+        return redirect('/index')
