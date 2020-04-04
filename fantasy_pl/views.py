@@ -21,7 +21,6 @@ class BlankView(View):
         return render(request, "components/blank.html", ctx)
 
 
-
 class LoginView(View):
 
     def get(self, request):
@@ -59,7 +58,6 @@ class PopulateTeamsView(PermissionRequiredMixin,View):
             for t in teams:
                 team = Team()
                 team.id = int(t['id'])
-                team.code = t['code']
                 team.draw = t['draw']
                 team.form = t['form']
                 team.loss = t['loss']
@@ -69,8 +67,6 @@ class PopulateTeamsView(PermissionRequiredMixin,View):
                 team.position = t['position']
                 team.short_name = t['short_name']
                 team.strength = t['strength']
-                team.team_division = t['team_division']
-                team.unavailable = t['unavailable']
                 team.win = t['win']
                 team.strength_overall_home = t['strength_overall_home']
                 team.strength_overall_away = t['strength_overall_away']
@@ -104,7 +100,6 @@ class UpdateTeamsView(PermissionRequiredMixin,View):
                 team.points = t['points']
                 team.position = t['position']
                 team.strength = t['strength']
-                team.unavailable = t['unavailable']
                 team.win = t['win']
                 team.strength_overall_home = t['strength_overall_home']
                 team.strength_overall_away = t['strength_overall_away']
@@ -133,7 +128,7 @@ class PopulatePositionsView(PermissionRequiredMixin,View):
                 pos = Position()
                 pos.id = int(p['id'])
                 pos.name = p['singular_name']
-                pos.short_name = p['singular_name_short']
+                pos.name_short = p['singular_name_short']
                 pos.save()
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
@@ -263,3 +258,13 @@ class UpdatePlayersView(PermissionRequiredMixin,View):
 
         ctx = {'event': 'Success!', 'info': 'Players database has been updated.'}
         return render(request, "components/event.html", ctx)
+
+
+class TeamView(View):
+
+    def get(self, request, id):
+        team = Team.objects.get(id=id)
+        players = Player.objects.filter(team=team.id)
+        cnt = len(players)
+        ctx = {'team': team, 'players': players, 'cnt':cnt}
+        return render(request,'components/team.html', ctx)

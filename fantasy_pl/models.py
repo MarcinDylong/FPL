@@ -6,19 +6,16 @@ from django.db import models
 
 class Team(models.Model):
     id = models.IntegerField(primary_key=True)
-    code = models.IntegerField()
-    draw = models.IntegerField()
-    form = models.TextField(max_length=64, null=True)
-    loss = models.IntegerField()
     name = models.CharField(max_length=32)
-    played = models.IntegerField()
-    points = models.IntegerField()
-    position = models.IntegerField()
     short_name = models.CharField(max_length=4)
-    strength = models.IntegerField()
-    team_division = models.TextField(null=True)
-    unavailable = models.BooleanField
+    position = models.IntegerField()
+    played = models.IntegerField()
     win = models.IntegerField()
+    draw = models.IntegerField()
+    loss = models.IntegerField()
+    points = models.IntegerField()
+    form = models.TextField(max_length=8, null=True)
+    strength = models.IntegerField()
     strength_overall_home = models.IntegerField()
     strength_overall_away = models.IntegerField()
     strength_attack_home = models.IntegerField()
@@ -36,7 +33,7 @@ class Position(models.Model):
     name_short = models.CharField(max_length=4)
 
     def __str__(self):
-        return self.name_short
+        return self.name
 
 
 class Player(models.Model):
@@ -48,7 +45,7 @@ class Player(models.Model):
     cost_change_start = models.IntegerField()
     cost_change_start_fall = models.IntegerField
     dreamteam_count = models.IntegerField()
-    element_type = models.IntegerField(Position) #, on_delete=models.CASCADE)
+    element_type = models.ForeignKey(Position, on_delete=models.CASCADE)
     ep_next = models.FloatField()
     ep_this = models.FloatField()
     event_points = models.IntegerField()
