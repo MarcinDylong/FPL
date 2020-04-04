@@ -1,20 +1,21 @@
 from django.urls import path
 
 from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
-                   UpdatePlayersView
+                   UpdatePlayersView, PopulatePositionsView
 
 app_name = 'fantasy_pl'
 
 urlpatterns = [
-    path('', LoginView.as_view(), name="login"),
+    path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView, name='logout'),
-    path('index/', IndexView.as_view(), name="index"),
+    path('', IndexView.as_view(), name="index"),
     path('blank/', BlankView.as_view(), name="blank"),
+    #  Data download & update
     path('populate_teams/', PopulateTeamsView.as_view(), name="populate_teams"),
     path('update_teams/', UpdateTeamsView.as_view(), name="update_teams"),
     path('populate_players/', PopulatePlayersView.as_view(), name="populate_players"),
     path('update_players/', UpdatePlayersView.as_view(), name="update_players"),
-
+    path('populate_positions/', PopulatePositionsView.as_view(), name="positions_players"),
 
 
     # path('buttons/', ButtonsView.as_view(), name="buttons"),

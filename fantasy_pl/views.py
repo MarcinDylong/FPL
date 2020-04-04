@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Team, Player
+from .models import Team, Player, Position
 from .forms import LoginForm
 from .getters import read_json, get_data
 
@@ -10,8 +10,6 @@ from .getters import read_json, get_data
 class IndexView(View):
 
     def get(self, request):
-        # user =
-        # teams = Team.objects.all()
         ctx = {'title': 'Landing page'}
         return render(request, "components/index.html", ctx)
 
@@ -22,47 +20,6 @@ class BlankView(View):
         ctx = {'title': "Blank Page"}
         return render(request, "components/blank.html", ctx)
 
-
-# class ButtonsView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Buttons"}
-#         return render(request, "components/buttons.html", ctx)
-#
-#
-# class FlotView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Flot Charts"}
-#         return render(request, "components/flot.html", ctx)
-#
-#
-# class FormsView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Forms"}
-#         return render(request, "components/forms.html", ctx)
-#
-#
-# class GridView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Grid"}
-#         return render(request, "components/grid.html", ctx)
-#
-#
-# class IconsView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Icons"}
-#         return render(request, "components/icons.html", ctx)
-
-
-# class LoginView(View):
-#
-#     def get(self, request):
-#         ctx = {'title': "Log in"}
-#         return render(request, "components/login.html", ctx)
 
 
 class LoginView(View):
@@ -79,11 +36,11 @@ class LoginView(View):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('/index')
+                return redirect('/')
             else:
                 return render(request, 'components/login.html', {'form': LoginForm(), 'unsuccessful': True})
 
-        return redirect('')
+        return redirect('/login')
 
 
 def LogoutView(request):
@@ -97,8 +54,8 @@ class PopulateTeamsView(PermissionRequiredMixin,View):
 
     def get(self, request):
         data = read_json()
-        teams = data['teams']
         try:
+            teams = data['teams']
             for t in teams:
                 team = Team()
                 team.id = int(t['id'])
@@ -122,10 +79,12 @@ class PopulateTeamsView(PermissionRequiredMixin,View):
                 team.strength_defence_home = t['strength_defence_home']
                 team.strength_defence_away = t['strength_defence_away']
                 team.save()
-        except:
-            return render(request, "components/blank.html", {'name': "Błąd"})
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
 
-        return redirect('/index')
+        ctx = {'event': 'Success!', 'info': 'Teams database has been populated.'}
+        return render(request, "components/event.html", ctx)
 
 
 class UpdateTeamsView(PermissionRequiredMixin,View):
@@ -154,11 +113,34 @@ class UpdateTeamsView(PermissionRequiredMixin,View):
                 team.strength_defence_home = t['strength_defence_home']
                 team.strength_defence_away = t['strength_defence_away']
                 team.save()
-        except:
-            return render(request, "components/blank.html", {'name': "Błąd"})
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
 
-        return redirect('/index')
+        ctx = {'event': 'Success!', 'info': 'Teams database has been updated.'}
+        return render(request, "components/event.html", ctx)
 
+
+class PopulatePositionsView(PermissionRequiredMixin,View):
+    permission_required = 'fantasy_pl.add_position'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self, request):
+        data = read_json()
+        positions = data['element_types']
+        try:
+            for p in positions:
+                pos = Position()
+                pos.id = int(p['id'])
+                pos.name = p['singular_name']
+                pos.short_name = p['singular_name_short']
+                pos.save()
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
+
+        ctx = {'event': 'Success!', 'info': 'Position database has been populated.'}
+        return render(request, "components/event.html", ctx)
 
 
 class PopulatePlayersView(PermissionRequiredMixin,View):
@@ -216,10 +198,12 @@ class PopulatePlayersView(PermissionRequiredMixin,View):
                 player.threat = float(p['threat'])
                 player.ict_index = float(p['ict_index'])
                 player.save()
-        except:
-            return render(request, "components/blank.html", {'name': "Błąd"})
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
 
-        return redirect('/index')
+        ctx = {'event': 'Success!', 'info': 'Players database has been populated.'}
+        return render(request, "components/event.html", ctx)
 
 
 class UpdatePlayersView(PermissionRequiredMixin,View):
@@ -273,7 +257,9 @@ class UpdatePlayersView(PermissionRequiredMixin,View):
                 player.threat = float(p['threat'])
                 player.ict_index = float(p['ict_index'])
                 player.save()
-        except:
-            return render(request, "components/blank.html", {'name': "Błąd"})
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
 
-        return redirect('/index')
+        ctx = {'event': 'Success!', 'info': 'Players database has been updated.'}
+        return render(request, "components/event.html", ctx)
