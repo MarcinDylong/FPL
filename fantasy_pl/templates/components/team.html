@@ -145,7 +145,11 @@
                                     {% for player in players %}
                                         <tr>
                                             <td>{{player.id}}</td>
-                                            <td>{{player.second_name}}</td>
+                                            <td>
+                                                <a href="{% url 'fpl:player' player.id %}">
+                                                    {{player.second_name}}
+                                                </a>
+                                            </td>
                                             <td>{{player.position}}</td>
                                             <td>{{player.now_cost}}</td>
                                             <td>{{player.points_per_game}}</td>

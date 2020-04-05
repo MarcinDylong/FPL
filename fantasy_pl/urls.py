@@ -1,7 +1,7 @@
 from django.urls import path
 
 from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
-                   UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView
+                   UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView
 
 app_name = 'fantasy_pl'
 
@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
+    path('player/<int:id>/', PlayerView.as_view(), name='player'),
     # path('buttons/', ButtonsView.as_view(), name="buttons"),
     # path('flot/', FlotView.as_view(), name="flot"),
     # path('forms/', FormsView.as_view(), name="forms"),
