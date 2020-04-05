@@ -17,7 +17,7 @@ urlpatterns = [
     path('update_players/', UpdatePlayersView.as_view(), name="update_players"),
     path('populate_positions/', PopulatePositionsView.as_view(), name="positions_players"),
 
-    path('team/<int:id>', TeamView.as_view(), name='team'),
+    path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     # path('buttons/', ButtonsView.as_view(), name="buttons"),
     # path('flot/', FlotView.as_view(), name="flot"),
     # path('forms/', FormsView.as_view(), name="forms"),

@@ -166,7 +166,7 @@ class PopulatePlayersView(PermissionRequiredMixin,View):
                 player.in_dreamteam = p['in_dreamteam']
                 player.news = p['news']
                 player.news_added = p['news_added']
-                player.now_cost = p['now_cost']
+                player.now_cost = p['now_cost']/10
                 player.points_per_game = p['points_per_game']
                 player.second_name = p['second_name']
                 player.selected_by_percent = p['selected_by_percent']
@@ -226,7 +226,7 @@ class UpdatePlayersView(PermissionRequiredMixin,View):
                 player.in_dreamteam = p['in_dreamteam']
                 player.news = p['news']
                 player.news_added = p['news_added']
-                player.now_cost = p['now_cost']
+                player.now_cost = p['now_cost']/10
                 player.points_per_game = p['points_per_game']
                 player.selected_by_percent = p['selected_by_percent']
                 player.special = p['special']
@@ -262,9 +262,12 @@ class UpdatePlayersView(PermissionRequiredMixin,View):
 
 class TeamView(View):
 
-    def get(self, request, id):
+    def get(self, request, id, sort='id'):
         team = Team.objects.get(id=id)
-        players = Player.objects.filter(team=team.id)
+        if sort in ['points_per_game', 'influence','now_cost', 'creativity','threat']:
+            sort = '-'+sort
+        players = Player.objects.filter(team=team.id).order_by(sort)
+        photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
-        ctx = {'team': team, 'players': players, 'cnt':cnt}
+        ctx = {'team': team, 'players': players, 'cnt':cnt, 'photo': photo}
         return render(request,'components/team.html', ctx)

@@ -45,7 +45,7 @@ class Player(models.Model):
     cost_change_start = models.IntegerField()
     cost_change_start_fall = models.IntegerField
     dreamteam_count = models.IntegerField()
-    element_type = models.ForeignKey(Position, on_delete=models.CASCADE)
+    position = models.ForeignKey(Position, on_delete=models.CASCADE)
     ep_next = models.FloatField()
     ep_this = models.FloatField()
     event_points = models.IntegerField()
@@ -55,7 +55,7 @@ class Player(models.Model):
     in_dreamteam = models.BooleanField()
     news = models.TextField(max_length=256)
     news_added = models.DateTimeField(null=True)
-    now_cost = models.IntegerField()
+    now_cost = models.FloatField()
     points_per_game = models.FloatField()
     second_name = models.CharField(max_length=32)
     selected_by_percent = models.FloatField

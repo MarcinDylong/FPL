@@ -13,7 +13,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/index">Fantasy Premier League</a>
+            <a class="navbar-brand" href="/">Fantasy Premier League</a>
         </div>
         <!-- /.navbar-header -->
 
@@ -183,14 +183,14 @@
                         <ul class="nav nav-second-level">
                             {% for team in teams %}
                             <li>
-                                <a href="{% url 'fpl:team' team.id %}">{{ team.name }}</a>
+                                <a href="{% url 'fpl:team' team.id 'id' %}">{{ team.name }}</a>
                             </li>
                             {% endfor %}
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a href="{% url 'fpl:blank' %}"><i class="fa fa-list fa-fw"></i> Standings</a>
+                        <a href="{% url 'fpl:blank' %}"><i class="fa fa-list fa-fw"></i>Standings</a>
                     </li>
                     <li>
                         <a href="#"><i class="fa fa-users fa-fw"></i>Players<span class="fa arrow"></span></a>
