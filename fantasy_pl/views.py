@@ -271,3 +271,10 @@ class TeamView(View):
         cnt = len(players)
         ctx = {'team': team, 'players': players, 'cnt':cnt, 'photo': photo}
         return render(request,'components/team.html', ctx)
+
+class StandingsView(View):
+
+    def get(self, request):
+        table = Team.objects.all().order_by('position')
+        ctx = {'table': table}
+        return render(request, 'components/standings.html', ctx)
