@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
-                   UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView
+                   UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView, PositionsView, \
+                   StatsView
 
 app_name = 'fantasy_pl'
 
@@ -20,6 +21,8 @@ urlpatterns = [
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
     path('player/<int:id>/', PlayerView.as_view(), name='player'),
+    path('positions/<str:pos>/<str:sort>', PositionsView.as_view(), name='positions'),
+    path('stats/', StatsView.as_view(), name='stats'),
     # path('buttons/', ButtonsView.as_view(), name="buttons"),
     # path('flot/', FlotView.as_view(), name="flot"),
     # path('forms/', FormsView.as_view(), name="forms"),

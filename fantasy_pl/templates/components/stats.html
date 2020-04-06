@@ -1,0 +1,468 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+{% block extrahead %}
+
+<!-- Timeline CSS -->
+<link href="{% static "dist/css/timeline.css" %}" rel="stylesheet">
+
+<!-- Morris Charts CSS -->
+<link href="{% static "bower_components/morrisjs/morris.css" %}" rel="stylesheet">
+
+{% endblock extrahead %}
+
+
+{% block content %}
+    
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Statistics</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse1"><i class="fa fa-bar-chart-o fa-fw"></i> Goals scored</a>
+{#                <div class="pull-right">#}
+{#                    <div class="btn-group">#}
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Actions#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
+{#                        <ul class="dropdown-menu pull-right" role="menu">#}
+{#                            <li><a href="#">Action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Another action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Something else here</a>#}
+{#                            </li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="#">Separated link</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for g in goals %}
+                                    <tr>
+                                        <td>{{ g.goals_scored }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' g.id %}">{{ g }}</a>
+                                        </td>
+                                        <td>{{ g.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse2"><i class="fa fa-bar-chart-o fa-fw"></i>Own Goals</a>
+{#                <div class="pull-right">#}
+{#                    <div class="btn-group">#}
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Actions#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
+{#                        <ul class="dropdown-menu pull-right" role="menu">#}
+{#                            <li><a href="#">Action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Another action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Something else here</a>#}
+{#                            </li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="#">Separated link</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse2" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for o in own_goals %}
+                                    <tr>
+                                        <td>{{ o.own_goals }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' o.id %}">{{ o }}</a>
+                                        </td>
+                                        <td>{{ o.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse3"><i class="fa fa-bar-chart-o fa-fw"></i>Red Cardss</a>
+{#                <div class="pull-right">#}
+{#                    <div class="btn-group">#}
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Actions#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
+{#                        <ul class="dropdown-menu pull-right" role="menu">#}
+{#                            <li><a href="#">Action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Another action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Something else here</a>#}
+{#                            </li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="#">Separated link</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse3" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for r in red_cards %}
+                                    <tr>
+                                        <td>{{ r.red_cards }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' r.id %}">{{ r }}</a>
+                                        </td>
+                                        <td>{{ r.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse4"><i class="fa fa-bar-chart-o fa-fw"></i> Assists</a>
+    {#                <div class="pull-right">#}
+    {#                    <div class="btn-group">#}
+    {#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+    {#                            Actions#}
+    {#                            <span class="caret"></span>#}
+    {#                        </button>#}
+    {#                        <ul class="dropdown-menu pull-right" role="menu">#}
+    {#                            <li><a href="#">Action</a>#}
+    {#                            </li>#}
+    {#                            <li><a href="#">Another action</a>#}
+    {#                            </li>#}
+    {#                            <li><a href="#">Something else here</a>#}
+    {#                            </li>#}
+    {#                            <li class="divider"></li>#}
+    {#                            <li><a href="#">Separated link</a>#}
+    {#                            </li>#}
+    {#                        </ul>#}
+    {#                    </div>#}
+    {#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse4" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for a in assists %}
+                                    <tr>
+                                        <td>{{ a.assists }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' a.id %}">{{ a }}</a>
+                                        </td>
+                                        <td>{{ a.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse5"><i class="fa fa-bar-chart-o fa-fw"></i>Penalty saved</a>
+    {#                <div class="pull-right">#}
+    {#                    <div class="btn-group">#}
+    {#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+    {#                            Actions#}
+    {#                            <span class="caret"></span>#}
+    {#                        </button>#}
+    {#                        <ul class="dropdown-menu pull-right" role="menu">#}
+    {#                            <li><a href="#">Action</a>#}
+    {#                            </li>#}
+    {#                            <li><a href="#">Another action</a>#}
+    {#                            </li>#}
+    {#                            <li><a href="#">Something else here</a>#}
+    {#                            </li>#}
+    {#                            <li class="divider"></li>#}
+    {#                            <li><a href="#">Separated link</a>#}
+    {#                            </li>#}
+    {#                        </ul>#}
+    {#                    </div>#}
+    {#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse5" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for p in penalties_saved %}
+                                    <tr>
+                                        <td>{{ p.penalties_saved }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' p.id %}">{{ p }}</a>
+                                        </td>
+                                        <td>{{ p.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+        <!-- /.panel-body -->
+    </div>
+        <!-- /.panel -->
+</div>
+    <!-- /.col-lg-4 -->
+    <div class="col-lg-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse6"><i class="fa fa-bar-chart-o fa-fw"></i>Minutes played</a>
+{#                <div class="pull-right">#}
+{#                    <div class="btn-group">#}
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Actions#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
+{#                        <ul class="dropdown-menu pull-right" role="menu">#}
+{#                            <li><a href="#">Action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Another action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Something else here</a>#}
+{#                            </li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="#">Separated link</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse6" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for m in minutes %}
+                                    <tr>
+                                        <td>{{ m.minutes }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' m.id %}">{{ m }}</a>
+                                        </td>
+                                        <td>{{ m.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a data-toggle="collapse" href="#collapse7"><i class="fa fa-bar-chart-o fa-fw"></i>Yellow Cards</a>
+{#                <div class="pull-right">#}
+{#                    <div class="btn-group">#}
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Actions#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
+{#                        <ul class="dropdown-menu pull-right" role="menu">#}
+{#                            <li><a href="#">Action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Another action</a>#}
+{#                            </li>#}
+{#                            <li><a href="#">Something else here</a>#}
+{#                            </li>#}
+{#                            <li class="divider"></li>#}
+{#                            <li><a href="#">Separated link</a>#}
+{#                            </li>#}
+{#                        </ul>#}
+{#                    </div>#}
+{#                </div>#}
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse7" class="panel-collapse collapse in">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for y in yellow_cards %}
+                                    <tr>
+                                        <td>{{ y.yellow_cards }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' y.id %}">{{ y }}</a>
+                                        </td>
+                                        <td>{{ y.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-4 -->
+</div>
+<!-- /.row -->
+
+{% endblock content %}
+
+
+{% block extrajs %}
+
+<!-- Morris Charts JavaScript -->
+<script src="{% static "bower_components/raphael/raphael-min.js" %}"></script>
+<script src="{% static "bower_components/morrisjs/morris.min.js" %}"></script>
+<script src="{% static "js/morris-data.js" %}"></script>
+
+{% endblock extrajs %}

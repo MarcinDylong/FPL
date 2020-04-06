@@ -71,9 +71,9 @@ class Player(models.Model):
     in_dreamteam = models.BooleanField()
     now_cost = models.FloatField()
     points_per_game = models.FloatField()
-    selected_by_percent = models.FloatField
-    special = models.BooleanField
-    total_points = models.IntegerField
+    selected_by_percent = models.FloatField(null=True)
+    special = models.BooleanField(null=True)
+    total_points = models.IntegerField(null=True)
     value_form = models.FloatField()
     value_season = models.FloatField()
     bonus = models.IntegerField()

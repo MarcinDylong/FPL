@@ -288,3 +288,29 @@ class PlayerView(View):
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo}
         return render(request,'components/player.html', ctx)
+
+
+class PositionsView(View):
+
+    def get(self,request,pos,sort):
+        pos = Position.objects.get(name_short=pos)
+        if pos.name_short == 'ALL':
+            players = Player.objects.filter().order_by('-'+sort)
+        else:
+            players = Player.objects.filter(position=pos).order_by('-' + sort)
+        ctx = {'pos':pos, 'players':players}
+        return render(request, 'components/positions.html',ctx)
+
+
+class StatsView(View):
+
+    def get(self,request):
+        ctx = {}
+        ctx['goals'] = Player.objects.all().order_by('-goals_scored')[:10:1]
+        ctx['minutes'] = Player.objects.all().order_by('-minutes')[:10:1]
+        ctx['assists'] = Player.objects.all().order_by('-assists')[:10:1]
+        ctx['own_goals'] = Player.objects.all().order_by('-own_goals')[:10:1]
+        ctx['penalties_saved'] = Player.objects.all().order_by('-penalties_saved')[:10:1]
+        ctx['yellow_cards'] = Player.objects.all().order_by('-yellow_cards')[:10:1]
+        ctx['red_cards'] = Player.objects.all().order_by('-red_cards')[:10:1]
+        return render(request, 'components/stats.html', ctx)

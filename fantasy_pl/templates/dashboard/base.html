@@ -197,34 +197,16 @@
                         <ul class="nav nav-second-level">
                             {% for pos in positions %}
                             <li>
-                                <a href="{% url 'fpl:blank' %}">{{pos.name}}</a>
+                                <a href="{% url 'fpl:positions' pos.name_short 'id' %}">{{pos.name}}s</a>
                             </li>
                             {% endfor %}
-                            <li>
-                                <a href="{% url 'fpl:blank' %}">All</a>
-                            </li>
                         </ul>
                         <!-- /.nav-second-level -->
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Stats<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#">Clean sheets</a>
-                            </li>
-                            <li>
-                                <a href="#">Goals</a>
-                            </li>
-                            <li>
-                                <a href="#">Assists</a>
-                            </li>
-                            <li>
-                                <a href="#">Cards</a>
-                            </li>
-                            <li>
-                                <a href="#">Minutes played</a>
-                            </li>
-                        </ul>
+                        <a href="{% url 'fpl:stats' %}">
+                            <i class="fa fa-bar-chart-o fa-fw"></i>Stats
+                        </a>
                         <!-- /.nav-second-level -->
                     </li>
                 </ul>
