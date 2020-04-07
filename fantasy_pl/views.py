@@ -3,8 +3,9 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 from .models import Team, Player, Position
-from .forms import LoginForm
+from .forms import LoginForm, SearchForm
 from .getters import read_json, get_data
+from django.db.models import Q
 
 
 class IndexView(View):
@@ -314,3 +315,14 @@ class StatsView(View):
         ctx['yellow_cards'] = Player.objects.all().order_by('-yellow_cards')[:10:1]
         ctx['red_cards'] = Player.objects.all().order_by('-red_cards')[:10:1]
         return render(request, 'components/stats.html', ctx)
+
+
+class SearchView(View):
+
+    def get(self,request):
+        form = SearchForm(request.GET)
+        if form.is_valid():
+            query_search = form.cleaned_data['search']
+        q_players = Player.objects.filter(Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by('-selected_by_percent')
+        ctx = {'players': q_players}
+        return render(request, 'components/search.html', ctx)
