@@ -5,13 +5,39 @@ from django.views import View
 from .models import Team, Player, Position
 from .forms import LoginForm, SearchForm
 from .getters import read_json, get_data
-from django.db.models import Q
+from django.db.models import Q, F
+import random
 
 
 class IndexView(View):
 
     def get(self, request):
-        ctx = {'title': 'Landing page'}
+        # Random team
+        team = list(Team.objects.all())
+        random.shuffle(team)
+        photo = "/static/logos/" + team[0].short_name.lower() + ".png "
+        cnt = len(Player.objects.filter(team=team[0]))
+        # Random player
+        player = list(Player.objects.all())
+        random.shuffle(player)
+        tp = Team.objects.get(name=player[0].team)
+        tpphoto = "/static/logos/" + tp.short_name.lower() + ".png "
+        # Random statistic
+        stats_names = ['goals_scored', 'minutes', 'assists','own_goals','penalties_saved','yellow_cards','red_cards']
+        random.shuffle(stats_names)
+        s_name = stats_names[0]
+
+        # rename = Player.objects.extra(select={'stat': s_name}).values('stat')
+        # stat = rename.order_by('-stat')[:10]
+        # Foo.objects.filter(cond=1).extra(select={'sth_shiny': 'my_field'})
+        rename = Player.objects.extra(select={'stat':s_name, 'id':'id', 'name':'second_name'})
+        rename2 = Player.objects.select_related('team')
+        rename.union(rename2)
+        stat = rename.order_by('-stat')[:10]
+
+        name_stat = s_name.replace('_',' ').capitalize()
+        ctx = {'title': 'Landing page', 'team': team[0], 'cnt': cnt, 'photo': photo, 'player': player[0], 'tp': tp,
+               'tpphoto': tpphoto, 'stat':stat, 'name_stat':name_stat}
         return render(request, "components/index.html", ctx)
 
 
@@ -48,7 +74,7 @@ def LogoutView(request):
     return redirect('/')
 
 
-class PopulateTeamsView(PermissionRequiredMixin,View):
+class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -84,7 +110,7 @@ class PopulateTeamsView(PermissionRequiredMixin,View):
         return render(request, "components/event.html", ctx)
 
 
-class UpdateTeamsView(PermissionRequiredMixin,View):
+class UpdateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.change_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -117,7 +143,7 @@ class UpdateTeamsView(PermissionRequiredMixin,View):
         return render(request, "components/event.html", ctx)
 
 
-class PopulatePositionsView(PermissionRequiredMixin,View):
+class PopulatePositionsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_position'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -139,7 +165,7 @@ class PopulatePositionsView(PermissionRequiredMixin,View):
         return render(request, "components/event.html", ctx)
 
 
-class PopulatePlayersView(PermissionRequiredMixin,View):
+class PopulatePlayersView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -167,7 +193,7 @@ class PopulatePlayersView(PermissionRequiredMixin,View):
                 player.in_dreamteam = p['in_dreamteam']
                 player.news = p['news']
                 player.news_added = p['news_added']
-                player.now_cost = p['now_cost']/10
+                player.now_cost = p['now_cost'] / 10
                 player.points_per_game = p['points_per_game']
                 player.second_name = p['second_name']
                 player.selected_by_percent = p['selected_by_percent']
@@ -202,7 +228,7 @@ class PopulatePlayersView(PermissionRequiredMixin,View):
         return render(request, "components/event.html", ctx)
 
 
-class UpdatePlayersView(PermissionRequiredMixin,View):
+class UpdatePlayersView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.change_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -227,7 +253,7 @@ class UpdatePlayersView(PermissionRequiredMixin,View):
                 player.in_dreamteam = p['in_dreamteam']
                 player.news = p['news']
                 player.news_added = p['news_added']
-                player.now_cost = p['now_cost']/10
+                player.now_cost = p['now_cost'] / 10
                 player.points_per_game = p['points_per_game']
                 player.selected_by_percent = p['selected_by_percent']
                 player.special = p['special']
@@ -265,19 +291,20 @@ class TeamView(View):
 
     def get(self, request, id, sort='id'):
         team = Team.objects.get(id=id)
-        if sort in ['points_per_game', 'influence','now_cost', 'creativity','threat']:
-            sort = '-'+sort
+        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
+            sort = '-' + sort
         players = Player.objects.filter(team=team.id).order_by(sort)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
-        ctx = {'team': team, 'players': players, 'cnt':cnt, 'photo': photo}
-        return render(request,'components/team.html', ctx)
+        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name}
+        return render(request, 'components/team.html', ctx)
+
 
 class StandingsView(View):
 
     def get(self, request):
         table = Team.objects.all().order_by('position')
-        ctx = {'table': table}
+        ctx = {'table': table, 'title': 'Table'}
         return render(request, 'components/standings.html', ctx)
 
 
@@ -287,26 +314,26 @@ class PlayerView(View):
         player = Player.objects.get(id=id)
         team = Team.objects.get(name=player.team)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        ctx = {'team': team, 'player': player, 'photo': photo}
-        return render(request,'components/player.html', ctx)
+        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player}
+        return render(request, 'components/player.html', ctx)
 
 
 class PositionsView(View):
 
-    def get(self,request,pos,sort):
+    def get(self, request, pos, sort):
         pos = Position.objects.get(name_short=pos)
         if pos.name_short == 'ALL':
-            players = Player.objects.filter().order_by('-'+sort)
+            players = Player.objects.filter().order_by('-' + sort)
         else:
             players = Player.objects.filter(position=pos).order_by('-' + sort)
-        ctx = {'pos':pos, 'players':players}
-        return render(request, 'components/positions.html',ctx)
+        ctx = {'pos': pos, 'players': players, 'title': pos.name_short}
+        return render(request, 'components/positions.html', ctx)
 
 
 class StatsView(View):
 
-    def get(self,request):
-        ctx = {}
+    def get(self, request):
+        ctx = {'title': 'Stats'}
         ctx['goals'] = Player.objects.all().order_by('-goals_scored')[:10:1]
         ctx['minutes'] = Player.objects.all().order_by('-minutes')[:10:1]
         ctx['assists'] = Player.objects.all().order_by('-assists')[:10:1]
@@ -319,10 +346,12 @@ class StatsView(View):
 
 class SearchView(View):
 
-    def get(self,request):
+    def get(self, request):
         form = SearchForm(request.GET)
         if form.is_valid():
             query_search = form.cleaned_data['search']
-        q_players = Player.objects.filter(Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by('-selected_by_percent')
-        ctx = {'players': q_players}
+        q_players = Player.objects.filter(
+            Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by(
+            '-selected_by_percent')
+        ctx = {'players': q_players, 'title': 'Search'}
         return render(request, 'components/search.html', ctx)
