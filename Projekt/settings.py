@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'fantasy_pl',
+    'rest_framework',
+    'django_extensions',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +132,12 @@ APPEND_SLASH = True
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 25
+}

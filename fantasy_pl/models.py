@@ -1,34 +1,34 @@
 from django.db import models
-
+from django.contrib.auth.models import User
 
 # Create your models here.
 
 
 class Team(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=32)
     short_name = models.CharField(max_length=4)
-    position = models.IntegerField()
-    played = models.IntegerField()
-    win = models.IntegerField()
-    draw = models.IntegerField()
-    loss = models.IntegerField()
-    points = models.IntegerField()
+    position = models.SmallIntegerField()
+    played = models.SmallIntegerField()
+    win = models.SmallIntegerField()
+    draw = models.SmallIntegerField()
+    loss = models.SmallIntegerField()
+    points = models.SmallIntegerField()
     form = models.TextField(max_length=8, null=True)
-    strength = models.IntegerField()
-    strength_overall_home = models.IntegerField()
-    strength_overall_away = models.IntegerField()
-    strength_attack_home = models.IntegerField()
-    strength_attack_away = models.IntegerField()
-    strength_defence_home = models.IntegerField()
-    strength_defence_away = models.IntegerField()
+    strength = models.SmallIntegerField()
+    strength_overall_home = models.SmallIntegerField()
+    strength_overall_away = models.SmallIntegerField()
+    strength_attack_home = models.SmallIntegerField()
+    strength_attack_away = models.SmallIntegerField()
+    strength_defence_home = models.SmallIntegerField()
+    strength_defence_away = models.SmallIntegerField()
 
     def __str__(self):
         return self.name
 
 
 class Position(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=16)
     name_short = models.CharField(max_length=4)
 
@@ -85,3 +85,12 @@ class Player(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.second_name}'
+
+
+# class UserTeam(models.Model):
+#     name = models.CharField(max_length=32)
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     players = models.ManyToManyField(Player)
+
+    # class Meta:
+    #     unique_together = ['gk','def1','def2','def3','def4','mid1','mid2','mid3','mid4','fw1','fw2']

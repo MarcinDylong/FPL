@@ -5,7 +5,9 @@ from django.views import View
 from .models import Team, Player, Position
 from .forms import LoginForm, SearchForm
 from .getters import read_json, get_data
-from django.db.models import Q, F
+from django.db.models import Q
+from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
+from rest_framework import generics
 import random
 
 
@@ -141,6 +143,29 @@ class UpdateTeamsView(PermissionRequiredMixin, View):
 
         ctx = {'event': 'Success!', 'info': 'Teams database has been updated.'}
         return render(request, "components/event.html", ctx)
+
+
+class TeamView(View):
+
+    def get(self, request, id, sort='id'):
+        team = Team.objects.get(id=id)
+        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
+            sort = '-' + sort
+        players = Player.objects.filter(team=team.id).order_by(sort)
+        photo = "/static/logos/" + team.short_name.lower() + ".png "
+        cnt = len(players)
+        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name}
+        return render(request, 'components/team.html', ctx)
+
+
+class ApiTeamsListView(generics.ListCreateAPIView):
+    queryset = Team.objects.all().order_by('id')
+    serializer_class = TeamSerializer
+
+
+class ApiTeamsView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Team.objects.all()
+    serializer_class = TeamSerializer
 
 
 class PopulatePositionsView(PermissionRequiredMixin, View):
@@ -287,27 +312,6 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
         return render(request, "components/event.html", ctx)
 
 
-class TeamView(View):
-
-    def get(self, request, id, sort='id'):
-        team = Team.objects.get(id=id)
-        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
-            sort = '-' + sort
-        players = Player.objects.filter(team=team.id).order_by(sort)
-        photo = "/static/logos/" + team.short_name.lower() + ".png "
-        cnt = len(players)
-        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name}
-        return render(request, 'components/team.html', ctx)
-
-
-class StandingsView(View):
-
-    def get(self, request):
-        table = Team.objects.all().order_by('position')
-        ctx = {'table': table, 'title': 'Table'}
-        return render(request, 'components/standings.html', ctx)
-
-
 class PlayerView(View):
 
     def get(self, request, id):
@@ -316,6 +320,24 @@ class PlayerView(View):
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player}
         return render(request, 'components/player.html', ctx)
+
+
+class ApiPlayersListView(generics.ListCreateAPIView):
+    queryset = Player.objects.all().order_by('id')
+    serializer_class = PlayerSerializer
+
+
+class ApiPlayersView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Player.objects.all()
+    serializer_class = PlayerSerializer
+
+
+class StandingsView(View):
+
+    def get(self, request):
+        table = Team.objects.all().order_by('position')
+        ctx = {'table': table, 'title': 'Table'}
+        return render(request, 'components/standings.html', ctx)
 
 
 class PositionsView(View):

@@ -2,14 +2,14 @@ from django.urls import path
 
 from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
                    UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView, PositionsView, \
-                   StatsView, SearchView
+                   StatsView, SearchView, ApiTeamsView, ApiTeamsListView, ApiPlayersListView, ApiPlayersView
 
 app_name = 'fantasy_pl'
 
 urlpatterns = [
+    path('', IndexView.as_view(), name="index"),
     path('login/', LoginView.as_view(), name="login"),
     path('logout/', LogoutView, name='logout'),
-    path('', IndexView.as_view(), name="index"),
     path('blank/', BlankView.as_view(), name="blank"),
     #  Data download & update
     path('populate_teams/', PopulateTeamsView.as_view(), name="populate_teams"),
@@ -24,5 +24,10 @@ urlpatterns = [
     path('positions/<str:pos>/<str:sort>', PositionsView.as_view(), name='positions'),
     path('stats/', StatsView.as_view(), name='stats'),
     path('search/', SearchView.as_view(), name='search'),
+    # API
+    path('api/teams', ApiTeamsListView.as_view(), name='api_teams'),
+    path('api/teams/<int:pk>', ApiTeamsView.as_view(), name='api_team_detail'),
+    path('api/players', ApiPlayersListView.as_view(), name='api_players'),
+    path('api/players/<int:pk>', ApiPlayersView.as_view(), name='api_player_detail'),
 
 ]
