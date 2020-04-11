@@ -1,14 +1,19 @@
+import random
+
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
+from django.http import HttpResponseNotFound, HttpResponse, request
 from django.shortcuts import render, redirect
 from django.views import View
-from .models import Team, Player, Position
-from .forms import LoginForm, SearchForm
-from .getters import read_json, get_data
-from django.db.models import Q
-from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
 from rest_framework import generics
-import random
+
+from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm
+from .getters import read_json
+from .models import Team, Player, Position
 
 
 class IndexView(View):
@@ -25,21 +30,22 @@ class IndexView(View):
         tp = Team.objects.get(name=player[0].team)
         tpphoto = "/static/logos/" + tp.short_name.lower() + ".png "
         # Random statistic
-        stats_names = ['goals_scored', 'minutes', 'assists','own_goals','penalties_saved','yellow_cards','red_cards']
+        stats_names = ['goals_scored', 'minutes', 'assists', 'own_goals', 'penalties_saved', 'yellow_cards',
+                       'red_cards']
         random.shuffle(stats_names)
         s_name = stats_names[0]
 
         # rename = Player.objects.extra(select={'stat': s_name}).values('stat')
         # stat = rename.order_by('-stat')[:10]
         # Foo.objects.filter(cond=1).extra(select={'sth_shiny': 'my_field'})
-        rename = Player.objects.extra(select={'stat':s_name, 'id':'id', 'name':'second_name'})
+        rename = Player.objects.extra(select={'stat': s_name, 'id': 'id', 'name': 'second_name'})
         rename2 = Player.objects.select_related('team')
         rename.union(rename2)
         stat = rename.order_by('-stat')[:10]
 
-        name_stat = s_name.replace('_',' ').capitalize()
+        name_stat = s_name.replace('_', ' ').capitalize()
         ctx = {'title': 'Landing page', 'team': team[0], 'cnt': cnt, 'photo': photo, 'player': player[0], 'tp': tp,
-               'tpphoto': tpphoto, 'stat':stat, 'name_stat':name_stat}
+               'tpphoto': tpphoto, 'stat': stat, 'name_stat': name_stat}
         return render(request, "components/index.html", ctx)
 
 
@@ -66,14 +72,65 @@ class LoginView(View):
                 login(request, user)
                 return redirect('/')
             else:
+                # request.session['user_id'] = User.id
                 return render(request, 'components/login.html', {'form': LoginForm(), 'unsuccessful': True})
 
-        return redirect('/login')
+        return redirect('/')
 
 
 def LogoutView(request):
     logout(request)
     return redirect('/')
+
+
+class CreateUserView(View):
+
+    def get(self, request):
+        return render(request, 'components/create_user.html', {'form': CreateUserForm()})
+
+    def post(self, request):
+        form = CreateUserForm(request.POST)
+        if form.is_valid():
+            # Don't use User.objects.create() as it won't hash the password!
+            # ...need to: user.set_password()
+            user = User.objects.create_user(
+                username=form.cleaned_data['username'],
+                password=form.cleaned_data['password'],
+                email=form.cleaned_data['email'],
+            )
+            return redirect('/login')
+        else:
+            return render(request, 'components/create_user.html', {'form': form})
+
+
+class ChangetPasswordView(LoginRequiredMixin, View):
+    login_url = '/login'
+    permission_required = 'exercises.change_user'
+    # user_id = request.user.id
+
+    def get(self, request,user_id):
+        try:
+            if 'user_name' in request.session:
+                username = request.session['user_name']
+                user = User.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound()
+        return render(request, 'components/change_password.html', {
+            'form': ResetPasswordForm(initial={
+                'user_id': user_id
+            }),
+            'logged_user': request.user.username
+        })
+
+    def post(self, request, user_id):
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            user = User.objects.get(pk=user_id)
+            user.set_password(form.cleaned_data['new_password'])
+            user.save()
+            return redirect('/')
+        else:
+            return render(request, 'components/change_password.html', {'form': form, 'unsuccessful': True})
 
 
 class PopulateTeamsView(PermissionRequiredMixin, View):
