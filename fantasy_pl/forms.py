@@ -1,12 +1,8 @@
-from urllib import request
-
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.validators import ValidationError, EmailValidator
-from .models import Team
-from django.contrib.auth import authenticate, login, logout
-
+from django.core.validators import ValidationError
+from fantasy_pl.models import Player
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -78,3 +74,28 @@ class MessageForm(forms.Form):
 class SearchForm(forms.Form):
     search = forms.CharField(label='', max_length=64, widget=forms.TextInput(
         attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
+
+
+class UserTeamForm(forms.Form):
+    gkp = forms.ModelChoiceField(label='Goalkeeper', queryset=Player.objects.filter(position=1).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    def1 = forms.ModelChoiceField(label='Defender 1', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    def2 = forms.ModelChoiceField(label='Defender 2', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    def3 = forms.ModelChoiceField(label='Defender 3', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    def4 = forms.ModelChoiceField(label='Defender 4', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf1 = forms.ModelChoiceField(label='Middlefielder 1', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf2 = forms.ModelChoiceField(label='Middlefielder 2', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf3 = forms.ModelChoiceField(label='Middlefielder 3', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf4 = forms.ModelChoiceField(label='Middlefielder 4', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    fwd1 = forms.ModelChoiceField(label='Forward 1', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))
+    fwd2 = forms.ModelChoiceField(label='Forward 2', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+                                 widget=forms.Select(attrs={'class': 'form-control'}))

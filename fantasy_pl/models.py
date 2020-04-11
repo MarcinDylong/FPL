@@ -80,6 +80,8 @@ class Player(models.Model):
     threat = models.FloatField()
     ict_index = models.FloatField()
 
+    objects = models.Manager()
+
     def __str__(self):
         return f'{self.first_name} {self.second_name}'
 
@@ -92,10 +94,21 @@ class Message(models.Model):
     date_sent = models.DateTimeField(auto_now_add=True)
 
 
-# class UserTeam(models.Model):
-#     name = models.CharField(max_length=32)
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     players = models.ManyToManyField(Player)
+class UserTeam(models.Model):
+    name = models.CharField(max_length=32, null=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    gkp = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkp')
+    def1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def1')
+    def2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def2')
+    def3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def3')
+    def4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def4')
+    mdf1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf1')
+    mdf2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf2')
+    mdf3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf3')
+    mdf4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf4')
+    fwd1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd1')
+    fwd2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd2')
+
 
     # class Meta:
-    #     unique_together = ['gk','def1','def2','def3','def4','mid1','mid2','mid3','mid4','fw1','fw2']
+        # unique_together = ['gkp','def1','def2','def3','def4','mdf1','mdf2','mdf3','mdf4','fwd1','fwd2']

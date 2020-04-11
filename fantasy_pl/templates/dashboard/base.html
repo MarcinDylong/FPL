@@ -106,12 +106,17 @@
                     <li>
                         <a href="{% url 'fpl:index' %}"><i class="fa fa-columns fa-fw"></i> Dashboard</a>
                     </li>
+                    {% if request.user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'fpl:user_team' %}"><i class="fa fa-check fa-fw"></i>Your Team</a>
+                    </li>
+                    {% endif %}
                     <li>
                         <a href="#"><i class="fa fa-trophy fa-fw"></i>Teams<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             {% for team in teams %}
                             <li>
-                                <a href="{% url 'fpl:team' team.id 'id' %}">{{ team.name }}</a>
+                                <a href="{% url 'fpl:team' team.id 'position' %}">{{ team.name }}</a>
                             </li>
                             {% endfor %}
                         </ul>

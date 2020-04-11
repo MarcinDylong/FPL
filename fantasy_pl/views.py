@@ -5,15 +5,15 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.http import HttpResponseNotFound, HttpResponse, request
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
-from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm
 from .getters import read_json
-from .models import Team, Player, Position, Message
+from .models import Team, Player, Position, Message, UserTeam
 
 
 class IndexView(View):
@@ -158,17 +158,57 @@ class SendMessageView(View):
 
 class MessageReceivedView(View):
 
-    def get(self,request):
+    def get(self, request):
         messages = Message.objects.filter(recipient=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_received.html',{'messages': messages})
+        return render(request, 'components/message_received.html', {'messages': messages})
 
 
 class MessageSentView(View):
 
-    def get(self,request):
+    def get(self, request):
         messages = Message.objects.filter(sender=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_sent.html',{'messages': messages})
+        return render(request, 'components/message_sent.html', {'messages': messages})
 
+
+class UserTeamView(View):
+
+    def get(self,request):
+        form = UserTeamForm()
+        return render(request, 'components/userteam.html', {'form':form})
+
+    def post(self,request):
+        form = UserTeamForm(request.POST)
+        if form.is_valid():
+            try:
+                userTeam = UserTeam.objects.get(user=request.user)
+                userTeam.gkp = form.cleaned_data['gkp']
+                userTeam.def1 = form.cleaned_data['def1']
+                userTeam.def2 = form.cleaned_data['def2']
+                userTeam.def3 = form.cleaned_data['def3']
+                userTeam.def4 = form.cleaned_data['def4']
+                userTeam.mdf1 = form.cleaned_data['mdf1']
+                userTeam.mdf2 = form.cleaned_data['mdf2']
+                userTeam.mdf3 = form.cleaned_data['mdf3']
+                userTeam.mdf4 = form.cleaned_data['mdf4']
+                userTeam.fwd1 = form.cleaned_data['fwd1']
+                userTeam.fwd2 = form.cleaned_data['fwd2']
+                userTeam.save()
+            except ObjectDoesNotExist:
+                userTeam = UserTeam()
+                userTeam.user = request.user
+                userTeam.gkp = form.cleaned_data['gkp']
+                userTeam.def1 = form.cleaned_data['def1']
+                userTeam.def2 = form.cleaned_data['def2']
+                userTeam.def3 = form.cleaned_data['def3']
+                userTeam.def4 = form.cleaned_data['def4']
+                userTeam.mdf1 = form.cleaned_data['mdf1']
+                userTeam.mdf2 = form.cleaned_data['mdf2']
+                userTeam.mdf3 = form.cleaned_data['mdf3']
+                userTeam.mdf4 = form.cleaned_data['mdf4']
+                userTeam.fwd1 = form.cleaned_data['fwd1']
+                userTeam.fwd2 = form.cleaned_data['fwd2']
+                userTeam.save()
+            return render(request, 'components/userteam.html', {'form': form})
 
 class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
@@ -241,7 +281,7 @@ class UpdateTeamsView(PermissionRequiredMixin, View):
 
 class TeamView(View):
 
-    def get(self, request, id, sort='id'):
+    def get(self, request, id, sort):
         team = Team.objects.get(id=id)
         if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
             sort = '-' + sort
