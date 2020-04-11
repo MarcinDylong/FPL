@@ -1,8 +1,11 @@
+from urllib import request
+
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import ValidationError, EmailValidator
 from .models import Team
+from django.contrib.auth import authenticate, login, logout
 
 
 class LoginForm(forms.Form):
@@ -66,8 +69,8 @@ class ResetPasswordForm(forms.Form):
 class MessageForm(forms.Form):
     subject = forms.CharField(label='Subject', max_length=64, widget=forms.TextInput(
         attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Subject...'}))
-    recipient = forms.ModelChoiceField(label='Recipient', queryset=User.objects.all(), widget=forms.Select(
-        attrs={'class': 'form-control'}))
+    recipient = forms.ModelChoiceField(label='Recipient', queryset=User.objects.all(),
+                                       widget=forms.Select(attrs={'class': 'form-control'}))
     content = forms.CharField(label='Content', widget=forms.Textarea(
         attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
 

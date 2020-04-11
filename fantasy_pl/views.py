@@ -156,6 +156,20 @@ class SendMessageView(View):
             return render(request, 'components/message_sending.html', ctx)
 
 
+class MessageReceivedView(View):
+
+    def get(self,request):
+        messages = Message.objects.filter(recipient=request.user.id).order_by('date_sent')
+        return render(request, 'components/message_received.html',{'messages': messages})
+
+
+class MessageSentView(View):
+
+    def get(self,request):
+        messages = Message.objects.filter(sender=request.user.id).order_by('date_sent')
+        return render(request, 'components/message_sent.html',{'messages': messages})
+
+
 class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'

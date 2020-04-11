@@ -24,27 +24,29 @@
                     <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-messages">
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                    <em>Yesterday</em>
-                                </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
+                    {% for m in messages %}
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>{{ m.sender }}</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>{{ m.date_sent }}</em>
+                                    </span>
+                                </div>
+                                <div>{{ m.short_content }} ...</div>
+                            </a>
+                        </li>
+                    {% endfor %}
                     <li class="divider"></li>
                     <li>
-                        <a class="text-center" href="#">
+                        <a class="text-center" href="{% url 'fpl:received_message' %}">
                             <strong>Read All Messages</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a class="text-center" href="{% url 'fpl:send_message' %}">
+                        <a class="text-center" align="left" href="{% url 'fpl:send_message' %}">
                             <strong>Send Message</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
