@@ -8,7 +8,7 @@ def my_cp(request):
     ctx = {
         'teams': teams,
         'positions': positions,
-        'form': SearchForm
+        'search_form': SearchForm
     }
 
     return ctx

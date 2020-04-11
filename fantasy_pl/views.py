@@ -11,9 +11,9 @@ from django.views import View
 from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
-from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm
 from .getters import read_json
-from .models import Team, Player, Position
+from .models import Team, Player, Position, Message
 
 
 class IndexView(View):
@@ -106,9 +106,10 @@ class CreateUserView(View):
 class ChangetPasswordView(LoginRequiredMixin, View):
     login_url = '/login'
     permission_required = 'exercises.change_user'
+
     # user_id = request.user.id
 
-    def get(self, request,user_id):
+    def get(self, request, user_id):
         try:
             if 'user_name' in request.session:
                 username = request.session['user_name']
@@ -131,6 +132,28 @@ class ChangetPasswordView(LoginRequiredMixin, View):
             return redirect('/')
         else:
             return render(request, 'components/change_password.html', {'form': form, 'unsuccessful': True})
+
+
+class SendMessageView(View):
+
+    def get(self, request):
+        form = MessageForm()
+        return render(request, 'components/message_sending.html', {'form': form})
+
+    def post(self, request):
+        form = MessageForm(request.POST)
+        if form.is_valid():
+            recipient = User.objects.get(username=form.cleaned_data['recipient'])
+            subject = form.cleaned_data['subject']
+            content = form.cleaned_data['content']
+            ctx = {'form': MessageForm()}
+            try:
+                Message.objects.create(subject=subject, content=content, recipient=recipient, sender=request.user)
+                ctx['success'] = 'Message was sent!'
+            except:
+                ctx['failure'] = 'Something went wrong!'
+
+            return render(request, 'components/message_sending.html', ctx)
 
 
 class PopulateTeamsView(PermissionRequiredMixin, View):

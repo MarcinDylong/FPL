@@ -84,6 +84,14 @@ class Player(models.Model):
         return f'{self.first_name} {self.second_name}'
 
 
+class Message(models.Model):
+    subject = models.CharField(max_length=64, null=False)
+    content = models.TextField()
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient')
+    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
+    date_sent = models.DateTimeField(auto_now_add=True)
+
+
 # class UserTeam(models.Model):
 #     name = models.CharField(max_length=32)
 #     user = models.ForeignKey(User, on_delete=models.CASCADE)

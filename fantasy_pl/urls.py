@@ -3,7 +3,7 @@ from django.urls import path
 from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
                    UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView, PositionsView, \
                    StatsView, SearchView, ApiTeamsView, ApiTeamsListView, ApiPlayersListView, ApiPlayersView, \
-                   CreateUserView, ChangetPasswordView
+                   CreateUserView, ChangetPasswordView, SendMessageView
 
 app_name = 'fantasy_pl'
 
@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout/', LogoutView, name='logout'),
     path('signin/', CreateUserView.as_view(), name='sign_in'),
     path('change_password/<int:user_id>', ChangetPasswordView.as_view(), name='change_password'),
+    path('send_message/', SendMessageView.as_view(), name='send_message'),
     path('blank/', BlankView.as_view(), name="blank"),
     #  Data download & update
     path('populate_teams/', PopulateTeamsView.as_view(), name="populate_teams"),

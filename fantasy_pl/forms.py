@@ -16,6 +16,7 @@ class CreateUserForm(forms.Form):
     rep_password = forms.CharField(label='Repeat password:',
                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'class': 'form-control'}))
+
     # supporter = forms.ModelChoiceField(label='Choose your team:',
     #                                    widget=forms.Select(attrs={'class': 'form-control'}),
     #                                    queryset=Team.objects.all())
@@ -60,6 +61,15 @@ class ResetPasswordForm(forms.Form):
 
         if new_password != rep_password:
             raise forms.ValidationError('Repeated password do not match')
+
+
+class MessageForm(forms.Form):
+    subject = forms.CharField(label='Subject', max_length=64, widget=forms.TextInput(
+        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Subject...'}))
+    recipient = forms.ModelChoiceField(label='Recipient', queryset=User.objects.all(), widget=forms.Select(
+        attrs={'class': 'form-control'}))
+    content = forms.CharField(label='Content', widget=forms.Textarea(
+        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
 
 
 class SearchForm(forms.Form):

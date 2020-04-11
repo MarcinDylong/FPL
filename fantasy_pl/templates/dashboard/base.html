@@ -37,32 +37,15 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                    <em>Yesterday</em>
-                                </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                    <em>Yesterday</em>
-                                </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
                         <a class="text-center" href="#">
                             <strong>Read All Messages</strong>
+                            <i class="fa fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <a class="text-center" href="{% url 'fpl:send_message' %}">
+                            <strong>Send Message</strong>
                             <i class="fa fa-angle-right"></i>
                         </a>
                     </li>
@@ -108,7 +91,7 @@
                         <form action="{% url 'fpl:search' %}" method="get">
                             <div class="input-group custom-search-form">
                                 {% csrf_token %}
-                                {{form.as_p}}
+                                {{search_form.as_p}}
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit">
                                         <i class="fa fa-search"></i>
