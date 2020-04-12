@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import ValidationError
-from fantasy_pl.models import Player
+from fantasy_pl.models import Player, UserTeam
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -77,6 +77,7 @@ class SearchForm(forms.Form):
 
 
 class UserTeamForm(forms.Form):
+
     gkp = forms.ModelChoiceField(label='Goalkeeper', queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                  widget=forms.Select(attrs={'class': 'form-control'}))
     def1 = forms.ModelChoiceField(label='Defender 1', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
@@ -99,3 +100,14 @@ class UserTeamForm(forms.Form):
                                  widget=forms.Select(attrs={'class': 'form-control'}))
     fwd2 = forms.ModelChoiceField(label='Forward 2', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
                                  widget=forms.Select(attrs={'class': 'form-control'}))
+
+
+    def clean(self):
+        # cleaned_data = super().clean()
+        fwd1 = self.cleaned_data['fwd1']
+        fwd2 = self.cleaned_data['fwd2']
+
+        if fwd1==fwd2 :
+            raise ValidationError('Cannot have the same player twice or more')
+
+

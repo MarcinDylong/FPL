@@ -25,17 +25,49 @@
     <div class="col-lg-4">
         <div class="panel-body">
             <div class="row form-group">
-                <form action="#" method="post">
+                {% if success %}
+                    <div class="alert alert-success">
+                        {{ success }}
+                    </div>
+                    <form action="#" method="post">
                     <div>
                         {% csrf_token %}
                         {{form.as_p}}
                     </div>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="submit">
-                            <i class="fa fa-mail-forward">Ok</i>
+                            <i class="fa fa-mail-forward">Send</i>
                         </button>
                     </span>
                 </form>
+                {% elif failure %}
+                    <div class="alert alert-danger">
+                        <div><strong>Error:</strong></div>
+                        <form action="#" method="post">
+                    <div>
+                        {% csrf_token %}
+                        {{form.as_p}}
+                    </div>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="fa fa-mail-forward">Send</i>
+                        </button>
+                    </span>
+                </form>
+                    </div>
+                {% else %}
+                    <form action="#" method="post">
+                    <div>
+                        {% csrf_token %}
+                        {{form.as_p}}
+                    </div>
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit">
+                            <i class="fa fa-mail-forward">Send</i>
+                        </button>
+                    </span>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponseNotFound
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from rest_framework import generics
 
@@ -174,10 +174,24 @@ class UserTeamView(View):
 
     def get(self,request):
         form = UserTeamForm()
+        if UserTeam.objects.get(user=request.user):
+            form.fields['gkp'].initial = UserTeam.objects.get(user=request.user).gkp_id
+            form.fields['def1'].initial = UserTeam.objects.get(user=request.user).def1_id
+            form.fields['def2'].initial = UserTeam.objects.get(user=request.user).def2_id
+            form.fields['def3'].initial = UserTeam.objects.get(user=request.user).def3_id
+            form.fields['def4'].initial = UserTeam.objects.get(user=request.user).def4_id
+            form.fields['mdf1'].initial = UserTeam.objects.get(user=request.user).mdf1_id
+            form.fields['mdf2'].initial = UserTeam.objects.get(user=request.user).mdf2_id
+            form.fields['mdf3'].initial = UserTeam.objects.get(user=request.user).mdf3_id
+            form.fields['mdf4'].initial = UserTeam.objects.get(user=request.user).mdf4_id
+            form.fields['fwd1'].initial = UserTeam.objects.get(user=request.user).fwd1_id
+            form.fields['fwd2'].initial = UserTeam.objects.get(user=request.user).fwd2_id
+
         return render(request, 'components/userteam.html', {'form':form})
 
     def post(self,request):
         form = UserTeamForm(request.POST)
+        ctx = {}
         if form.is_valid():
             try:
                 userTeam = UserTeam.objects.get(user=request.user)
@@ -193,22 +207,31 @@ class UserTeamView(View):
                 userTeam.fwd1 = form.cleaned_data['fwd1']
                 userTeam.fwd2 = form.cleaned_data['fwd2']
                 userTeam.save()
+                ctx['success'] = 'Team updated'
             except ObjectDoesNotExist:
-                userTeam = UserTeam()
-                userTeam.user = request.user
-                userTeam.gkp = form.cleaned_data['gkp']
-                userTeam.def1 = form.cleaned_data['def1']
-                userTeam.def2 = form.cleaned_data['def2']
-                userTeam.def3 = form.cleaned_data['def3']
-                userTeam.def4 = form.cleaned_data['def4']
-                userTeam.mdf1 = form.cleaned_data['mdf1']
-                userTeam.mdf2 = form.cleaned_data['mdf2']
-                userTeam.mdf3 = form.cleaned_data['mdf3']
-                userTeam.mdf4 = form.cleaned_data['mdf4']
-                userTeam.fwd1 = form.cleaned_data['fwd1']
-                userTeam.fwd2 = form.cleaned_data['fwd2']
-                userTeam.save()
-            return render(request, 'components/userteam.html', {'form': form})
+                    userTeam = UserTeam()
+                    userTeam.user = request.user
+                    userTeam.gkp = form.cleaned_data['gkp']
+                    userTeam.def1 = form.cleaned_data['def1']
+                    userTeam.def2 = form.cleaned_data['def2']
+                    userTeam.def3 = form.cleaned_data['def3']
+                    userTeam.def4 = form.cleaned_data['def4']
+                    userTeam.mdf1 = form.cleaned_data['mdf1']
+                    userTeam.mdf2 = form.cleaned_data['mdf2']
+                    userTeam.mdf3 = form.cleaned_data['mdf3']
+                    userTeam.mdf4 = form.cleaned_data['mdf4']
+                    userTeam.fwd1 = form.cleaned_data['fwd1']
+                    userTeam.fwd2 = form.cleaned_data['fwd2']
+                    userTeam.save()
+                    ctx['success'] = 'Team created'
+
+            ctx['form'] = form
+            return render(request, 'components/userteam.html', ctx)
+        else:
+            ctx['failure'] = True
+            ctx['form'] = form
+            return render(request, 'components/userteam.html', ctx)
+
 
 class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
