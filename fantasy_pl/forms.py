@@ -108,6 +108,21 @@ class UserTeamForm(forms.Form):
         fwd2 = self.cleaned_data['fwd2']
 
         if fwd1==fwd2 :
-            raise ValidationError('Cannot have the same player twice or more')
+            raise ValidationError('Repeated player on forward position.')
 
+        mdf1 = self.cleaned_data['mdf1']
+        mdf2 = self.cleaned_data['mdf2']
+        mdf3 = self.cleaned_data['mdf3']
+        mdf4 = self.cleaned_data['mdf4']
+        l_mdf = [mdf1, mdf2, mdf3, mdf4]
+        if len(l_mdf) != len(set(l_mdf)):
+            raise ValidationError('Repeated player on middlefielder position.')
+
+        def1 = self.cleaned_data['def1']
+        def2 = self.cleaned_data['def2']
+        def3 = self.cleaned_data['def3']
+        def4 = self.cleaned_data['def4']
+        l_def = [def1, def2, def3, def4]
+        if len(l_def) != len(set(l_def)):
+            raise ValidationError('Repeated player on defender position.')
 
