@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.core.validators import ValidationError
 from fantasy_pl.models import Player, UserTeam
 
+
 class LoginForm(forms.Form):
     username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -77,44 +78,61 @@ class SearchForm(forms.Form):
 
 
 class UserTeamForm(forms.Form):
-
     gkp = forms.ModelChoiceField(label='Goalkeeper', queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                  widget=forms.Select(attrs={'class': 'form-control'}))
     def1 = forms.ModelChoiceField(label='Defender 1', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
     def2 = forms.ModelChoiceField(label='Defender 2', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
     def3 = forms.ModelChoiceField(label='Defender 3', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
     def4 = forms.ModelChoiceField(label='Defender 4', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf1 = forms.ModelChoiceField(label='Middlefielder 1', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf2 = forms.ModelChoiceField(label='Middlefielder 2', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf3 = forms.ModelChoiceField(label='Middlefielder 3', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf4 = forms.ModelChoiceField(label='Middlefielder 4', queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf1 = forms.ModelChoiceField(label='Middlefielder 1',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf2 = forms.ModelChoiceField(label='Middlefielder 2',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf3 = forms.ModelChoiceField(label='Middlefielder 3',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf4 = forms.ModelChoiceField(label='Middlefielder 4',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
     fwd1 = forms.ModelChoiceField(label='Forward 1', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
     fwd2 = forms.ModelChoiceField(label='Forward 2', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
-
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    gkpb = forms.ModelChoiceField(label='Bench goalkepper',
+                                  queryset=Player.objects.filter(position=1).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    defb = forms.ModelChoiceField(label='Bench defender',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdfb = forms.ModelChoiceField(label='Bench middlefielder',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    fwdb = forms.ModelChoiceField(label='Bench forward',
+                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
 
     def clean(self):
         # cleaned_data = super().clean()
         fwd1 = self.cleaned_data['fwd1']
         fwd2 = self.cleaned_data['fwd2']
+        fwdb = self.cleaned_data['fwdb']
 
-        if fwd1==fwd2 :
+        l_fwd = [fwd1, fwd2, fwdb]
+        if len(l_fwd) != len(set(l_fwd)):
             raise ValidationError('Repeated player on forward position.')
 
         mdf1 = self.cleaned_data['mdf1']
         mdf2 = self.cleaned_data['mdf2']
         mdf3 = self.cleaned_data['mdf3']
         mdf4 = self.cleaned_data['mdf4']
-        l_mdf = [mdf1, mdf2, mdf3, mdf4]
+        mdfb = self.cleaned_data['mdfb']
+        l_mdf = [mdf1, mdf2, mdf3, mdf4, mdfb]
         if len(l_mdf) != len(set(l_mdf)):
             raise ValidationError('Repeated player on middlefielder position.')
 
@@ -122,7 +140,7 @@ class UserTeamForm(forms.Form):
         def2 = self.cleaned_data['def2']
         def3 = self.cleaned_data['def3']
         def4 = self.cleaned_data['def4']
-        l_def = [def1, def2, def3, def4]
+        defb = self.cleaned_data['defb']
+        l_def = [def1, def2, def3, def4, defb]
         if len(l_def) != len(set(l_def)):
             raise ValidationError('Repeated player on defender position.')
-

@@ -39,6 +39,7 @@ class Player(models.Model):
     second_name = models.CharField(max_length=32)
     team = models.ForeignKey(Team, on_delete=models.CASCADE)
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    # position = models.SmallIntegerField()
     news = models.TextField(max_length=256)
     news_added = models.DateTimeField(null=True)
     # Stats from BPL
@@ -95,7 +96,7 @@ class Message(models.Model):
 
 
 class UserTeam(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
     gkp = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkp')
     def1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def1')
     def2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def2')
@@ -107,6 +108,7 @@ class UserTeam(models.Model):
     mdf4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf4')
     fwd1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd1')
     fwd2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd2')
-
-    # class Meta:
-        # unique_together = ['gkp','def1','def2','def3','def4','mdf1','mdf2','mdf3','mdf4','fwd1','fwd2']
+    gkpb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkpb')
+    defb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='defb')
+    mdfb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mfdb')
+    fwdb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwdb')

@@ -39,3 +39,5 @@ urlpatterns = [
     path('api/players/<int:pk>', ApiPlayersView.as_view(), name='api_player_detail'),
 
 ]
+
+
