@@ -17,10 +17,6 @@ class CreateUserForm(forms.Form):
                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'class': 'form-control'}))
 
-    # supporter = forms.ModelChoiceField(label='Choose your team:',
-    #                                    widget=forms.Select(attrs={'class': 'form-control'}),
-    #                                    queryset=Team.objects.all())
-
     def clean(self):
         # Automatically called by form.is_valid()
         # ...can also use 'clean_FIELDNAME()' for individual fields
@@ -45,7 +41,6 @@ class ResetPasswordForm(forms.Form):
                                    widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def clean(self):
-
         user_id = self.cleaned_data['user_id']
         old_password = self.cleaned_data['old_password']
         new_password = self.cleaned_data['new_password']
@@ -78,15 +73,20 @@ class SearchForm(forms.Form):
 
 
 class UserTeamForm(forms.Form):
-    gkp = forms.ModelChoiceField(label='Goalkeeper', queryset=Player.objects.filter(position=1).order_by('-now_cost'),
+    gkp = forms.ModelChoiceField(label='Goalkeeper',
+                                 queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    def1 = forms.ModelChoiceField(label='Defender 1', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+    def1 = forms.ModelChoiceField(label='Defender 1',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    def2 = forms.ModelChoiceField(label='Defender 2', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+    def2 = forms.ModelChoiceField(label='Defender 2',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    def3 = forms.ModelChoiceField(label='Defender 3', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+    def3 = forms.ModelChoiceField(label='Defender 3',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    def4 = forms.ModelChoiceField(label='Defender 4', queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+    def4 = forms.ModelChoiceField(label='Defender 4',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
     mdf1 = forms.ModelChoiceField(label='Middlefielder 1',
                                   queryset=Player.objects.filter(position=3).order_by('-now_cost'),
@@ -100,9 +100,11 @@ class UserTeamForm(forms.Form):
     mdf4 = forms.ModelChoiceField(label='Middlefielder 4',
                                   queryset=Player.objects.filter(position=3).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    fwd1 = forms.ModelChoiceField(label='Forward 1', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+    fwd1 = forms.ModelChoiceField(label='Forward 1',
+                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    fwd2 = forms.ModelChoiceField(label='Forward 2', queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+    fwd2 = forms.ModelChoiceField(label='Forward 2',
+                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
     gkpb = forms.ModelChoiceField(label='Bench goalkepper',
                                   queryset=Player.objects.filter(position=1).order_by('-now_cost'),

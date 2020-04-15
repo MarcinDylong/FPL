@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 from django.http import HttpResponseNotFound
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework import generics
 
@@ -35,12 +35,9 @@ class IndexView(View):
         random.shuffle(stats_names)
         s_name = stats_names[0]
 
-        # rename = Player.objects.extra(select={'stat': s_name}).values('stat')
-        # stat = rename.order_by('-stat')[:10]
-        # Foo.objects.filter(cond=1).extra(select={'sth_shiny': 'my_field'})
         rename = Player.objects.extra(select={'stat': s_name, 'id': 'id', 'name': 'second_name'})
-        rename2 = Player.objects.select_related('team')
-        rename.union(rename2)
+        rename_t = Player.objects.select_related('team')
+        rename.union(rename_t)
         stat = rename.order_by('-stat')[:10]
 
         name_stat = s_name.replace('_', ' ').capitalize()
@@ -86,7 +83,8 @@ def LogoutView(request):
 class CreateUserView(View):
 
     def get(self, request):
-        return render(request, 'components/create_user.html', {'form': CreateUserForm()})
+        ctx = {'form': CreateUserForm(), 'title': 'Create user'}
+        return render(request, 'components/create_user.html', ctx)
 
     def post(self, request):
         form = CreateUserForm(request.POST)
@@ -100,14 +98,13 @@ class CreateUserView(View):
             )
             return redirect('/login')
         else:
-            return render(request, 'components/create_user.html', {'form': form})
+            ctx = {'form': CreateUserForm(), 'title': 'Create user'}
+            return render(request, 'components/create_user.html', ctx)
 
 
 class ChangetPasswordView(LoginRequiredMixin, View):
     login_url = '/login'
     permission_required = 'exercises.change_user'
-
-    # user_id = request.user.id
 
     def get(self, request, user_id):
         try:
@@ -118,7 +115,7 @@ class ChangetPasswordView(LoginRequiredMixin, View):
             return HttpResponseNotFound()
         return render(request, 'components/change_password.html', {
             'form': ResetPasswordForm(initial={
-                'user_id': user_id
+                'user_id': user_id, 'title': 'Change password'
             }),
             'logged_user': request.user.username
         })
@@ -131,14 +128,15 @@ class ChangetPasswordView(LoginRequiredMixin, View):
             user.save()
             return redirect('/')
         else:
-            return render(request, 'components/change_password.html', {'form': form, 'unsuccessful': True})
+            return render(request, 'components/change_password.html',
+                          {'form': form, 'unsuccessful': True, 'title': 'Change password'})
 
 
 class SendMessageView(View):
 
     def get(self, request):
         form = MessageForm()
-        return render(request, 'components/message_sending.html', {'form': form})
+        return render(request, 'components/message_sending.html', {'form': form,'title':'Send Massage'})
 
     def post(self, request):
         form = MessageForm(request.POST)
@@ -153,6 +151,7 @@ class SendMessageView(View):
             except:
                 ctx['failure'] = 'Something went wrong!'
 
+            ctx['title'] = 'Send message'
             return render(request, 'components/message_sending.html', ctx)
 
 
@@ -160,14 +159,14 @@ class MessageReceivedView(View):
 
     def get(self, request):
         messages = Message.objects.filter(recipient=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_received.html', {'messages': messages})
+        return render(request, 'components/message_received.html', {'messages': messages, 'title':'Received'})
 
 
 class MessageSentView(View):
 
     def get(self, request):
         messages = Message.objects.filter(sender=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_sent.html', {'messages': messages})
+        return render(request, 'components/message_sent.html', {'messages': messages, 'title':'Sent'})
 
 
 class UserTeamView(View):
@@ -180,14 +179,14 @@ class UserTeamView(View):
         overall_cost = 0
         for u in uteam:
             overall_cost += u.now_cost
-        ctx['overall_cost'] = round(overall_cost,1)
+        ctx['overall_cost'] = round(overall_cost, 1)
         if overall_cost > 100:
-            ctx['overpaid'] = round(overall_cost-100,2)
+            ctx['overpaid'] = round(overall_cost - 100, 2)
 
         points_per_game = 0
         for u in uteam:
             points_per_game += u.points_per_game
-        ctx['ppg'] = round(points_per_game,1)
+        ctx['ppg'] = round(points_per_game, 1)
 
         influence = 0
         for u in uteam:
@@ -217,7 +216,7 @@ class UserTeamView(View):
         novelty = 0
         for u in uteam:
             novelty += u.selected_by_percent
-        ctx['novelty'] = round(novelty/11, 1)
+        ctx['novelty'] = round(novelty / 11, 1)
 
         return ctx
 
@@ -295,7 +294,7 @@ class UserTeamView(View):
                 ctx['success'] = 'Team created'
 
             uteam = UserTeam.objects.get(user=request.user)
-            self.team_overall(uteam,ctx)
+            self.team_overall(uteam, ctx)
             ctx['form'] = form
             return render(request, 'components/userteam.html', ctx)
         else:
