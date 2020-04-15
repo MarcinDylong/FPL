@@ -80,6 +80,11 @@
             <!-- /.panel-heading -->
             <div class="panel-body">
                 <div class="row form-group">
+                    {% if overpaid %}
+                        <div class="alert alert-danger">
+                            <div><strong>Your team is overpaid by {{ overpaid }}</strong></div>
+                        </div>
+                    {% endif %}
                     <div class="col-lg-6">
                         <div class="list-group">
                             <div class="list-group-item">

@@ -181,6 +181,8 @@ class UserTeamView(View):
         for u in uteam:
             overall_cost += u.now_cost
         ctx['overall_cost'] = round(overall_cost,1)
+        if overall_cost > 100:
+            ctx['overpaid'] = round(overall_cost-100,2)
 
         points_per_game = 0
         for u in uteam:
@@ -223,6 +225,7 @@ class UserTeamView(View):
         ctx = {}
         form = UserTeamForm()
         ctx['form'] = form
+        ctx['title'] = 'Your Team'
 
         if UserTeam.objects.filter(user=request.user):
             uteam = UserTeam.objects.get(user=request.user)
@@ -249,6 +252,7 @@ class UserTeamView(View):
     def post(self, request):
         form = UserTeamForm(request.POST)
         ctx = {}
+        ctx['title'] = 'Your Team'
         if form.is_valid():
             try:
                 userTeam = UserTeam.objects.get(user=request.user)
