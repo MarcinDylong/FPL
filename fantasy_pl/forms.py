@@ -73,21 +73,29 @@ class SearchForm(forms.Form):
 
 
 stats = (
-    ('','---------'),
-    ('points_per_game','Points per game'),
-    ('now_cost','Cost',),
-    ('influence','Influence')
+    ('points_per_game', 'Points per game'),
+    ('now_cost', 'Cost',),
+    ('form', 'Form'),
+    ('total_points', 'Total Points'),
 )
+
 
 class AdvSearchForm(forms.Form):
     position = forms.ModelChoiceField(label='Position', queryset=Position.objects.all(), required=False,
-                                       widget=forms.Select(attrs={'class': 'form-control'}))
+                                      widget=forms.Select(attrs={'class': 'form-control'}))
     stats = forms.ChoiceField(label='Stat', choices=stats, required=False,
                               widget=forms.Select(attrs={'class': 'form-control'}))
     min = forms.FloatField(label='Min Value', validators=[MinValueValidator(limit_value=0, message='Must be over 0')],
                            required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
     max = forms.FloatField(label='Max Value', required=False,
                            widget=forms.NumberInput(attrs={'class': 'form-control'}))
+
+    def clean(self):
+
+        if (self.cleaned_data['min'] != None and self.cleaned_data['max'] != None) and (
+                self.cleaned_data['min'] >= self.cleaned_data['max']):
+            raise ValidationError('Minimum value has to be smaller than maximum.')
+
 
 class UserTeamForm(forms.Form):
     gkp = forms.ModelChoiceField(label='Goalkeeper',

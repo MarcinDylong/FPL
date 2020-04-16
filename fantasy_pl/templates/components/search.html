@@ -30,6 +30,21 @@
                     </h4>
                 </div>
                 <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
+                    {% if failure %}
+                    <div class="panel-body alert-danger">
+                        <form action="#" method="POST">
+                            <div>
+                                {% csrf_token %}
+                                {{ adv_form.as_p }}
+                            </div>
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="'submit">
+                                    <i class="fa fa-search">Search</i>
+                                </button>
+                            </span>
+                        </form>
+                    </div>
+                    {% else %}
                     <div class="panel-body">
                         <form action="#" method="POST">
                             <div>
@@ -43,6 +58,7 @@
                             </span>
                         </form>
                     </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

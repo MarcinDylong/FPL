@@ -643,12 +643,15 @@ class SearchView(View):
             pos = adv_form.cleaned_data['position']
             if pos is not None:
                 q_list.append((Q(position=pos)))
+
             min = adv_form.cleaned_data['min']
             if min is None:
                 min = 0
+
             max = adv_form.cleaned_data['max']
             if max is None:
                 max = 2000
+
             stat = adv_form.cleaned_data['stats']
             if stat:
                 if stat == 'points_per_game':
@@ -657,14 +660,22 @@ class SearchView(View):
                 elif stat == 'now_cost':
                     q_list.append((Q(now_cost__gte=min)))
                     q_list.append((Q(now_cost__lte=max)))
-                elif stat == 'influence':
-                    q_list.append((Q(influence__gte=min)))
-                    q_list.append((Q(influence__lte=max)))
+                elif stat == 'form':
+                    q_list.append((Q(form__gte=min)))
+                    q_list.append((Q(form__lte=max)))
+                elif stat == 'total_points':
+                    q_list.append((Q(total_points__gte=min)))
+                    q_list.append((Q(total_points__lte=max)))
 
-            q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-'+stat)
-
-            paginator = Paginator(q_players, 25)
-            page = request.GET.get('page')
-            q_players = paginator.get_page(page)
-            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat}
+            if len(q_list)==0:
+                q_players = None
+            else:
+                q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-'+stat)
+                paginator = Paginator(q_players, 25)
+                page = request.GET.get('page')
+                q_players = paginator.get_page(page)
+            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat, 'pos':pos}
+            return render(request, 'components/search.html', ctx)
+        else:
+            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search', 'failure':True}
             return render(request, 'components/search.html', ctx)
