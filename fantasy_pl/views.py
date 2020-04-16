@@ -4,13 +4,14 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework import generics
 
-from fantasy_pl.serializers import TeamSerializer, PlayerSerializer
+from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
 from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm
 from .getters import read_json
 from .models import Team, Player, Position, Message, UserTeam
@@ -136,7 +137,7 @@ class SendMessageView(View):
 
     def get(self, request):
         form = MessageForm()
-        return render(request, 'components/message_sending.html', {'form': form,'title':'Send Massage'})
+        return render(request, 'components/message_sending.html', {'form': form, 'title': 'Send Massage'})
 
     def post(self, request):
         form = MessageForm(request.POST)
@@ -159,14 +160,14 @@ class MessageReceivedView(View):
 
     def get(self, request):
         messages = Message.objects.filter(recipient=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_received.html', {'messages': messages, 'title':'Received'})
+        return render(request, 'components/message_received.html', {'messages': messages, 'title': 'Received'})
 
 
 class MessageSentView(View):
 
     def get(self, request):
         messages = Message.objects.filter(sender=request.user.id).order_by('date_sent')
-        return render(request, 'components/message_sent.html', {'messages': messages, 'title':'Sent'})
+        return render(request, 'components/message_sent.html', {'messages': messages, 'title': 'Sent'})
 
 
 class UserTeamView(View):
@@ -303,6 +304,16 @@ class UserTeamView(View):
             ctx['failure'] = True
             ctx['form'] = form
             return render(request, 'components/userteam.html', ctx)
+
+
+class ApiUserTeamsListView(generics.ListCreateAPIView):
+    queryset = UserTeam.objects.all().order_by('id')
+    serializer_class = UserTeamSerializer
+
+
+class ApiUserTeamView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = UserTeam.objects.all()
+    serializer_class = UserTeamSerializer
 
 
 class PopulateTeamsView(PermissionRequiredMixin, View):
@@ -577,6 +588,10 @@ class PositionsView(View):
             players = Player.objects.filter().order_by('-' + sort)
         else:
             players = Player.objects.filter(position=pos).order_by('-' + sort)
+
+        paginator = Paginator(players, 25)
+        page = request.GET.get('page')
+        players = paginator.get_page(page)
         ctx = {'pos': pos, 'players': players, 'title': pos.name_short}
         return render(request, 'components/positions.html', ctx)
 
