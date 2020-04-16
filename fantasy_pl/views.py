@@ -1,4 +1,6 @@
+import operator
 import random
+from functools import reduce
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
@@ -12,7 +14,7 @@ from django.views import View
 from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
-from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm
 from .getters import read_json
 from .models import Team, Player, Position, Message, UserTeam
 
@@ -173,52 +175,60 @@ class MessageSentView(View):
 class UserTeamView(View):
 
     def team_overall(self, uteam, ctx):
-        uteam = [uteam.gkp, uteam.def1, uteam.def2, uteam.def3, uteam.def4, uteam.mdf1, uteam.mdf2, uteam.mdf3,
-                 uteam.mdf4, uteam.fwd1, uteam.fwd2, uteam.gkpb, uteam.defb, uteam.mdfb, uteam.fwdb]
-        ctx['uteam'] = uteam
+        luteam = [uteam.gkp, uteam.def1, uteam.def2, uteam.def3, uteam.def4, uteam.mdf1, uteam.mdf2, uteam.mdf3,
+                  uteam.mdf4, uteam.fwd1, uteam.fwd2, uteam.gkpb, uteam.defb, uteam.mdfb, uteam.fwdb]
+        ctx['uteam'] = luteam
 
         overall_cost = 0
-        for u in uteam:
+        for u in luteam:
             overall_cost += u.now_cost
         ctx['overall_cost'] = round(overall_cost, 1)
         if overall_cost > 100:
             ctx['overpaid'] = round(overall_cost - 100, 2)
+        uteam.cost = round(overall_cost, 1)
 
         points_per_game = 0
-        for u in uteam:
+        for u in luteam:
             points_per_game += u.points_per_game
         ctx['ppg'] = round(points_per_game, 1)
+        uteam.points_per_game = round(points_per_game, 1)
 
         influence = 0
-        for u in uteam:
+        for u in luteam:
             influence += u.influence
         ctx['influence'] = round(influence, 1)
+        uteam.influence = round(influence, 1)
 
         creativity = 0
-        for u in uteam:
+        for u in luteam:
             creativity += u.creativity
         ctx['creativity'] = round(creativity, 1)
+        uteam.creativity = round(creativity, 1)
 
         threat = 0
-        for u in uteam:
+        for u in luteam:
             threat += u.threat
         ctx['threat'] = round(threat, 1)
+        uteam.threat = round(threat, 1)
 
         dreamteam = 0
-        for u in uteam:
+        for u in luteam:
             dreamteam += u.dreamteam_count
         ctx['dreamteam'] = round(dreamteam, 1)
+        uteam.dt_apps = round(dreamteam, 1)
 
         total_points = 0
-        for u in uteam:
+        for u in luteam:
             total_points += u.total_points
         ctx['total_points'] = round(total_points, 1)
+        uteam.total_points = round(total_points, 1)
 
         novelty = 0
-        for u in uteam:
-            novelty += u.selected_by_percent
+        for u in luteam:
+            novelty = novelty + u.selected_by_percent
         ctx['novelty'] = round(novelty / 11, 1)
-
+        uteam.novelty = round(novelty / 11, 1)
+        uteam.save()
         return ctx
 
     def get(self, request):
@@ -614,10 +624,47 @@ class SearchView(View):
 
     def get(self, request):
         form = SearchForm(request.GET)
+        adv_form = AdvSearchForm()
         if form.is_valid():
             query_search = form.cleaned_data['search']
         q_players = Player.objects.filter(
             Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by(
             '-selected_by_percent')
-        ctx = {'players': q_players, 'title': 'Search'}
+        paginator = Paginator(q_players, 25)
+        page = request.GET.get('page')
+        q_players = paginator.get_page(page)
+        ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form}
         return render(request, 'components/search.html', ctx)
+
+    def post(self, request):
+        adv_form = AdvSearchForm(request.POST)
+        if adv_form.is_valid():
+            q_list = []
+            pos = adv_form.cleaned_data['position']
+            if pos is not None:
+                q_list.append((Q(position=pos)))
+            min = adv_form.cleaned_data['min']
+            if min is None:
+                min = 0
+            max = adv_form.cleaned_data['max']
+            if max is None:
+                max = 2000
+            stat = adv_form.cleaned_data['stats']
+            if stat:
+                if stat == 'points_per_game':
+                    q_list.append((Q(points_per_game__gte=min)))
+                    q_list.append((Q(points_per_game__lte=max)))
+                elif stat == 'now_cost':
+                    q_list.append((Q(now_cost__gte=min)))
+                    q_list.append((Q(now_cost__lte=max)))
+                elif stat == 'influence':
+                    q_list.append((Q(influence__gte=min)))
+                    q_list.append((Q(influence__lte=max)))
+
+            q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-'+stat)
+
+            paginator = Paginator(q_players, 25)
+            page = request.GET.get('page')
+            q_players = paginator.get_page(page)
+            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat}
+            return render(request, 'components/search.html', ctx)

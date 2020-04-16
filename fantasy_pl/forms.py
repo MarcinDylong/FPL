@@ -1,8 +1,8 @@
 from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
-from django.core.validators import ValidationError
-from fantasy_pl.models import Player, UserTeam
+from django.core.validators import ValidationError, MinValueValidator
+from fantasy_pl.models import Player, UserTeam, Position
 
 
 class LoginForm(forms.Form):
@@ -71,6 +71,23 @@ class SearchForm(forms.Form):
     search = forms.CharField(label='', max_length=64, widget=forms.TextInput(
         attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
 
+
+stats = (
+    ('','---------'),
+    ('points_per_game','Points per game'),
+    ('now_cost','Cost',),
+    ('influence','Influence')
+)
+
+class AdvSearchForm(forms.Form):
+    position = forms.ModelChoiceField(label='Position', queryset=Position.objects.all(), required=False,
+                                       widget=forms.Select(attrs={'class': 'form-control'}))
+    stats = forms.ChoiceField(label='Stat', choices=stats, required=False,
+                              widget=forms.Select(attrs={'class': 'form-control'}))
+    min = forms.FloatField(label='Min Value', validators=[MinValueValidator(limit_value=0, message='Must be over 0')],
+                           required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    max = forms.FloatField(label='Max Value', required=False,
+                           widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
 class UserTeamForm(forms.Form):
     gkp = forms.ModelChoiceField(label='Goalkeeper',
