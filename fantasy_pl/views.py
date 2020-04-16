@@ -627,13 +627,15 @@ class SearchView(View):
         adv_form = AdvSearchForm()
         if form.is_valid():
             query_search = form.cleaned_data['search']
-        q_players = Player.objects.filter(
-            Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by(
-            '-selected_by_percent')
-        paginator = Paginator(q_players, 25)
-        page = request.GET.get('page')
-        q_players = paginator.get_page(page)
-        ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form}
+            q_players = Player.objects.filter(
+                Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by(
+                '-selected_by_percent')
+            paginator = Paginator(q_players, 25)
+            page = request.GET.get('page')
+            q_players = paginator.get_page(page)
+            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form}
+        else:
+            ctx = {'title': 'Search', 'adv_form': adv_form}
         return render(request, 'components/search.html', ctx)
 
     def post(self, request):
