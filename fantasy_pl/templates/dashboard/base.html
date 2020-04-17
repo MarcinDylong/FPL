@@ -3,167 +3,165 @@
 {#{{ request.user.username }}#}
 
 {% block basecontent %}
-<div id="wrapper">
-    <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/"><b>Fantasy Premier League</b></a>
-        </div>
-        <!-- /.navbar-header -->
-
-        {% if request.user.is_authenticated %}
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    {% for m in messages_short %}
-                        <li>
-                            <a href="#">
-                                <div>
-                                    <strong>{{ m.sender }}</strong>
-                                    <span class="pull-right text-muted">
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-fioletowy navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <a class="navbar-brand" style='color: #ffffff' href="/"><b>Fantasy Premier League</b></a>
+            </div>
+            <!-- /.navbar-header -->
+            {% if request.user.is_authenticated %}
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle-moje" data-toggle="dropdown" href="#">
+                            <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-messages">
+                            {% for m in messages_short %}
+                                <li>
+                                    <a href="#">
+                                        <div>
+                                            <strong>{{ m.sender }}</strong>
+                                            <span class="pull-right text-muted">
                                         <em>{{ m.date_sent }}</em>
                                     </span>
-                                </div>
-                                <div>{{ m.short_content }} ...</div>
-                            </a>
-                        </li>
-                    {% endfor %}
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" href="{% url 'fpl:received_message' %}">
-                            <strong>Read All Messages</strong>
-                            <i class="fa fa-angle-right"></i>
+                                        </div>
+                                        <div>{{ m.short_content }} ...</div>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" href="{% url 'fpl:received_message' %}">
+                                    <strong>Read All Messages</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                            <li class="divider"></li>
+                            <li>
+                                <a class="text-center" align="left" href="{% url 'fpl:send_message' %}">
+                                    <strong>Send Message</strong>
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-messages -->
+                        <!-- /.dropdown -->
+                    <li class="dropdown">
+                        <a class="dropdown-toggle-moje" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                         </a>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ user.username }}</a>
+                            </li>
+                            <li><a href="{% url 'fpl:change_password' user.id %}"><i class="fa fa-gear fa-fw"></i>
+                                Change password</a>
+                            </li>
+                            <li class="divider"></li>
+                            <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i>Log Out</a>
+                            </li>
+                        </ul>
+                        <!-- /.dropdown-user -->
                     </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" align="left" href="{% url 'fpl:send_message' %}">
-                            <strong>Send Message</strong>
-                            <i class="fa fa-angle-right"></i>
+                    <!-- /.dropdown -->
+                </ul>
+            {% else %}
+                <ul class="nav navbar-top-links navbar-right">
+                    <li class="dropdown">
+                        <a class="dropdown-toggle-moje" data-toggle="dropdown" href="#">
+                            <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
                         </a>
-                    </li>
+                        <ul class="dropdown-menu dropdown-user">
+                            <li><a href="/login"><i class="fa fa-sign-in fa-fw"></i>Log In</a></li>
+                            <li><a href="/signin"><i class="fa fa-user fa-fw"></i>Create User</a></li>
+                        </ul>
                 </ul>
-                <!-- /.dropdown-messages -->
-            <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> {{ user.username }}</a>
-                    </li>
-                    <li><a href="{% url 'fpl:change_password' user.id %}"><i class="fa fa-gear fa-fw"></i> Change password</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a href="/logout"><i class="fa fa-sign-out fa-fw"></i>Log Out</a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-            <!-- /.dropdown -->
-        </ul>
-        {% else %}
-        <ul class="nav navbar-top-links navbar-right">
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="/login"><i class="fa fa-sign-in fa-fw"></i>Log In</a></li>
-                    <li><a href="/signin"><i class="fa fa-user fa-fw"></i>Create User</a></li>
-                </ul>
-        </ul>
-        {% endif %}
-
-        <!-- /.navbar-top-links -->
-
-        <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <form action="{% url 'fpl:search' %}" method="get">
-                            <div class="input-group custom-search-form">
-                                {% csrf_token %}
-                                {{search_form.as_p}}
-                                <span class="input-group-btn">
+            {% endif %}
+            <!-- /.navbar-top-links -->
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        <li class="sidebar-search">
+                            <form action="{% url 'fpl:search' %}" method="get">
+                                <div class="input-group custom-search-form">
+                                    {% csrf_token %}
+                                    {{ search_form.as_p }}
+                                    <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit">
                                         <i class="fa fa-search"></i>
                                     </button>
                                 </span>
-                            </div>
-                        </form>
-                        <!-- /input-group -->
-                    </li>
-                    <li>
-                        <a href="{% url 'fpl:index' %}"><i class="fa fa-columns fa-fw"></i> Dashboard</a>
-                    </li>
-                    {% if request.user.is_authenticated %}
-                    <li>
-                        <a href="{% url 'fpl:user_team' %}"><i class="fa fa-check fa-fw"></i>Your Team</a>
-                    </li>
-                    {% endif %}
-                    <li>
-                        <a href="#"><i class="fa fa-trophy fa-fw"></i>Teams<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            {% for team in teams %}
+                                </div>
+                            </form>
+                            <!-- /input-group -->
+                        </li>
+                        <li>
+                            <a href="{% url 'fpl:index' %}" class="bialy"><i class="fa fa-columns fa-fw"></i> Dashboard</a>
+                        </li>
+                        {% if request.user.is_authenticated %}
                             <li>
-                                <a href="{% url 'fpl:team' team.id 'position' %}">{{ team.name }}</a>
+                                <a href="{% url 'fpl:user_team' %}" class="bialy"><i class="fa fa-check fa-fw"></i>Your
+                                    Team</a>
                             </li>
-                            {% endfor %}
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                    <li>
-                        <a href="{% url 'fpl:standings' %}"><i class="fa fa-list fa-fw"></i>Standings</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-users fa-fw"></i>Players<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            {% for pos in positions %}
-                            <li>
-                                <a href="{% url 'fpl:positions' pos.name_short 'id' %}">{{pos.name}}s</a>
-                            </li>
-                            {% endfor %}
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                    <li>
-                        <a href="{% url 'fpl:stats' %}">
-                            <i class="fa fa-bar-chart-o fa-fw"></i>Stats
-                        </a>
-                        <!-- /.nav-second-level -->
-                    </li>
-                    <li>
-                        <a href="{% url 'fpl:search' %}">
-                            <i class="fa fa-search-plus fa-fw"></i> Advance Search
-                        </a>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </ul>
+                        {% endif %}
+                        <li>
+                            <a href="#" class="bialy"><i class="fa fa-trophy fa-fw"></i>Teams<span
+                                    class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                {% for team in teams %}
+                                    <li class="rozowy">
+                                        <a href="{% url 'fpl:team' team.id 'position' %}"
+                                           style="color: #ffffff">{{ team.name }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="{% url 'fpl:standings' %}" class="bialy"><i class="fa fa-list fa-fw"></i>Standings</a>
+                        </li>
+                        <li>
+                            <a href="#" class="bialy">
+                                <i class="fa fa-users fa-fw" class="bialy"></i>Players<span class="fa arrow"></span>
+                            </a>
+                            <ul class="nav nav-second-level">
+                                {% for pos in positions %}
+                                    <li class="rozowy">
+                                        <a href="{% url 'fpl:positions' pos.name_short 'id' %}"
+                                           style="color: #ffffff">{{ pos.name }}s</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="{% url 'fpl:stats' %}" class="bialy">
+                                <i class="fa fa-bar-chart-o fa-fw"></i>Stats
+                            </a>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="{% url 'fpl:search' %}" class="bialy">
+                                <i class="fa fa-search-plus fa-fw"></i> Advance Search
+                            </a>
+                            <!-- /.nav-second-level -->
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
             </div>
-            <!-- /.sidebar-collapse -->
+
+
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <!-- Page Content -->
+        <div id="page-wrapper">
+            {% block content %}
+
+            {% endblock content %}
         </div>
-
-
-        <!-- /.navbar-static-side -->
-    </nav>
-
-    <!-- Page Content -->
-    <div id="page-wrapper">
-        {% block content %}
-
-        {% endblock content %}
+        <!-- /#page-wrapper -->
     </div>
-    <!-- /#page-wrapper -->
-</div>
-<!-- /#wrapper -->
+    <!-- /#wrapper -->
 {% endblock basecontent %}
