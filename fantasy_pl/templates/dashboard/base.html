@@ -105,13 +105,11 @@
                             </li>
                         {% endif %}
                         <li>
-                            <a href="#" class="bialy"><i class="fa fa-trophy fa-fw"></i>Teams<span
-                                    class="fa arrow"></span></a>
+                            <a href="#" class="bialy"><i class="fa fa-trophy fa-fw"></i>Teams<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 {% for team in teams %}
                                     <li class="rozowy">
-                                        <a href="{% url 'fpl:team' team.id 'position' %}"
-                                           style="color: #ffffff">{{ team.name }}</a>
+                                        <a href="{% url 'fpl:team' team.id 'position' %}" class="bialy-nap">{{ team.name }}</a>
                                     </li>
                                 {% endfor %}
                             </ul>
@@ -128,7 +126,7 @@
                                 {% for pos in positions %}
                                     <li class="rozowy">
                                         <a href="{% url 'fpl:positions' pos.name_short 'id' %}"
-                                           style="color: #ffffff">{{ pos.name }}s</a>
+                                           class="bialy-nap">{{ pos.name }}s</a>
                                     </li>
                                 {% endfor %}
                             </ul>

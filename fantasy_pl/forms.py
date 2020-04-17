@@ -64,7 +64,13 @@ class MessageForm(forms.Form):
     recipient = forms.ModelChoiceField(label='Recipient', queryset=User.objects.all(),
                                        widget=forms.Select(attrs={'class': 'form-control'}))
     content = forms.CharField(label='Content', widget=forms.Textarea(
-        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
+        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Content....'}))
+
+    # def clean(self):
+    #     content = self.cleaned_data['content']
+    #
+    #     if content == ' ':
+    #         raise ValidationError('Cannot send empty message!')
 
 
 class SearchForm(forms.Form):

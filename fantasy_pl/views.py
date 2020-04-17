@@ -156,7 +156,10 @@ class SendMessageView(View):
 
             ctx['title'] = 'Send message'
             return render(request, 'components/message_sending.html', ctx)
-
+        else:
+            ctx = {'form': MessageForm()}
+            ctx['failure'] = 'Something went wrong!'
+            return render(request, 'components/message_sending.html', ctx)
 
 class MessageReceivedView(View):
 
