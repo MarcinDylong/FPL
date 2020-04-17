@@ -23,7 +23,7 @@
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-8">
-        <div class="panel panel-default">
+        <div class="panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-users fa-fw"></i> Random Team - {{ team.name }}
             </div>
@@ -31,8 +31,8 @@
             <div class="panel-body">
                 <div class="pull-left col-lg-6">
                     <div>
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
+                        <div class="panel">
+                            <div class="panel-heading" style='background-color: #ffffff; color: #000000'>
                                 <div class="row">
                                     <div class="col-xs-4">
                                         <a href="{% url 'fpl:team' team.id 'id'%}">
@@ -92,7 +92,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="pull-right col-lg-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -157,7 +156,7 @@
             <!-- /.panel-body -->
         </div>
         <!-- /.panel -->
-        <div class="panel panel-default">
+        <div class="panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-user fa-fw"></i> Random Player - {{ player }}
             </div>
@@ -166,11 +165,11 @@
                 <div class="pull-left col-lg-6">
                     <div>
                         <div class="panel panel-default">
-                            <div class="panel-heading">
+                            <div class="panel-heading" style='background-color: #ffffff; color: #000000'>
                                 <div class="row">
                                     <div class="col-xs-4">
                                         <a href="{% url 'fpl:team' tp.id 'id'%}">
-                                            <img style='height: 100%; width: 100%; object-fit: contain; display: block' src="{{tpphoto}}">
+                                            <img style='height: 70px; width: auto; object-fit: contain; display: block' src="{{tpphoto}}">
                                         </a>
                                     </div>
                                     <div class="col-xs-8 text-right">
@@ -298,7 +297,7 @@
     </div>
     <!-- /.col-lg-8 -->
     <div class="col-lg-4">
-        <div class="panel panel-default">
+        <div class="panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-bar-chart-o fa-fw"></i> Random stats - {{name_stat}}
             </div>
@@ -320,7 +319,7 @@
                                         <tr>
                                             <td> {{ s.stat }} </td>
                                             <td>
-                                                <a href="{% url 'fpl:player' s.id %}">{{ s.name }}</a>
+                                                <a style='color: #000000' href="{% url 'fpl:player' s.id %}">{{ s.name }}</a>
                                             </td>
                                             <td>{{ s.team }}</td>
                                         </tr>
@@ -339,8 +338,7 @@
         </div>
         <!-- /.panel -->
 
-
-        <div class="chat-panel panel panel-default">
+        <div class="chat-panel panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-comments fa-fw"></i>
                 Chat

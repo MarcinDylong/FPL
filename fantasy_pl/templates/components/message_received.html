@@ -19,9 +19,9 @@
     <div class="row">
         <div class="col-lg-12">
         {% for m in messages %}
-            <div class="panel panel-default">
+            <div class="panel panel-zielony">
                 <div class="panel-heading">
-                    <a data-toggle="collapse" data-parent="#accordion" href="#{{ m.id }}">
+                    <a data-toggle="collapse" style="color: #ffffff" data-parent="#accordion" href="#{{ m.id }}">
                         <strong>{{ m.sender }}</strong> - {{ m.subject }}
                         <span class="pull-right text-muted">
                             <em>{{ m.date_sent }}</em>
