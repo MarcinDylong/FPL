@@ -66,12 +66,6 @@ class MessageForm(forms.Form):
     content = forms.CharField(label='Content', widget=forms.Textarea(
         attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Content....'}))
 
-    # def clean(self):
-    #     content = self.cleaned_data['content']
-    #
-    #     if content == ' ':
-    #         raise ValidationError('Cannot send empty message!')
-
 
 class SearchForm(forms.Form):
     search = forms.CharField(label='', max_length=64, widget=forms.TextInput(
