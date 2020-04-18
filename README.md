@@ -27,5 +27,7 @@ In order to populate database directly from Premier League API swap commentary:
 data = read_json() ## Read data from JSON file on disk
 # data = get_data() ## Read data from JSON file from Fantasy Premier League API
 ```
-In PopulateTeamsView, PopulatePositionsView and PopulatePlayersView.
+In PopulateTeamsView(), PopulatePositionsView() and PopulatePlayersView() from fantasy_pl/views.py.
+
+
 
