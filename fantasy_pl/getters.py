@@ -41,7 +41,7 @@ def download_json():
 
 
 def read_json():
-    with open('data.json', 'r+') as f:
+    with open('fantasy_pl/data.json', 'r+') as f:
         read_data = json.load(f)
         data = read_data
         return data

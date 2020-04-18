@@ -129,7 +129,7 @@ class ChangetPasswordView(LoginRequiredMixin, View):
             user = User.objects.get(pk=user_id)
             user.set_password(form.cleaned_data['new_password'])
             user.save()
-            return redirect('/')
+            return redirect('/login')
         else:
             return render(request, 'components/change_password.html',
                           {'form': form, 'unsuccessful': True, 'title': 'Change password'})
@@ -152,13 +152,13 @@ class SendMessageView(View):
                 Message.objects.create(subject=subject, content=content, recipient=recipient, sender=request.user)
                 ctx['success'] = 'Message was sent!'
             except:
-                ctx['failure'] = 'Something went wrong!'
+                ctx['failure'] = 'Something went wrong'
 
             ctx['title'] = 'Send message'
             return render(request, 'components/message_sending.html', ctx)
         else:
             ctx = {'form': MessageForm()}
-            ctx['failure'] = 'Something went wrong!'
+            ctx['failure'] = 'Cannot send message with empty Subject or content!'
             return render(request, 'components/message_sending.html', ctx)
 
 class MessageReceivedView(View):

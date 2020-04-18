@@ -85,16 +85,22 @@ class AdvSearchForm(forms.Form):
                                       widget=forms.Select(attrs={'class': 'form-control'}))
     stats = forms.ChoiceField(label='Stat', choices=stats, required=False,
                               widget=forms.Select(attrs={'class': 'form-control'}))
-    min = forms.FloatField(label='Min Value', validators=[MinValueValidator(limit_value=0, message='Must be over 0')],
+    min = forms.FloatField(label='Min Value',
                            required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    max = forms.FloatField(label='Max Value', required=False,
-                           widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    max = forms.FloatField(label='Max Value',
+                           required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def clean(self):
+        position = self.cleaned_data['position']
+        stats    = self.cleaned_data['stats']
+        min      = self.cleaned_data['min']
+        max      = self.cleaned_data['max']
 
-        if (self.cleaned_data['min'] != None and self.cleaned_data['max'] != None) and (
-                self.cleaned_data['min'] >= self.cleaned_data['max']):
-            raise ValidationError('Minimum value has to be smaller than maximum.')
+        if (min != None and max != None) and (min >= max):
+            raise forms.ValidationError('Minimum value has to be smaller than maximum.')
+
+        if min < 0 or max < 0:
+            raise forms.ValidationError('Neither min nor max can be below 0.')
 
 
 class UserTeamForm(forms.Form):

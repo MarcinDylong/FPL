@@ -92,7 +92,7 @@
                             {% for p in players %}
                                 <tr class="odd gradeX">
                                     <td align="center">{{p.id}}</td>
-                                    <td><a href="{% url 'fpl:player' p.id %}">{{p}}</a></td>
+                                    <td><a href="{% url 'fpl:player' p.id %}" style="color: #000000">{{p}}</a></td>
                                     <td class="center" align="center">{{p.position}}</td>
                                     <td class="center" align="center">{{p.now_cost}}</td>
                                     <td class="center" align="center">{{p.points_per_game}}</td>
