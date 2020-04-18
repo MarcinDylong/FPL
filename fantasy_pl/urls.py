@@ -4,7 +4,7 @@ from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsVie
                    UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView, PositionsView, \
                    StatsView, SearchView, ApiTeamsView, ApiTeamsListView, ApiPlayersListView, ApiPlayersView, \
                    CreateUserView, ChangetPasswordView, SendMessageView, MessageReceivedView, MessageSentView, \
-                   UserTeamView, ApiUserTeamsListView, ApiUserTeamView
+                   UserTeamView, ApiUserTeamsListView, ApiUserTeamView, DownloadDataView
 
 app_name = 'fantasy_pl'
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('user_team/', UserTeamView.as_view(), name='user_team'),
     path('blank/', BlankView.as_view(), name="blank"),
     #  Data download & update
+    path('download_data/', DownloadDataView.as_view(), name='download_data'),
     path('populate_teams/', PopulateTeamsView.as_view(), name="populate_teams"),
     path('update_teams/', UpdateTeamsView.as_view(), name="update_teams"),
     path('populate_players/', PopulatePlayersView.as_view(), name="populate_players"),

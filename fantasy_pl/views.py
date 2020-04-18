@@ -331,7 +331,18 @@ class ApiUserTeamView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserTeamSerializer
 
 
-# class DownoloadDataView(View):
+class DownloadDataView(PermissionRequiredMixin, View):
+    permission_required = 'fantasy_pl.add_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self,request):
+        try:
+            get_data()
+            ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
+            return render(request, "components/event.html", ctx)
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
 
 
 class PopulateTeamsView(PermissionRequiredMixin, View):
