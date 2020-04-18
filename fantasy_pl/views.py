@@ -229,8 +229,8 @@ class UserTeamView(View):
         novelty = 0
         for u in luteam:
             novelty = novelty + u.selected_by_percent
-        ctx['novelty'] = round(novelty / 11, 1)
-        uteam.novelty = round(novelty / 11, 1)
+        ctx['novelty'] = round(novelty / 15, 1)
+        uteam.novelty = round(novelty / 15, 1)
         uteam.save()
         return ctx
 
@@ -620,6 +620,8 @@ class StatsView(View):
         ctx['penalties_saved'] = Player.objects.all().order_by('-penalties_saved')[:10:1]
         ctx['yellow_cards'] = Player.objects.all().order_by('-yellow_cards')[:10:1]
         ctx['red_cards'] = Player.objects.all().order_by('-red_cards')[:10:1]
+        ctx['total_points'] = Player.objects.all().order_by('-total_points')[:10:1]
+        ctx['points_per_game'] = Player.objects.all().order_by('-points_per_game')[:10:1]
         return render(request, 'components/stats.html', ctx)
 
 

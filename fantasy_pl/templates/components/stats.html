@@ -231,6 +231,47 @@
         <!-- /.panel-body -->
     </div>
         <!-- /.panel -->
+        <div class="panel panel-zielony">
+            <div class="panel-heading">
+                <a data-toggle="collapse" style="color: #ffffff" href="#collapse5"><i class="fa fa-bar-chart-o fa-fw"></i>Points per game</a>
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse5" class="panel-collapse collapse">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for p in points_per_game %}
+                                    <tr>
+                                        <td>{{ p.points_per_game }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' p.id %}" style="color:#000000">{{ p }}</a>
+                                        </td>
+                                        <td>{{ p.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+        <!-- /.panel-body -->
+    </div>
+        <!-- /.panel -->
 </div>
     <!-- /.col-lg-4 -->
     <div class="col-lg-4">
@@ -315,6 +356,47 @@
             </div>
             <!-- /.panel-body -->
         </div>
+        <!-- /.panel -->
+        <div class="panel panel-zielony">
+            <div class="panel-heading">
+                <a data-toggle="collapse" style="color: #ffffff" href="#collapse5"><i class="fa fa-bar-chart-o fa-fw"></i>Total Points</a>
+            </div>
+            <!-- /.panel-heading -->
+            <div id="collapse5" class="panel-collapse collapse">
+                <div class="panel-body">
+                <div class="row">
+                    <div>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Name</th>
+                                        <th>Team</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for t in total_points %}
+                                    <tr>
+                                        <td>{{ t.total_points }}</td>
+                                        <td>
+                                            <a href="{% url 'fpl:player' t.id %}" style="color:#000000">{{ t }}</a>
+                                        </td>
+                                        <td>{{ t.team }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.col-lg-8 (nested) -->
+                </div>
+                <!-- /.row -->
+            </div>
+            </div>
+        <!-- /.panel-body -->
+    </div>
         <!-- /.panel -->
     </div>
     <!-- /.col-lg-4 -->
