@@ -18,9 +18,9 @@ https://fantasy.premierleague.com/api/bootstrap-static/
 * Runserver and log in as super user;
 * To populate from prepared JSON file in repository as super user
 ... respectively go through URL:
-  1. /populate_teams/
-  2. /populate_positions/
-  3. /populate_players/
+  1. _localhost/populate_teams/_ ;
+  2. _localhost/populate_positions/_ ;
+  3. _localhost/populate_players/_ ;
   
 In order to populate database directly from Premier League API swap commentary:
 ```python
