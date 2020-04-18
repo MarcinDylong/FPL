@@ -178,6 +178,44 @@
     <!-- /.col-lg-4 -->
 </div>
 <!-- /.row -->
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Charts</h1>
+    </div>
+    <!-- /.col-lg-12 -->
+</div>
+<!-- /.row -->
+<div class="row">
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Cost of the team:
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="cost"></div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+    <div class="col-lg-6">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Points per game
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <div id="ppg"></div>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-6 -->
+</div>
+
 
 {% endblock content %}
 
@@ -187,5 +225,40 @@
 <script src="{% static "bower_components/raphael/raphael-min.js" %}"></script>
 <script src="{% static "bower_components/morrisjs/morris.min.js" %}"></script>
 <script src="{% static "js/morris-data.js" %}"></script>
+
+
+<script>
+   new Morris.Bar({
+      // ID of the element in which to draw the chart.
+      element: 'cost',
+      // Chart data records -- each entry in this array corresponds to a point on
+      // the chart.
+      data: [
+                {% for u in uteam %}
+                    { Player: '{{ u }}', Value: '{{ u.now_cost }}' }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                  ],
+      // The name of the data record attribute that contains x-values.
+      xkey: 'Player',
+      // A list of names of data record attributes that contain y-values.
+      ykeys: ['Value'],
+      // Labels for the ykeys -- will be displayed when you hover over the
+      // chart.
+      labels: ['Value']
+});
+
+   new Morris.Donut({
+      // ID of the element in which to draw the chart.
+      element: 'ppg',
+      // Chart data records -- each entry in this array corresponds to a point on
+      // the chart.
+      data: [
+                {% for u in uteam %}
+                    { label: '{{ u }}', value: '{{ u.points_per_game }}' }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+                  ],
+});
+</script>
+
 
 {% endblock extrajs %}

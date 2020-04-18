@@ -1,5 +1,6 @@
 import operator
 import random
+import json
 from functools import reduce
 
 from django.contrib.auth import authenticate, login, logout
@@ -233,6 +234,13 @@ class UserTeamView(View):
         ctx['novelty'] = round(novelty / 15, 1)
         uteam.novelty = round(novelty / 15, 1)
         uteam.save()
+
+        # ratio = []
+        # for u in luteam:
+        #     ratio.append({'Player': str(u), 'Value': round(u.points_per_game/u.now_cost)})
+        #
+        # ctx['data'] = json.dumps(ratio)
+
         return ctx
 
     def get(self, request):
