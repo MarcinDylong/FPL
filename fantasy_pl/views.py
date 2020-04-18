@@ -2,6 +2,7 @@ import operator
 import random
 from functools import reduce
 
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -15,7 +16,7 @@ from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
 from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm
-from .getters import read_json
+from .getters import read_json, get_data
 from .models import Team, Player, Position, Message, UserTeam
 
 
@@ -329,12 +330,16 @@ class ApiUserTeamView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserTeamSerializer
 
 
+# class DownoloadDataView(View):
+
+
 class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()
+        data = read_json() ## Read data from JSON file on disk
+        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         try:
             teams = data['teams']
             for t in teams:
@@ -370,7 +375,9 @@ class UpdateTeamsView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()
+        data = read_json()  ## Read data from JSON file on disk
+        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+
         teams = data['teams']
         try:
             for t in teams:
@@ -421,12 +428,14 @@ class ApiTeamsView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TeamSerializer
 
 
+
 class PopulatePositionsView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_position'
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()
+        data = read_json()  ## Read data from JSON file on disk
+        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         positions = data['element_types']
         try:
             for p in positions:
@@ -448,7 +457,8 @@ class PopulatePlayersView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()
+        data = read_json()  ## Read data from JSON file on disk
+        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         players = data['elements']
         try:
             for p in players:
@@ -511,7 +521,8 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()
+        data = read_json()  ## Read data from JSON file on disk
+        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         players = data['elements']
         try:
             for p in players:
