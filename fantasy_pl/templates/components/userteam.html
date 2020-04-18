@@ -189,7 +189,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Cost of the team:
+                PPG to Cost:
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -203,7 +203,7 @@
     <div class="col-lg-6">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Points per game
+                Player popularity:
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
@@ -235,13 +235,13 @@
       // the chart.
       data: [
                 {% for u in uteam %}
-                    { Player: '{{ u }}', Value: '{{ u.now_cost }}' }{% if not forloop.last %},{% endif %}
+                    { Player: '{{ u }}', Ratio: '{{ u.ratio }}' }{% if not forloop.last %},{% endif %}
                 {% endfor %}
                   ],
       // The name of the data record attribute that contains x-values.
       xkey: 'Player',
       // A list of names of data record attributes that contain y-values.
-      ykeys: ['Value'],
+      ykeys: ['Ratio'],
       // Labels for the ykeys -- will be displayed when you hover over the
       // chart.
       labels: ['Value']
@@ -254,7 +254,7 @@
       // the chart.
       data: [
                 {% for u in uteam %}
-                    { label: '{{ u }}', value: '{{ u.points_per_game }}' }{% if not forloop.last %},{% endif %}
+                    { label: '{{ u }}', value: '{{ u.selected_by_percent }}' }{% if not forloop.last %},{% endif %}
                 {% endfor %}
                   ],
 });

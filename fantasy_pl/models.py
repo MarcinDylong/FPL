@@ -86,6 +86,11 @@ class Player(models.Model):
     def __str__(self):
         return f'{self.first_name} {self.second_name}'
 
+    def ratio(self):
+        if self.now_cost != 0:
+            return round(self.points_per_game/self.now_cost,2)
+        else:
+            return 0
 
 class Message(models.Model):
     subject = models.CharField(max_length=64, null=False)
