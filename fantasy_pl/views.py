@@ -2,7 +2,6 @@ import operator
 import random
 from functools import reduce
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.contrib.auth.models import User
@@ -161,6 +160,7 @@ class SendMessageView(View):
             ctx = {'form': MessageForm()}
             ctx['failure'] = 'Cannot send message with empty Subject or content!'
             return render(request, 'components/message_sending.html', ctx)
+
 
 class MessageReceivedView(View):
 
@@ -323,6 +323,7 @@ class UserTeamView(View):
 class ApiUserTeamsListView(generics.ListCreateAPIView):
     queryset = UserTeam.objects.all().order_by('id')
     serializer_class = UserTeamSerializer
+    lookup_url_kwarg = 'format=JSON'
 
 
 class ApiUserTeamView(generics.RetrieveUpdateDestroyAPIView):
@@ -426,7 +427,6 @@ class ApiTeamsListView(generics.ListCreateAPIView):
 class ApiTeamsView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Team.objects.all()
     serializer_class = TeamSerializer
-
 
 
 class PopulatePositionsView(PermissionRequiredMixin, View):
