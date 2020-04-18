@@ -471,7 +471,7 @@ class PopulatePlayersView(PermissionRequiredMixin, View):
                 player.cost_change_start = p['cost_change_start']
                 player.cost_change_start_fall = p['cost_change_start_fall']
                 player.dreamteam_count = p['dreamteam_count']
-                player.position = p['element_type']
+                player.position = Position.objects.get(id=p['element_type'])
                 player.ep_next = float(p['ep_next'])
                 player.ep_this = float(p['ep_this'])
                 player.event_points = p['event_points']
@@ -534,7 +534,7 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
                 player.cost_change_start = p['cost_change_start']
                 player.cost_change_start_fall = p['cost_change_start_fall']
                 player.dreamteam_count = p['dreamteam_count']
-                player.position = p['element_type']
+                player.position = Position.objects.get(id=p['element_type'])
                 player.ep_next = float(p['ep_next'])
                 player.ep_this = float(p['ep_this'])
                 player.event_points = p['event_points']
