@@ -144,6 +144,32 @@
                             </a>
                             <!-- /.nav-second-level -->
                         </li>
+                        {% if request.user.is_superuser %}
+                        <li>
+                            <a href="#" class="bialy"><i class="fa fa-gears fa-fw"></i>Data management<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:download_data'%}" class="bialy-nap">Download data to JSON</a>
+                                </li>
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:populate_teams'%}" class="bialy-nap">Populate Team table</a>
+                                </li>
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:positions_players'%}" class="bialy-nap">Populate Position table</a>
+                                </li>
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:populate_players'%}" class="bialy-nap">Populate Player table</a>
+                                </li>
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:update_teams'%}" class="bialy-nap">Update Team table</a>
+                                </li>
+                                <li class="rozowy">
+                                    <a href="{% url 'fpl:update_players'%}" class="bialy-nap">Update Player table</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        {% endif %}
                     </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
