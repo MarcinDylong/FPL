@@ -94,7 +94,11 @@ class AdvSearchForm(forms.Form):
         position = self.cleaned_data['position']
         stats    = self.cleaned_data['stats']
         min      = self.cleaned_data['min']
+        if min == None:
+            min = 0
         max      = self.cleaned_data['max']
+        if max == None:
+            max = 1500
 
         if (min != None and max != None) and (min >= max):
             raise forms.ValidationError('Minimum value has to be smaller than maximum.')
