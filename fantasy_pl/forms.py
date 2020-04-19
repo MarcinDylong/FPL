@@ -100,7 +100,7 @@ class AdvSearchForm(forms.Form):
             raise forms.ValidationError('Minimum value has to be smaller than maximum.')
 
         if min < 0 or max < 0:
-            raise forms.ValidationError('Neither min nor max can be below 0.')
+            raise forms.ValidationError('Min and Max value must be greater than 0')
 
 
 class UserTeamForm(forms.Form):

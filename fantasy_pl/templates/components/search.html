@@ -29,8 +29,8 @@
                         <a data-toggle="collapse" style="color: #ffffff" href="#collapseOne">Advanced Search</a>
                     </h4>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
-                    {% if failure %}
+            {% if failure %}
+                <div id="collapseOne" class="panel-collapse" aria-expanded="True">
                     <div class="panel-body alert-danger">
                         <form action="#" method="POST">
                             <div>
@@ -44,7 +44,9 @@
                             </span>
                         </form>
                     </div>
-                    {% else %}
+                </div>
+            {% else %}
+                <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
                     <div class="panel-body">
                         <form action="#" method="POST">
                             <div>
@@ -58,8 +60,8 @@
                             </span>
                         </form>
                     </div>
-                    {% endif %}
                 </div>
+            {% endif %}
             </div>
         </div>
     </div>
