@@ -4,7 +4,8 @@ from .views import IndexView, LoginView, BlankView, LogoutView, PopulateTeamsVie
                    UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, PlayerView, PositionsView, \
                    StatsView, SearchView, ApiTeamsView, ApiTeamsListView, ApiPlayersListView, ApiPlayersView, \
                    CreateUserView, ChangetPasswordView, SendMessageView, MessageReceivedView, MessageSentView, \
-                   UserTeamView, ApiUserTeamsListView, ApiUserTeamView, DownloadDataView
+                   UserTeamView, ApiUserTeamsListView, ApiUserTeamView, DownloadDataView, GetIndividualPlayerDataView \
+                   # GetAllPlayerDataView
 
 app_name = 'fantasy_pl'
 
@@ -26,6 +27,8 @@ urlpatterns = [
     path('populate_players/', PopulatePlayersView.as_view(), name="populate_players"),
     path('update_players/', UpdatePlayersView.as_view(), name="update_players"),
     path('populate_positions/', PopulatePositionsView.as_view(), name="positions_players"),
+    path('get_ind_player_history/<int:id>', GetIndividualPlayerDataView.as_view(), name="get_ind_player_history"),
+    # path('get_all_player_history/<ind:id>', GetAllPlayerDataView.as_view(), name="get_all_player_history"),
     #  Teams, players, stats
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),

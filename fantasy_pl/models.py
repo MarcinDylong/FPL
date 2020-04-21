@@ -125,3 +125,43 @@ class UserTeam(models.Model):
     total_points = models.SmallIntegerField(default=0)
     dt_apps = models.FloatField(default=0)
     novelty = models.FloatField(default=0)
+
+
+class PlayerHistory(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.CASCADE)
+    fixture = models.SmallIntegerField()
+    opponent_team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
+    total_points = models.SmallIntegerField()
+    was_home = models.BooleanField()
+    kickoff_time = models.DateTimeField()
+    team_h_score = models.SmallIntegerField()
+    team_a_score = models.SmallIntegerField()
+    round = models.SmallIntegerField()
+    minutes = models.SmallIntegerField()
+    goals_scored = models.SmallIntegerField()
+    assists = models.SmallIntegerField()
+    clean_sheets = models.SmallIntegerField()
+    goals_conceded = models.SmallIntegerField()
+    own_goals = models.SmallIntegerField()
+    penalties_saved = models.SmallIntegerField()
+    penalties_missed = models.SmallIntegerField()
+    yellow_cards = models.SmallIntegerField()
+    red_cards = models.SmallIntegerField()
+    saves = models.SmallIntegerField()
+    bonus = models.SmallIntegerField()
+    bps = models.SmallIntegerField()
+    influence = models.FloatField()
+    creativity = models.FloatField()
+    threat = models.FloatField()
+    ict_index = models.FloatField()
+    value = models.SmallIntegerField()
+    transfers_balance = models.IntegerField()
+    selected = models.IntegerField()
+    transfers_in = models.IntegerField()
+    transfers_out = models.IntegerField()
+
+    class Meta:
+        unique_together = [['player', 'fixture']]
+
+    def __str__(self):
+        return f'{self.player} - {self.fixture}'

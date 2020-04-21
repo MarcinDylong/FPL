@@ -15,8 +15,9 @@ from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
 from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm
-from .getters import read_json, get_data
-from .models import Team, Player, Position, Message, UserTeam
+from .getters import read_json, get_data, get_individual_player_data, populate_teams, populate_players, update_players, \
+    populate_positions, update_teams
+from .models import Team, Player, Position, Message, UserTeam, PlayerHistory
 
 
 class IndexView(View):
@@ -342,7 +343,7 @@ class DownloadDataView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
-    def get(self,request):
+    def get(self, request):
         try:
             get_data()
             ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
@@ -357,30 +358,11 @@ class PopulateTeamsView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json() ## Read data from JSON file on disk
+        data = read_json()  ## Read data from JSON file on disk
         # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        teams = data['teams']
         try:
-            teams = data['teams']
-            for t in teams:
-                team = Team()
-                team.id = int(t['id'])
-                team.draw = t['draw']
-                team.form = t['form']
-                team.loss = t['loss']
-                team.name = t['name']
-                team.played = t['played']
-                team.points = t['points']
-                team.position = t['position']
-                team.short_name = t['short_name']
-                team.strength = t['strength']
-                team.win = t['win']
-                team.strength_overall_home = t['strength_overall_home']
-                team.strength_overall_away = t['strength_overall_away']
-                team.strength_attack_home = t['strength_attack_home']
-                team.strength_attack_away = t['strength_attack_away']
-                team.strength_defence_home = t['strength_defence_home']
-                team.strength_defence_away = t['strength_defence_away']
-                team.save()
+            populate_teams(teams)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
@@ -399,23 +381,7 @@ class UpdateTeamsView(PermissionRequiredMixin, View):
 
         teams = data['teams']
         try:
-            for t in teams:
-                team = Team.objects.get(id=t['id'])
-                team.draw = t['draw']
-                team.form = t['form']
-                team.loss = t['loss']
-                team.played = t['played']
-                team.points = t['points']
-                team.position = t['position']
-                team.strength = t['strength']
-                team.win = t['win']
-                team.strength_overall_home = t['strength_overall_home']
-                team.strength_overall_away = t['strength_overall_away']
-                team.strength_attack_home = t['strength_attack_home']
-                team.strength_attack_away = t['strength_attack_away']
-                team.strength_defence_home = t['strength_defence_home']
-                team.strength_defence_away = t['strength_defence_away']
-                team.save()
+            update_teams(teams)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
@@ -456,12 +422,7 @@ class PopulatePositionsView(PermissionRequiredMixin, View):
         # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         positions = data['element_types']
         try:
-            for p in positions:
-                pos = Position()
-                pos.id = int(p['id'])
-                pos.name = p['singular_name']
-                pos.name_short = p['singular_name_short']
-                pos.save()
+            populate_positions(positions)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
@@ -479,53 +440,7 @@ class PopulatePlayersView(PermissionRequiredMixin, View):
         # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         players = data['elements']
         try:
-            for p in players:
-                player = Player()
-                player.chance_of_playing_next_round = p['chance_of_playing_next_round']
-                player.chance_of_playing_this_round = p['chance_of_playing_this_round']
-                player.code = p['code']
-                player.cost_change_event = p['cost_change_event']
-                player.cost_change_event_fall = p['cost_change_event_fall']
-                player.cost_change_start = p['cost_change_start']
-                player.cost_change_start_fall = p['cost_change_start_fall']
-                player.dreamteam_count = p['dreamteam_count']
-                player.position = Position.objects.get(id=p['element_type'])
-                player.ep_next = float(p['ep_next'])
-                player.ep_this = float(p['ep_this'])
-                player.event_points = p['event_points']
-                player.first_name = p['first_name']
-                player.form = p['form']
-                player.id = p['id']
-                player.in_dreamteam = p['in_dreamteam']
-                player.news = p['news']
-                player.news_added = p['news_added']
-                player.now_cost = p['now_cost'] / 10
-                player.points_per_game = p['points_per_game']
-                player.second_name = p['second_name']
-                player.selected_by_percent = p['selected_by_percent']
-                player.special = p['special']
-                player.team = Team.objects.get(id=p['team'])
-                player.total_points = p['total_points']
-                player.value_form = float(p['value_form'])
-                player.value_season = float(p['value_season'])
-                player.minutes = p['minutes']
-                player.goals_scored = p['goals_scored']
-                player.assists = p['assists']
-                player.clean_sheets = p['clean_sheets']
-                player.goals_conceded = p['goals_conceded']
-                player.own_goals = p['own_goals']
-                player.penalties_saved = p['penalties_saved']
-                player.penalties_missed = p['penalties_missed']
-                player.yellow_cards = p['yellow_cards']
-                player.red_cards = p['red_cards']
-                player.saves = p['saves']
-                player.bonus = p['bonus']
-                player.bps = p['bps']
-                player.influence = float(p['influence'])
-                player.creativity = float(p['creativity'])
-                player.threat = float(p['threat'])
-                player.ict_index = float(p['ict_index'])
-                player.save()
+            populate_players(players)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
@@ -543,55 +458,87 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
         # data = get_data() ## Read data from JSON file from Fantasy Premier League API
         players = data['elements']
         try:
-            for p in players:
-                player = Player.objects.get(id=p['id'])
-                player.chance_of_playing_next_round = p['chance_of_playing_next_round']
-                player.chance_of_playing_this_round = p['chance_of_playing_this_round']
-                player.cost_change_event = p['cost_change_event']
-                player.cost_change_event_fall = p['cost_change_event_fall']
-                player.cost_change_start = p['cost_change_start']
-                player.cost_change_start_fall = p['cost_change_start_fall']
-                player.dreamteam_count = p['dreamteam_count']
-                player.position = Position.objects.get(id=p['element_type'])
-                player.ep_next = float(p['ep_next'])
-                player.ep_this = float(p['ep_this'])
-                player.event_points = p['event_points']
-                player.form = p['form']
-                player.in_dreamteam = p['in_dreamteam']
-                player.news = p['news']
-                player.news_added = p['news_added']
-                player.now_cost = p['now_cost'] / 10
-                player.points_per_game = p['points_per_game']
-                player.selected_by_percent = p['selected_by_percent']
-                player.special = p['special']
-                player.team = Team.objects.get(id=p['team'])
-                player.total_points = p['total_points']
-                player.value_form = float(p['value_form'])
-                player.value_season = float(p['value_season'])
-                player.minutes = p['minutes']
-                player.goals_scored = p['goals_scored']
-                player.assists = p['assists']
-                player.clean_sheets = p['clean_sheets']
-                player.goals_conceded = p['goals_conceded']
-                player.own_goals = p['own_goals']
-                player.penalties_saved = p['penalties_saved']
-                player.penalties_missed = p['penalties_missed']
-                player.yellow_cards = p['yellow_cards']
-                player.red_cards = p['red_cards']
-                player.saves = p['saves']
-                player.bonus = p['bonus']
-                player.bps = p['bps']
-                player.influence = float(p['influence'])
-                player.creativity = float(p['creativity'])
-                player.threat = float(p['threat'])
-                player.ict_index = float(p['ict_index'])
-                player.save()
+            update_players(players)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
 
         ctx = {'event': 'Success!', 'info': 'Players database has been updated.'}
         return render(request, "components/event.html", ctx)
+
+
+class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
+    permission_required = 'fanatasy_pl.add_player'
+
+    def get(self, request, id):
+        try:
+            data = get_individual_player_data(id)
+            history = data['history']
+            for h in history:
+                if PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
+                        fixture=h['fixture']):
+                    pass
+                else:
+                    hist = PlayerHistory()
+                    hist.player = Player.objects.get(id=h['element'])
+                    hist.fixture = h['fixture']
+                    hist.opponent_team = Team.objects.get(id=h['opponent_team'])
+                    hist.total_points = h['total_points']
+                    hist.was_home = h['was_home']
+                    hist.kickoff_time = h['kickoff_time']
+                    hist.team_h_score = h['team_h_score']
+                    hist.team_a_score = h['team_a_score']
+                    hist.round = h['round']
+                    hist.minutes = h['minutes']
+                    hist.goals_scored = h['goals_scored']
+                    hist.assists = h['assists']
+                    hist.clean_sheets = h['clean_sheets']
+                    hist.goals_conceded = h['goals_conceded']
+                    hist.own_goals = h['own_goals']
+                    hist.penalties_saved = h['penalties_saved']
+                    hist.penalties_missed = h['penalties_missed']
+                    hist.yellow_cards = h['yellow_cards']
+                    hist.red_cards = h['red_cards']
+                    hist.saves = h['saves']
+                    hist.bonus = h['bonus']
+                    hist.bps = h['bps']
+                    hist.influence = float(h['influence'])
+                    hist.creativity = float(h['creativity'])
+                    hist.threat = float(h['threat'])
+                    hist.ict_index = float(h['ict_index'])
+                    hist.value = h['value']
+                    hist.transfers_balance = h['transfers_balance']
+                    hist.selected = h['selected']
+                    hist.transfers_in = h['transfers_in']
+                    hist.transfers_out = h['transfers_out']
+                    hist.save()
+
+            ctx = {'event': 'Success!', 'info': f'Data for player {id} has been updated'}
+            return render(request, "components/event.html", ctx)
+
+        except Exception as e:
+            ctx = {'event': 'Error occured', 'error': format(e)}
+            return render(request, "components/event.html", ctx)
+
+
+# class GetPlayersHistoryView(PermissionRequiredMixin, View):
+#     permission_required = 'fantasy_pl.add_player'
+#
+#     def get(self,request):
+#
+
+# class GetAllPlayerDataView(PermissionRequiredMixin, View):
+#     permission_required = 'fanatasy_pl.add_player'
+#
+#     def get(self,request):
+#         try:
+#             get_individual_player_data()
+#             ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
+#             return render(request, "components/event.html", ctx)
+#
+#         except Exception as e:
+#             ctx = {'event': 'Error occured', 'error': format(e)}
+#             return render(request, "components/event.html", ctx)
 
 
 class PlayerView(View):
@@ -703,15 +650,15 @@ class SearchView(View):
                     q_list.append((Q(total_points__gte=min)))
                     q_list.append((Q(total_points__lte=max)))
 
-            if len(q_list)==0:
+            if len(q_list) == 0:
                 q_players = None
             else:
-                q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-'+stat)
+                q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-' + stat)
                 paginator = Paginator(q_players, 25)
                 page = request.GET.get('page')
                 q_players = paginator.get_page(page)
-            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat, 'pos':pos}
+            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat, 'pos': pos}
             return render(request, 'components/search.html', ctx)
         else:
-            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search', 'failure':True}
+            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search', 'failure': True}
             return render(request, 'components/search.html', ctx)
