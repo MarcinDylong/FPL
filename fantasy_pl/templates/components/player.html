@@ -112,8 +112,69 @@
             <div class="panel panel-zielony">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a href="#">Season apperances</a>
+                        <a data-toggle="collapse" href="#collapseTwo">Season apperances</a>
                     </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false">
+                    <div class="panel-body">
+                        <div class="dataTable_wrapper">
+                            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                <thead>
+                                    <tr>
+                                        <tr>
+                                            <th align="center">Opponent</th>
+                                            <th align="center">Score</th>
+                                            <th align="center">Minutes</th>
+                                            <th align="center">Goals</th>
+                                            <th align="center">Assists</th>
+                                            <th align="center">Yellow Cards</th>
+                                            <th align="center">Red Cards</th>
+                                            <th align="center">Own Goals</th>
+                                            <th align="center">Pen Saved</th>
+                                            <th align="center">Pen Missed</th>
+                                            <th align="center">Saves</th>
+                                            <th align="center">Influence</th>
+                                            <th align="center">Creativity</th>
+                                            <th align="center">Threat</th>
+                                            <th align="center">Value</th>
+                                        </tr>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for g in games %}
+                                        <tr class="odd gradeX">
+                                            <td align="center">
+                                                <a style='color: #000000' href="{% url 'fpl:team' g.opponent_team.id 'position' %}">
+                                                    {{g.opponent_team.short_name}}
+                                                </a>
+                                                {% if g.was_home %}
+                                                    (H)
+                                                {% else %}
+                                                    (A)
+                                                {% endif %}
+                                            </td>
+                                            <td class="center" align="center">
+                                                {{g.team_h_score}} - {{g.team_a_score}}
+                                            </td>
+                                            <td class="center" align="center">{{g.minutes}}</td>
+                                            <td class="center" align="center">{{g.goals_scored}}</td>
+                                            <td class="center" align="center">{{g.assists}}</td>
+                                            <td class="center" align="center">{{g.yellow_cards}}</td>
+                                            <td class="center" align="center">{{g.red_cards}}</td>
+                                            <td class="center" align="center">{{g.own_goals}}</td>
+                                            <td class="center" align="center">{{g.penalties_saved}}</td>
+                                            <td class="center" align="center">{{g.penalties_missed}}</td>
+                                            <td class="center" align="center">{{g.saves}}</td>
+                                            <td class="center" align="center">{{g.influence}}</td>
+                                            <td class="center" align="center">{{g.creativity}}</td>
+                                            <td class="center" align="center">{{g.threat}}</td>
+                                            <td class="center" align="center">{{g.value}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
