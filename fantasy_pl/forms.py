@@ -2,12 +2,19 @@ from django import forms
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import ValidationError, MinValueValidator
-from fantasy_pl.models import Player, UserTeam, Position
+from fantasy_pl.models import Player, Team, Position
 
 
 class LoginForm(forms.Form):
     username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
+
+class GetDataForm(forms.Form):
+    id = forms.IntegerField(label='Get by ID', required=False,
+                            widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    team = forms.ModelChoiceField(label='Get by Team', required=False, queryset=Team.objects.all().order_by('name'),
+                            widget=forms.Select(attrs={'class': 'form-control'}))
 
 
 class CreateUserForm(forms.Form):
@@ -92,11 +99,11 @@ class AdvSearchForm(forms.Form):
 
     def clean(self):
         position = self.cleaned_data['position']
-        stats    = self.cleaned_data['stats']
-        min      = self.cleaned_data['min']
+        stats = self.cleaned_data['stats']
+        min = self.cleaned_data['min']
         if min == None:
             min = 0
-        max      = self.cleaned_data['max']
+        max = self.cleaned_data['max']
         if max == None:
             max = 1500
 

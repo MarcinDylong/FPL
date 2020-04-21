@@ -199,5 +199,46 @@ def update_players(players):
         player.save()
 
 
+def get_player_data(history):
+    for h in history:
+        if PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
+                fixture=h['fixture']):
+            pass
+        else:
+            hist = PlayerHistory()
+            hist.player = Player.objects.get(id=h['element'])
+            hist.fixture = h['fixture']
+            hist.opponent_team = Team.objects.get(id=h['opponent_team'])
+            hist.total_points = h['total_points']
+            hist.was_home = h['was_home']
+            hist.kickoff_time = h['kickoff_time']
+            hist.team_h_score = h['team_h_score']
+            hist.team_a_score = h['team_a_score']
+            hist.round = h['round']
+            hist.minutes = h['minutes']
+            hist.goals_scored = h['goals_scored']
+            hist.assists = h['assists']
+            hist.clean_sheets = h['clean_sheets']
+            hist.goals_conceded = h['goals_conceded']
+            hist.own_goals = h['own_goals']
+            hist.penalties_saved = h['penalties_saved']
+            hist.penalties_missed = h['penalties_missed']
+            hist.yellow_cards = h['yellow_cards']
+            hist.red_cards = h['red_cards']
+            hist.saves = h['saves']
+            hist.bonus = h['bonus']
+            hist.bps = h['bps']
+            hist.influence = float(h['influence'])
+            hist.creativity = float(h['creativity'])
+            hist.threat = float(h['threat'])
+            hist.ict_index = float(h['ict_index'])
+            hist.value = h['value']
+            hist.transfers_balance = h['transfers_balance']
+            hist.selected = h['selected']
+            hist.transfers_in = h['transfers_in']
+            hist.transfers_out = h['transfers_out']
+            hist.save()
+
+
 if __name__=="__main__":
     download_json()

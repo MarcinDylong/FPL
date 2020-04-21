@@ -8,15 +8,16 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseNotFound
+from django.http import HttpResponseNotFound, HttpResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework import generics
 
 from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
-from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm, \
+    GetDataForm
 from .getters import read_json, get_data, get_individual_player_data, populate_teams, populate_players, update_players, \
-    populate_positions, update_teams
+    populate_positions, update_teams, get_player_data
 from .models import Team, Player, Position, Message, UserTeam, PlayerHistory
 
 
@@ -474,44 +475,7 @@ class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
         try:
             data = get_individual_player_data(id)
             history = data['history']
-            for h in history:
-                if PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
-                        fixture=h['fixture']):
-                    pass
-                else:
-                    hist = PlayerHistory()
-                    hist.player = Player.objects.get(id=h['element'])
-                    hist.fixture = h['fixture']
-                    hist.opponent_team = Team.objects.get(id=h['opponent_team'])
-                    hist.total_points = h['total_points']
-                    hist.was_home = h['was_home']
-                    hist.kickoff_time = h['kickoff_time']
-                    hist.team_h_score = h['team_h_score']
-                    hist.team_a_score = h['team_a_score']
-                    hist.round = h['round']
-                    hist.minutes = h['minutes']
-                    hist.goals_scored = h['goals_scored']
-                    hist.assists = h['assists']
-                    hist.clean_sheets = h['clean_sheets']
-                    hist.goals_conceded = h['goals_conceded']
-                    hist.own_goals = h['own_goals']
-                    hist.penalties_saved = h['penalties_saved']
-                    hist.penalties_missed = h['penalties_missed']
-                    hist.yellow_cards = h['yellow_cards']
-                    hist.red_cards = h['red_cards']
-                    hist.saves = h['saves']
-                    hist.bonus = h['bonus']
-                    hist.bps = h['bps']
-                    hist.influence = float(h['influence'])
-                    hist.creativity = float(h['creativity'])
-                    hist.threat = float(h['threat'])
-                    hist.ict_index = float(h['ict_index'])
-                    hist.value = h['value']
-                    hist.transfers_balance = h['transfers_balance']
-                    hist.selected = h['selected']
-                    hist.transfers_in = h['transfers_in']
-                    hist.transfers_out = h['transfers_out']
-                    hist.save()
+            get_player_data(history)
 
             ctx = {'event': 'Success!', 'info': f'Data for player {id} has been updated'}
             return render(request, "components/event.html", ctx)
@@ -521,24 +485,48 @@ class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
             return render(request, "components/event.html", ctx)
 
 
-# class GetPlayersHistoryView(PermissionRequiredMixin, View):
-#     permission_required = 'fantasy_pl.add_player'
-#
-#     def get(self,request):
-#
+class GetPlayersHistoryView(PermissionRequiredMixin, View):
+    permission_required = 'fantasy_pl.add_player'
 
-# class GetAllPlayerDataView(PermissionRequiredMixin, View):
-#     permission_required = 'fanatasy_pl.add_player'
-#
-#     def get(self,request):
-#         try:
-#             get_individual_player_data()
-#             ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
-#             return render(request, "components/event.html", ctx)
-#
-#         except Exception as e:
-#             ctx = {'event': 'Error occured', 'error': format(e)}
-#             return render(request, "components/event.html", ctx)
+    def get(self, request):
+        ctx = {'title': "Get data", 'form': GetDataForm()}
+        return render(request, 'components/get_data.html', ctx)
+
+    def post(self, request):
+        form = GetDataForm(request.POST)
+        if form.is_valid():
+            id = form.cleaned_data['id']
+            team = form.cleaned_data['team']
+            if id:
+                try:
+                    data = get_individual_player_data(id)
+                    history = data['history']
+                    get_player_data(history)
+                    ctx = {'successful': True, 'info': f'Data for player {id} has been updated', 'title': "Get data",
+                           'form': GetDataForm()}
+                    return render(request, "components/get_data.html", ctx)
+                except Exception as e:
+                    ctx = {'unsuccessful': True, 'info': 'Error occured', 'error': format(e), 'title': "Get data",
+                           'form': GetDataForm()}
+                    return render(request, "components/event.html", ctx)
+            elif team:
+                players = Player.objects.filter(team=team)
+                for p in players:
+                    try:
+                        data = get_individual_player_data(p.id)
+                        history = data['history']
+                        get_player_data(history)
+                    except Exception as e:
+                        ctx = {'unsuccessful': True, 'info': 'Error occured', 'error': format(e), 'title': "Get data",
+                               'form': GetDataForm()}
+                        return render(request, "components/event.html", ctx)
+
+                ctx = {'successful': True, 'info': f'Data for players in {team} has been updated',
+                       'title': "Get data", 'form': GetDataForm()}
+                return render(request, "components/get_data.html", ctx)
+            else:
+                ctx = {'title': "Get data", 'form': GetDataForm()}
+                return render(request, 'components/get_data.html', ctx)
 
 
 class PlayerView(View):
