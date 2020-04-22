@@ -24,7 +24,7 @@ from .models import Team, Player, Position, Message, UserTeam, PlayerHistory, Fi
 class IndexView(View):
 
     def get(self, request):
-        ctx={'title': 'Landing page'}
+        ctx = {'title': 'Landing page'}
         # Random team
         try:
             team = list(Team.objects.all())
@@ -486,23 +486,24 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
         return render(request, "components/event.html", ctx)
 
 
-class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
-    permission_required = 'fanatasy_pl.add_player'
-
-    def get(self, request, id):
-        try:
-            data = get_individual_player_data(id)
-            history = data['history']
-            get_player_data(history)
-            fixture = data['fixtures']
-            get_player_fixture(fixture, history[0]['element'])
-
-            ctx = {'event': 'Success!', 'info': f'Data for player {id} has been updated'}
-            return render(request, "components/event.html", ctx)
-
-        except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
+# class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
+#     permission_required = 'fanatasy_pl.add_player'
+#
+#     def get(self, request, id):
+#         try:
+#             data = get_individual_player_data(id)
+#             history = data['history']
+#             get_player_data(history)
+#             fixture = data['fixtures']
+#             get_player_fixture(fixture, history[0]['element'])
+#
+#
+#             ctx = {'event': 'Success!', 'info': f'Data for player {id} has been updated'}
+#             return render(request, "components/event.html", ctx)
+#
+#         except Exception as e:
+#             ctx = {'event': 'Error occured', 'error': format(e)}
+#             return render(request, "components/event.html", ctx)
 
 
 class GetPlayersHistoryView(PermissionRequiredMixin, View):
@@ -558,12 +559,14 @@ class PlayerView(View):
     def get(self, request, id):
         player = Player.objects.get(id=id)
         games = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
+        chart = PlayerHistory.objects.filter(player=player).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
         fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player, 'games': games, 'fixtures': fixtures}
+        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player, 'games': games, 'fixtures': fixtures,
+               'chart': chart}
         return render(request, 'components/player.html', ctx)
 
 

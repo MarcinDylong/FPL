@@ -166,6 +166,9 @@ class PlayerHistory(models.Model):
     def __str__(self):
         return f'{self.player} - {self.fixture}'
 
+    def chart_value(self):
+        return self.value * 10
+
 
 class Fixture(models.Model):
     code = models.IntegerField()

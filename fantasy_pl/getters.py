@@ -206,6 +206,10 @@ def get_player_data(history):
         if PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
                 fixture=h['fixture']):
             pass
+            # hist = PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
+            #     fixture=h['fixture']).first()
+            # hist.fixture = i
+            # hist.save()
         else:
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=h['element'])

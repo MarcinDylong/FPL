@@ -3,150 +3,153 @@
 
 {% block extrahead %}
 
-<!-- Timeline CSS -->
-<link href="{% static "dist/css/timeline.css" %}" rel="stylesheet">
+    <!-- Timeline CSS -->
+    <link href="{% static "dist/css/timeline.css" %}" rel="stylesheet">
 
-<!-- Morris Charts CSS -->
-<link href="{% static "bower_components/morrisjs/morris.css" %}" rel="stylesheet">
+    <!-- Morris Charts CSS -->
+    <link href="{% static "bower_components/morrisjs/morris.css" %}" rel="stylesheet">
+
 
 {% endblock extrahead %}
 
 
 {% block content %}
-    
-<div class="row">
-    <div class="col-lg-12">
-        <h1 class="page-header"> {{ player }}</h1>
+
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header"> {{ player }}</h1>
+        </div>
+        <!-- /.col-lg-12 -->
     </div>
-    <!-- /.col-lg-12 -->
-</div>
-<!-- /.row -->
-<div class="row">
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-bialy">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-4">
-                        <a href="{% url 'fpl:team' team.id 'position'%}">
-                            <img style='height: 70px; width: auto; object-fit: contain; display: block' src="{{photo}}">
-                        </a>
-                    </div>
-                    <div class="col-xs-8 text-right">
-                        <div class="huge">{{team.short_name}}</div>
-                        <div>Team</div>
+    <!-- /.row -->
+    <div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-bialy">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <a href="{% url 'fpl:team' team.id 'position' %}">
+                                <img style='height: 70px; width: auto; object-fit: contain; display: block'
+                                     src="{{ photo }}">
+                            </a>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <div class="huge">{{ team.short_name }}</div>
+                            <div>Team</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-zielony">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-user fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">{{ player.position }}</div>
-                        <div>Position</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-zielony">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-money fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">{{player.now_cost}}</div>
-                        <div>Cost</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-lg-3 col-md-6">
-        <div class="panel panel-zielony">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-3">
-                        <i class="fa fa-bar-chart-o fa-5x"></i>
-                    </div>
-                    <div class="col-xs-9 text-right">
-                        <div class="huge">{{player.points_per_game}}</div>
-                        <div>Points per game</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% if player.news %}
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel-group" id="accordion">
+        <div class="col-lg-3 col-md-6">
             <div class="panel panel-zielony">
                 <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#collapseOne">{{ player.news_added }}</a>
-                    </h4>
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-user fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.position }}</div>
+                            <div>Position</div>
+                        </div>
+                    </div>
                 </div>
-                <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
-                    <div class="panel-body">
-                        {{ player.news }}
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-money fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.now_cost }}</div>
+                            <div>Cost</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bar-chart-o fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.points_per_game }}</div>
+                            <div>Points per game</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /.col-lg-12 -->
-</div>
-{% endif %}
-{#Game played#}
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-zielony">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#collapseTwo">Season apperances</a>
-                    </h4>
+    {% if player.news %}
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel-group" id="accordion">
+                    <div class="panel panel-zielony">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a data-toggle="collapse" href="#collapseOne">{{ player.news_added }}</a>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
+                            <div class="panel-body">
+                                {{ player.news }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false">
-                    <div class="panel-body">
-                        <div class="dataTable_wrapper">
-                            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <thead>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+    {% endif %}
+    {#Game played#}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-zielony">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapseTwo">Season apperances</a>
+                        </h4>
+                    </div>
+                    <div id="collapseTwo" class="panel-collapse collapse" aria-expanded="false">
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
                                     <tr>
-                                        <tr>
-                                            <th align="center">Opponent</th>
-                                            <th align="center">Score</th>
-                                            <th align="center">Minutes</th>
-                                            <th align="center">Goals</th>
-                                            <th align="center">Assists</th>
-                                            <th align="center">Yellow Cards</th>
-                                            <th align="center">Red Cards</th>
-                                            <th align="center">Own Goals</th>
-                                            <th align="center">Pen Saved</th>
-                                            <th align="center">Pen Missed</th>
-                                            <th align="center">Saves</th>
-                                            <th align="center">Influence</th>
-                                            <th align="center">Creativity</th>
-                                            <th align="center">Threat</th>
-                                            <th align="center">Value</th>
-                                        </tr>
+                                    <tr>
+                                        <th align="center">Opponent</th>
+                                        <th align="center">Score</th>
+                                        <th align="center">Minutes</th>
+                                        <th align="center">Goals</th>
+                                        <th align="center">Assists</th>
+                                        <th align="center">Yellow Cards</th>
+                                        <th align="center">Red Cards</th>
+                                        <th align="center">Own Goals</th>
+                                        <th align="center">Pen Saved</th>
+                                        <th align="center">Pen Missed</th>
+                                        <th align="center">Saves</th>
+                                        <th align="center">Influence</th>
+                                        <th align="center">Creativity</th>
+                                        <th align="center">Threat</th>
+                                        <th align="center">Value</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     {% for g in games %}
                                         <tr class="odd gradeX">
                                             <td align="center">
-                                                <a style='color: #000000' href="{% url 'fpl:team' g.opponent_team.id 'position' %}">
-                                                    {{g.opponent_team.short_name}}
+                                                <a style='color: #000000'
+                                                   href="{% url 'fpl:team' g.opponent_team.id 'position' %}">
+                                                    {{ g.opponent_team.short_name }}
                                                 </a>
                                                 {% if g.was_home %}
                                                     (H)
@@ -155,84 +158,86 @@
                                                 {% endif %}
                                             </td>
                                             <td class="center" align="center">
-                                                {{g.team_h_score}} - {{g.team_a_score}}
+                                                {{ g.team_h_score }} - {{ g.team_a_score }}
                                             </td>
-                                            <td class="center" align="center">{{g.minutes}}</td>
-                                            <td class="center" align="center">{{g.goals_scored}}</td>
-                                            <td class="center" align="center">{{g.assists}}</td>
-                                            <td class="center" align="center">{{g.yellow_cards}}</td>
-                                            <td class="center" align="center">{{g.red_cards}}</td>
-                                            <td class="center" align="center">{{g.own_goals}}</td>
-                                            <td class="center" align="center">{{g.penalties_saved}}</td>
-                                            <td class="center" align="center">{{g.penalties_missed}}</td>
-                                            <td class="center" align="center">{{g.saves}}</td>
-                                            <td class="center" align="center">{{g.influence}}</td>
-                                            <td class="center" align="center">{{g.creativity}}</td>
-                                            <td class="center" align="center">{{g.threat}}</td>
-                                            <td class="center" align="center">{{g.value}}</td>
+                                            <td class="center" align="center">{{ g.minutes }}</td>
+                                            <td class="center" align="center">{{ g.goals_scored }}</td>
+                                            <td class="center" align="center">{{ g.assists }}</td>
+                                            <td class="center" align="center">{{ g.yellow_cards }}</td>
+                                            <td class="center" align="center">{{ g.red_cards }}</td>
+                                            <td class="center" align="center">{{ g.own_goals }}</td>
+                                            <td class="center" align="center">{{ g.penalties_saved }}</td>
+                                            <td class="center" align="center">{{ g.penalties_missed }}</td>
+                                            <td class="center" align="center">{{ g.saves }}</td>
+                                            <td class="center" align="center">{{ g.influence }}</td>
+                                            <td class="center" align="center">{{ g.creativity }}</td>
+                                            <td class="center" align="center">{{ g.threat }}</td>
+                                            <td class="center" align="center">{{ g.value }}</td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{#Game to play#}
-<div class="row">
-    <div class="col-lg-12">
-        <div class="panel-group" id="accordion">
-            <div class="panel panel-zielony">
-                <div class="panel-heading">
-                    <h4 class="panel-title">
-                        <a data-toggle="collapse" href="#collapseThree">Coming games</a>
-                    </h4>
-                </div>
-                <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false">
-                    <div class="panel-body">
-                        <div class="dataTable_wrapper">
-                            <table class="table table-striped table-bordered table-hover" id="dataTables-example">
-                                <thead>
+    {#Game to play#}
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-zielony">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapseThree">Coming games</a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false">
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
                                     <tr>
-                                        <tr>
-                                            <th align="center">Home</th>
-                                            <th align="center">Away</th>
-                                            <th align="center">Kick-off time</th>
-                                            <th align="center">Difficulty</th>
-                                            <th align="center">Home overall</th>
-                                            <th align="center">Home defence</th>
-                                            <th align="center">Home attack</th>
-                                            <th align="center">Away overall</th>
-                                            <th align="center">Away defence</th>
-                                            <th align="center">Away attack</th>
-                                        </tr>
+                                    <tr>
+                                        <th align="center">Home</th>
+                                        <th align="center">Away</th>
+                                        <th align="center">Kick-off time</th>
+                                        <th align="center">Difficulty</th>
+                                        <th align="center">Home overall</th>
+                                        <th align="center">Home defence</th>
+                                        <th align="center">Home attack</th>
+                                        <th align="center">Away overall</th>
+                                        <th align="center">Away defence</th>
+                                        <th align="center">Away attack</th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
                                     {% for f in fixtures %}
                                         <tr class="odd gradeX">
                                             <td align="center">
-                                                <a style='color: #000000' href="{% url 'fpl:team' f.team_h.id 'position' %}">
+                                                <a style='color: #000000'
+                                                   href="{% url 'fpl:team' f.team_h.id 'position' %}">
                                                     {% if f.is_home %}
-                                                        <b>{{f.team_h.short_name}}</b>
+                                                        <b>{{ f.team_h.short_name }}</b>
                                                     {% else %}
-                                                        {{f.team_h.short_name}}
+                                                        {{ f.team_h.short_name }}
                                                     {% endif %}
                                                 </a>
                                             </td>
                                             <td align="center">
-                                                <a style='color: #000000' href="{% url 'fpl:team' f.team_a.id 'position' %}">
+                                                <a style='color: #000000'
+                                                   href="{% url 'fpl:team' f.team_a.id 'position' %}">
                                                     {% if f.is_home %}
-                                                        {{f.team_a.short_name}}
+                                                        {{ f.team_a.short_name }}
                                                     {% else %}
-                                                        <b>{{f.team_a.short_name}}</b>
+                                                        <b>{{ f.team_a.short_name }}</b>
                                                     {% endif %}
                                                 </a>
                                             </td>
-                                            <td class="center" align="center">{{f.kickoff_time}}</td>
+                                            <td class="center" align="center">{{ f.kickoff_time }}</td>
                                             <td class="center" align="center">
                                                 {% with ''|center:f.diff_rest as range %}
                                                     {% for i in range %}
@@ -245,213 +250,262 @@
                                                     {% endfor %}
                                                 {% endwith %}
                                             </td>
-{#                                            {% with ''|center:team.strength as range %}#}
-{#                                                {% for i in range %}#}
-{#                                                    <i class="fa fa-star fa-fw"></i>#}
-{#                                                {% endfor %}#}
-{#                                            {% endwith %}#}
+                                            {#                                            {% with ''|center:team.strength as range %}#}
+                                            {#                                                {% for i in range %}#}
+                                            {#                                                    <i class="fa fa-star fa-fw"></i>#}
+                                            {#                                                {% endfor %}#}
+                                            {#                                            {% endwith %}#}
 
-                                            <td class="center" align="center">{{f.team_h.strength_overall_home}}</td>
-                                            <td class="center" align="center">{{f.team_h.strength_defence_home}}</td>
-                                            <td class="center" align="center">{{f.team_h.strength_attack_home}}</td>
-                                            <td class="center" align="center">{{f.team_a.strength_overall_home}}</td>
-                                            <td class="center" align="center">{{f.team_a.strength_defence_home}}</td>
-                                            <td class="center" align="center">{{f.team_a.strength_attack_home}}</td>
+                                            <td class="center" align="center">{{ f.team_h.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ f.team_h.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ f.team_h.strength_attack_home }}</td>
+                                            <td class="center" align="center">{{ f.team_a.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ f.team_a.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ f.team_a.strength_attack_home }}</td>
                                         </tr>
                                     {% endfor %}
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-{#Player stats#}
-<div class="row">
-    <div class="col-lg-8">
-        <div class="panel panel-zielony">
-            <div class="panel-heading">
-                <i class="fa fa-user fa-fw"></i> Game stats
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
-                                <thead>
+    {#Player stats#}
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <i class="fa fa-user fa-fw"></i> Game stats
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
                                     <tr>
                                         <td>Total points</td>
-                                        <td>{{player.total_points}}</td>
+                                        <td>{{ player.total_points }}</td>
                                     </tr>
                                     <tr>
                                         <td>Chance of playing this round</td>
-                                        <td>{{player.chance_of_playing_this_round}}</td>
+                                        <td>{{ player.chance_of_playing_this_round }}</td>
                                     </tr>
                                     <tr>
                                         <td>Chance of playing next round</td>
-                                        <td>{{player.chance_of_playing_next_round}}</td>
+                                        <td>{{ player.chance_of_playing_next_round }}</td>
                                     </tr>
                                     <tr>
                                         <td>Cost change event</td>
-                                        <td>{{player.cost_change_event}}</td>
+                                        <td>{{ player.cost_change_event }}</td>
                                     </tr>
                                     <tr>
                                         <td>Cost fall event</td>
-                                        <td>{{player.cost_change_event_fall}}</td>
+                                        <td>{{ player.cost_change_event_fall }}</td>
                                     </tr>
                                     <tr>
                                         <td>Cost change start</td>
-                                        <td>{{player.cost_change_start}}</td>
+                                        <td>{{ player.cost_change_start }}</td>
                                     </tr>
                                     <tr>
                                         <td>Selected by percent</td>
-                                        <td>{{player.selected_by_percent}}</td>
+                                        <td>{{ player.selected_by_percent }}</td>
                                     </tr>
                                     <tr>
                                         <td>In dreamteam</td>
-                                        <td>{{player.in_dreamteam}}</td>
+                                        <td>{{ player.in_dreamteam }}</td>
                                     </tr>
                                     <tr>
                                         <td>Dream team count</td>
-                                        <td>{{player.dreamteam_count}}</td>
+                                        <td>{{ player.dreamteam_count }}</td>
                                     </tr>
                                     <tr>
                                         <td>Ep this</td>
-                                        <td>{{player.ep_this}}</td>
+                                        <td>{{ player.ep_this }}</td>
                                     </tr>
                                     <tr>
                                         <td>Ep next</td>
-                                        <td>{{player.ep_next}}</td>
+                                        <td>{{ player.ep_next }}</td>
                                     </tr>
                                     <tr>
                                         <td>Form</td>
-                                        <td>{{player.form}}</td>
+                                        <td>{{ player.form }}</td>
                                     </tr>
                                     <tr>
                                         <td>Value form</td>
-                                        <td>{{player.value_form}}</td>
+                                        <td>{{ player.value_form }}</td>
                                     </tr>
                                     <tr>
                                         <td>Values season</td>
-                                        <td>{{player.value_season}}</td>
+                                        <td>{{ player.value_season }}</td>
                                     </tr>
                                     <tr>
                                         <td>Bonus</td>
-                                        <td>{{player.bonus}}</td>
+                                        <td>{{ player.bonus }}</td>
                                     </tr>
                                     <tr>
                                         <td>Bps</td>
-                                        <td>{{player.bps}}</td>
+                                        <td>{{ player.bps }}</td>
                                     </tr>
                                     <tr>
                                         <td>Influence</td>
-                                        <td>{{player.influence}}</td>
+                                        <td>{{ player.influence }}</td>
                                     </tr>
                                     <tr>
                                         <td>Creativity</td>
-                                        <td>{{player.creativity}}</td>
+                                        <td>{{ player.creativity }}</td>
                                     </tr>
                                     <tr>
                                         <td>Threat</td>
-                                        <td>{{player.threat}}</td>
+                                        <td>{{ player.threat }}</td>
                                     </tr>
                                     <tr>
                                         <td>ICT index</td>
-                                        <td>{{player.ict_index}}</td>
+                                        <td>{{ player.ict_index }}</td>
                                     </tr>
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
                         </div>
-                        <!-- /.table-responsive -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+        <div class="col-lg-4">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <i class="fa fa-star fa-fw"></i> BPL Stats
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            Minutes
+                            <span class="pull-right text-muted"><em>{{ player.minutes }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Goals scored
+                            <span class="pull-right text-muted"><em>{{ player.goals_scored }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Assists
+                            <span class="pull-right text-muted"><em>{{ player.assists }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Clean sheets
+                            <span class="pull-right text-muted"><em>{{ player.clean_sheets }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Goals conceded
+                            <span class="pull-right text-muted"><em>{{ player.goals_conceded }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Own Goals
+                            <span class="pull-right text-muted"><em>{{ player.own_goals }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Penalty saved
+                            <span class="pull-right text-muted"><em>{{ player.penalties_saved }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Penalty missed
+                            <span class="pull-right text-muted"><em>{{ player.penalties_missed }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Yellow cards
+                            <span class="pull-right text-muted"><em>{{ player.yellow_cards }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Red cards
+                            <span class="pull-right text-muted"><em>{{ player.red_cards }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Saves
+                            <span class="pull-right text-muted"><em>{{ player.saves }}</em>
+                        </span>
+                        </div>
                     </div>
                 </div>
-                <!-- /.row -->
+                <!-- /.panel-body -->
             </div>
-            <!-- /.panel-body -->
+            <!-- /.panel -->
         </div>
-        <!-- /.panel -->
+        <!-- /.col-lg-4 -->
     </div>
-    <!-- /.col-lg-8 -->
-    <div class="col-lg-4">
-        <div class="panel panel-zielony">
-            <div class="panel-heading">
-                <i class="fa fa-star fa-fw"></i> BPL Stats
-            </div>
-            <!-- /.panel-heading -->
-            <div class="panel-body">
-                <div class="list-group">
-                    <div class="list-group-item">
-                        Minutes
-                        <span class="pull-right text-muted"><em>{{player.minutes}}</em>
-                        </span>
+    {#Player Charts#}
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Season apperances:
                     </div>
-                    <div class="list-group-item">
-                        Goals scored
-                        <span class="pull-right text-muted"><em>{{player.goals_scored}}</em>
-                        </span>
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <div id="season-1"></div>
                     </div>
-                    <div class="list-group-item">
-                        Assists
-                        <span class="pull-right text-muted"><em>{{player.assists}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Clean sheets
-                        <span class="pull-right text-muted"><em>{{player.clean_sheets}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Goals conceded
-                        <span class="pull-right text-muted"><em>{{player.goals_conceded}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Own Goals
-                        <span class="pull-right text-muted"><em>{{player.own_goals}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Penalty saved
-                        <span class="pull-right text-muted"><em>{{player.penalties_saved}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Penalty missed
-                        <span class="pull-right text-muted"><em>{{player.penalties_missed}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Yellow cards
-                        <span class="pull-right text-muted"><em>{{player.yellow_cards}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Red cards
-                        <span class="pull-right text-muted"><em>{{player.red_cards}}</em>
-                        </span>
-                    </div>
-                    <div class="list-group-item">
-                        Saves
-                        <span class="pull-right text-muted"><em>{{player.saves}}</em>
-                        </span>
-                    </div>
+                    <!-- /.panel-body -->
                 </div>
+                <!-- /.panel -->
             </div>
-            <!-- /.panel-body -->
         </div>
-        <!-- /.panel -->
     </div>
-    <!-- /.col-lg-4 -->
-</div>
-<!-- /.row -->
+    <!-- /.row -->
 
 {% endblock content %}
 
 
 {% block extrajs %}
 
+    <script src="{% static "bower_components/raphael/raphael-min.js" %}"></script>
+    <script src="{% static "bower_components/morrisjs/morris.min.js" %}"></script>
+    <script src="{% static "js/morris-data.js" %}"></script>
+
+    <script>
+        new Morris.Line({
+            // ID of the element in which to draw the chart.
+            element: 'season-1',
+            // Chart data records -- each entry in this array corresponds to a point on
+            // the chart.
+            data: [
+                {% for c in chart %}
+                    {
+                        Fixture: '{{ c.fixture }}',
+                        Cost: '{{ c.value }}',
+                        Influence: '{{ c.influence }}',
+                        Creativity: '{{ c.creativity }}',
+                        Threat: '{{ c.threat }}'
+                    }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            ],
+            // The name of the data record attribute that contains x-values.
+            xkey: 'Fixture',
+            // A list of names of data record attributes that contain y-values.
+            ykeys: ['Cost','Influence','Creativity','Threat'],
+            ymax: 150,
+            // Labels for the ykeys -- will be displayed when you hover over the
+            // chart.
+            labels: ['Cost','Influence','Creativity','Threat']
+        });
+    </script>
 
 {% endblock extrajs %}
