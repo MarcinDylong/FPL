@@ -18,7 +18,7 @@ from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, Mes
     GetDataForm
 from .getters import read_json, get_data, get_individual_player_data, populate_teams, populate_players, update_players, \
     populate_positions, update_teams, get_player_data, get_player_fixture
-from .models import Team, Player, Position, Message, UserTeam, PlayerHistory
+from .models import Team, Player, Position, Message, UserTeam, PlayerHistory, Fixture
 
 
 class IndexView(View):
@@ -412,7 +412,7 @@ class TeamView(View):
         team = Team.objects.get(id=id)
         if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
             sort = '-' + sort
-        players = Player.objects.filter(team=team.id).order_by(sort)
+        players = Player.objects.filter(team=team.id).order_by(sort, 'id')
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
         ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name}
@@ -556,8 +556,11 @@ class PlayerView(View):
         player = Player.objects.get(id=id)
         games = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
         team = Team.objects.get(name=player.team)
+        fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
+        fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
+        fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player, 'games': games}
+        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player, 'games': games, 'fixtures': fixtures}
         return render(request, 'components/player.html', ctx)
 
 

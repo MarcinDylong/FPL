@@ -188,3 +188,6 @@ class Fixture(models.Model):
         else:
             text = f'({self.team_h}) - {self.team_a}'
         return text
+
+    def diff_rest(self):
+        return 5 - self.difficulty
