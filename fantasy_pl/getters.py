@@ -2,7 +2,9 @@ import json
 import time
 
 import requests
-from .models import Team, Position, Player, PlayerHistory
+from django.db.models import Q
+
+from .models import Team, Position, Player, PlayerHistory, Fixture
 
 
 def get_data():
@@ -239,6 +241,24 @@ def get_player_data(history):
             hist.transfers_out = h['transfers_out']
             hist.save()
 
+
+def get_player_fixture(fixture):
+    for f in fixture:
+        if Fixture.objects.filter(Q(code=f['code']) & Q(is_home=f['is_home'])):
+            pass
+        else:
+            fix = Fixture()
+            fix.code = f['code']
+            fix.team_h = Team.objects.get(id=f['team_h'])
+            fix.team_h_score = f['team_h_score']
+            fix.team_a = Team.objects.get(id=f['team_a'])
+            fix.team_a_score = f['team_a_score']
+            fix.finished = f['finished']
+            fix.minutes = f['minutes']
+            fix.kickoff_time = f['kickoff_time']
+            fix.is_home = f['is_home']
+            fix.difficulty = f['difficulty']
+            fix.save()
 
 if __name__=="__main__":
     download_json()

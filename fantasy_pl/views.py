@@ -17,7 +17,7 @@ from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSer
 from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm, \
     GetDataForm
 from .getters import read_json, get_data, get_individual_player_data, populate_teams, populate_players, update_players, \
-    populate_positions, update_teams, get_player_data
+    populate_positions, update_teams, get_player_data, get_player_fixture
 from .models import Team, Player, Position, Message, UserTeam, PlayerHistory
 
 
@@ -491,6 +491,8 @@ class GetIndividualPlayerDataView(PermissionRequiredMixin, View):
             data = get_individual_player_data(id)
             history = data['history']
             get_player_data(history)
+            fixture = data['fixtures']
+            get_player_fixture(fixture, history[0]['element'])
 
             ctx = {'event': 'Success!', 'info': f'Data for player {id} has been updated'}
             return render(request, "components/event.html", ctx)
@@ -517,6 +519,8 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     data = get_individual_player_data(id)
                     history = data['history']
                     get_player_data(history)
+                    fixture = data['fixtures']
+                    get_player_fixture(fixture)
                     ctx = {'successful': True, 'info': f'Data for player {id} has been updated', 'title': "Get data",
                            'form': GetDataForm()}
                     return render(request, "components/get_data.html", ctx)
@@ -531,6 +535,8 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         data = get_individual_player_data(p.id)
                         history = data['history']
                         get_player_data(history)
+                        fixture = data['fixtures']
+                        get_player_fixture(fixture)
                     except Exception as e:
                         ctx = {'unsuccessful': True, 'info': 'Error occured', 'error': format(e), 'title': "Get data",
                                'form': GetDataForm()}

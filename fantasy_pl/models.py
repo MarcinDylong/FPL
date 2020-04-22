@@ -167,4 +167,24 @@ class PlayerHistory(models.Model):
         return f'{self.player} - {self.fixture}'
 
 
-# class fixture(models.Model):
+class Fixture(models.Model):
+    code = models.IntegerField()
+    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE, related_name='home_team')
+    team_h_score = models.SmallIntegerField(null=True)
+    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE, related_name='away_team')
+    team_a_score = models.SmallIntegerField(null=True)
+    finished = models.BooleanField()
+    minutes = models.SmallIntegerField()
+    kickoff_time = models.DateTimeField(null=True)
+    is_home = models.BooleanField()
+    difficulty = models.SmallIntegerField()
+
+    class Meta:
+        unique_together=[['code','is_home']]
+
+    def __str__(self):
+        if self.is_home:
+            text = f'{self.team_h} - ({self.team_a})'
+        else:
+            text = f'({self.team_h}) - {self.team_a}'
+        return text
