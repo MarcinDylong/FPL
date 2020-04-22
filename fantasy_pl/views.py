@@ -413,9 +413,12 @@ class TeamView(View):
         if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
             sort = '-' + sort
         players = Player.objects.filter(team=team.id).order_by(sort, 'id')
+        fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
+        fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
+        fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
-        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name}
+        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name, 'fixtures': fixtures}
         return render(request, 'components/team.html', ctx)
 
 
