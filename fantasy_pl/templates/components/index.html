@@ -23,6 +23,7 @@
 <!-- /.row -->
 <div class="row">
     <div class="col-lg-8">
+        {% if team %}
         <div class="panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-users fa-fw"></i> Random Team - {{ team.name }}
@@ -155,7 +156,9 @@
 
             <!-- /.panel-body -->
         </div>
+        {% endif %}
         <!-- /.panel -->
+        {% if player %}
         <div class="panel panel-zielony">
             <div class="panel-heading">
                 <i class="fa fa-user fa-fw"></i> Random Player - {{ player }}
@@ -293,9 +296,11 @@
 
             <!-- /.panel-body -->
         </div>
+        {% endif %}
         <!-- /.panel -->
     </div>
     <!-- /.col-lg-8 -->
+    {% if stat %}
     <div class="col-lg-4">
         <div class="panel panel-zielony">
             <div class="panel-heading">
@@ -457,6 +462,7 @@
         </div>
         <!-- /.panel .chat-panel -->
     </div>
+    {% endif %}
     <!-- /.col-lg-4 -->
 </div>
 <!-- /.row -->

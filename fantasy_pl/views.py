@@ -24,30 +24,45 @@ from .models import Team, Player, Position, Message, UserTeam, PlayerHistory
 class IndexView(View):
 
     def get(self, request):
+        ctx={'title': 'Landing page'}
         # Random team
-        team = list(Team.objects.all())
-        random.shuffle(team)
-        photo = "/static/logos/" + team[0].short_name.lower() + ".png "
-        cnt = len(Player.objects.filter(team=team[0]))
+        try:
+            team = list(Team.objects.all())
+            random.shuffle(team)
+            photo = "/static/logos/" + team[0].short_name.lower() + ".png "
+            cnt = len(Player.objects.filter(team=team[0]))
+            ctx['team'] = team[0]
+            ctx['cnt'] = cnt
+            ctx['photo'] = photo
+        except:
+            pass
         # Random player
-        player = list(Player.objects.all())
-        random.shuffle(player)
-        tp = Team.objects.get(name=player[0].team)
-        tpphoto = "/static/logos/" + tp.short_name.lower() + ".png "
+        try:
+            player = list(Player.objects.all())
+            random.shuffle(player)
+            tp = Team.objects.get(name=player[0].team)
+            tpphoto = "/static/logos/" + tp.short_name.lower() + ".png "
+            ctx['player'] = player[0]
+            ctx['tp'] = tp
+            ctx['tpphoto'] = tpphoto
+        except:
+            pass
         # Random statistic
-        stats_names = ['goals_scored', 'minutes', 'assists', 'own_goals', 'penalties_saved', 'yellow_cards',
-                       'red_cards']
-        random.shuffle(stats_names)
-        s_name = stats_names[0]
+        try:
+            stats_names = ['goals_scored', 'minutes', 'assists', 'own_goals', 'penalties_saved', 'yellow_cards',
+                           'red_cards']
+            random.shuffle(stats_names)
+            s_name = stats_names[0]
+            rename = Player.objects.extra(select={'stat': s_name, 'id': 'id', 'name': 'second_name'})
+            rename_t = Player.objects.select_related('team')
+            rename.union(rename_t)
+            stat = rename.order_by('-stat')[:10]
+            name_stat = s_name.replace('_', ' ').capitalize()
+            ctx['stat'] = stat
+            ctx['name_stat'] = name_stat
+        except:
+            pass
 
-        rename = Player.objects.extra(select={'stat': s_name, 'id': 'id', 'name': 'second_name'})
-        rename_t = Player.objects.select_related('team')
-        rename.union(rename_t)
-        stat = rename.order_by('-stat')[:10]
-
-        name_stat = s_name.replace('_', ' ').capitalize()
-        ctx = {'title': 'Landing page', 'team': team[0], 'cnt': cnt, 'photo': photo, 'player': player[0], 'tp': tp,
-               'tpphoto': tpphoto, 'stat': stat, 'name_stat': name_stat}
         return render(request, "components/index.html", ctx)
 
 

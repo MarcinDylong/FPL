@@ -232,7 +232,7 @@ def get_player_data(history):
             hist.creativity = float(h['creativity'])
             hist.threat = float(h['threat'])
             hist.ict_index = float(h['ict_index'])
-            hist.value = h['value']
+            hist.value = h['value']/10
             hist.transfers_balance = h['transfers_balance']
             hist.selected = h['selected']
             hist.transfers_in = h['transfers_in']

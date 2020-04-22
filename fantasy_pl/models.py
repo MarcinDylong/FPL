@@ -154,7 +154,7 @@ class PlayerHistory(models.Model):
     creativity = models.FloatField()
     threat = models.FloatField()
     ict_index = models.FloatField()
-    value = models.SmallIntegerField()
+    value = models.FloatField()
     transfers_balance = models.IntegerField()
     selected = models.IntegerField()
     transfers_in = models.IntegerField()
@@ -165,3 +165,6 @@ class PlayerHistory(models.Model):
 
     def __str__(self):
         return f'{self.player} - {self.fixture}'
+
+
+# class fixture(models.Model):
