@@ -3,22 +3,26 @@ import random
 from functools import reduce
 
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, \
+    LoginRequiredMixin
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponseNotFound, HttpResponse
+from django.http import HttpResponseNotFound
 from django.shortcuts import render, redirect
 from django.views import View
 from rest_framework import generics
 
-from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, UserTeamSerializer
-from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, MessageForm, UserTeamForm, AdvSearchForm, \
-    GetDataForm
-from .getters import read_json, get_data, get_individual_player_data, populate_teams, populate_players, update_players, \
-    populate_positions, update_teams, get_player_data, get_player_fixture
-from .models import Team, Player, Position, Message, UserTeam, PlayerHistory, Fixture
+from fantasy_pl.serializers import TeamSerializer, PlayerSerializer, \
+    UserTeamSerializer
+from .forms import LoginForm, SearchForm, CreateUserForm, ResetPasswordForm, \
+    MessageForm, UserTeamForm, AdvSearchForm, GetDataForm
+from .getters import read_json, get_individual_player_data, populate_teams, \
+    populate_players, update_players, populate_positions, update_teams, \
+    get_player_data, get_player_fixture, download_json
+from .models import Team, Player, Position, Message, UserTeam, PlayerHistory, \
+    Fixture
 
 
 class IndexView(View):
@@ -267,7 +271,7 @@ class UserTeamView(View):
 
         if UserTeam.objects.filter(user=request.user):
             uteam = UserTeam.objects.get(user=request.user)
-            form.fields['gkp'].initial = uteam.gkp_id
+            form.fields['gkp'].initial  = uteam.gkp_id
             form.fields['def1'].initial = uteam.def1_id
             form.fields['def2'].initial = uteam.def2_id
             form.fields['def3'].initial = uteam.def3_id
@@ -294,7 +298,7 @@ class UserTeamView(View):
         if form.is_valid():
             try:
                 userTeam = UserTeam.objects.get(user=request.user)
-                userTeam.gkp = form.cleaned_data['gkp']
+                userTeam.gkp  = form.cleaned_data['gkp']
                 userTeam.def1 = form.cleaned_data['def1']
                 userTeam.def2 = form.cleaned_data['def2']
                 userTeam.def3 = form.cleaned_data['def3']
@@ -361,7 +365,7 @@ class DownloadDataView(PermissionRequiredMixin, View):
 
     def get(self, request):
         try:
-            get_data()
+            download_json()
             ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
             return render(request, "components/event.html", ctx)
         except Exception as e:
