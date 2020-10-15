@@ -53,11 +53,12 @@ class IndexView(View):
             pass
         # Random statistic
         try:
-            stats_names = ['goals_scored', 'minutes', 'assists', 'own_goals', 'penalties_saved', 'yellow_cards',
-                           'red_cards']
+            stats_names = ['goals_scored', 'minutes', 'assists', 'own_goals',
+                           'penalties_saved', 'yellow_cards', 'red_cards']
             random.shuffle(stats_names)
             s_name = stats_names[0]
-            rename = Player.objects.extra(select={'stat': s_name, 'id': 'id', 'name': 'second_name'})
+            rename = Player.objects.extra(select={'stat': s_name, 'id': 'id',
+                                                  'name': 'second_name'})
             rename_t = Player.objects.select_related('team')
             rename.union(rename_t)
             stat = rename.order_by('-stat')[:10]
@@ -71,14 +72,12 @@ class IndexView(View):
 
 
 class BlankView(View):
-
     def get(self, request):
         ctx = {'title': "Blank Page"}
         return render(request, "components/blank.html", ctx)
 
 
 class LoginView(View):
-
     def get(self, request):
         ctx = {'title': "Log in", 'form': LoginForm()}
         return render(request, 'components/login.html', ctx)
@@ -94,7 +93,8 @@ class LoginView(View):
                 return redirect('/')
             else:
                 # request.session['user_id'] = User.id
-                return render(request, 'components/login.html', {'form': LoginForm(), 'unsuccessful': True})
+                return render(request, 'components/login.html',
+                              {'form': LoginForm(), 'unsuccessful': True})
 
         return redirect('/')
 
@@ -153,24 +153,29 @@ class ChangetPasswordView(LoginRequiredMixin, View):
             return redirect('/login')
         else:
             return render(request, 'components/change_password.html',
-                          {'form': form, 'unsuccessful': True, 'title': 'Change password'})
+                          {'form': form, 'unsuccessful': True,
+                           'title': 'Change password'})
 
 
 class SendMessageView(View):
 
     def get(self, request):
         form = MessageForm()
-        return render(request, 'components/message_sending.html', {'form': form, 'title': 'Send Massage'})
+        return render(request, 'components/message_sending.html',
+                      {'form': form, 'title': 'Send Massage'})
 
     def post(self, request):
         form = MessageForm(request.POST)
         if form.is_valid():
-            recipient = User.objects.get(username=form.cleaned_data['recipient'])
+            recipient = User.objects.get(
+                username=form.cleaned_data['recipient'])
             subject = form.cleaned_data['subject']
             content = form.cleaned_data['content']
             ctx = {'form': MessageForm()}
             try:
-                Message.objects.create(subject=subject, content=content, recipient=recipient, sender=request.user)
+                Message.objects.create(subject=subject, content=content,
+                                       recipient=recipient,
+                                       sender=request.user)
                 ctx['success'] = 'Message was sent!'
             except:
                 ctx['failure'] = 'Something went wrong'
@@ -200,8 +205,9 @@ class MessageSentView(View):
 class UserTeamView(View):
 
     def team_overall(self, uteam, ctx):
-        luteam = [uteam.gkp, uteam.def1, uteam.def2, uteam.def3, uteam.def4, uteam.mdf1, uteam.mdf2, uteam.mdf3,
-                  uteam.mdf4, uteam.fwd1, uteam.fwd2, uteam.gkpb, uteam.defb, uteam.mdfb, uteam.fwdb]
+        luteam = [uteam.gkp, uteam.def1, uteam.def2, uteam.def3, uteam.def4,
+                  uteam.mdf1, uteam.mdf2, uteam.mdf3, uteam.mdf4, uteam.fwd1,
+                  uteam.fwd2, uteam.gkpb, uteam.defb, uteam.mdfb, uteam.fwdb]
         ctx['uteam'] = luteam
 
         overall_cost = 0
@@ -254,13 +260,6 @@ class UserTeamView(View):
         ctx['novelty'] = round(novelty / 15, 1)
         uteam.novelty = round(novelty / 15, 1)
         uteam.save()
-
-        # ratio = []
-        # for u in luteam:
-        #     ratio.append({'Player': str(u), 'Value': round(u.points_per_game/u.now_cost)})
-        #
-        # ctx['data'] = json.dumps(ratio)
-
         return ctx
 
     def get(self, request):
@@ -379,7 +378,7 @@ class PopulateTeamsView(PermissionRequiredMixin, View):
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        # data = get_data() ## Read data from Fantasy Premier League API
         teams = data['teams']
         try:
             populate_teams(teams)
@@ -397,7 +396,7 @@ class UpdateTeamsView(PermissionRequiredMixin, View):
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        # data = get_data() ## Read data from Fantasy Premier League API
 
         teams = data['teams']
         try:
@@ -414,7 +413,8 @@ class TeamView(View):
 
     def get(self, request, id, sort):
         team = Team.objects.get(id=id)
-        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity', 'threat']:
+        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity',
+                    'threat']:
             sort = '-' + sort
         players = Player.objects.filter(team=team.id).order_by(sort, 'id')
         fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
@@ -422,7 +422,8 @@ class TeamView(View):
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
-        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo, 'title': team.name, 'fixtures': fixtures}
+        ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo,
+               'title': team.name, 'fixtures': fixtures}
         return render(request, 'components/team.html', ctx)
 
 
@@ -442,7 +443,7 @@ class PopulatePositionsView(PermissionRequiredMixin, View):
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        # data = get_data() ## Read data from Fantasy Premier League API
         positions = data['element_types']
         try:
             populate_positions(positions)
@@ -460,7 +461,7 @@ class PopulatePlayersView(PermissionRequiredMixin, View):
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        # data = get_data() ## Read data from Fantasy Premier League API
         players = data['elements']
         try:
             populate_players(players)
@@ -478,7 +479,7 @@ class UpdatePlayersView(PermissionRequiredMixin, View):
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from JSON file from Fantasy Premier League API
+        # data = get_data() ## Read data from Fantasy Premier League API
         players = data['elements']
         try:
             update_players(players)
@@ -529,11 +530,14 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     get_player_data(history)
                     fixture = data['fixtures']
                     get_player_fixture(fixture)
-                    ctx = {'successful': True, 'info': f'Data for player {id} has been updated', 'title': "Get data",
+                    ctx = {'successful': True,
+                           'info': f'Data for player {id} has been updated',
+                           'title': "Get data",
                            'form': GetDataForm()}
                     return render(request, "components/get_data.html", ctx)
                 except Exception as e:
-                    ctx = {'unsuccessful': True, 'info': 'Error occured', 'error': format(e), 'title': "Get data",
+                    ctx = {'unsuccessful': True, 'info': 'Error occured',
+                           'error': format(e), 'title': "Get data",
                            'form': GetDataForm()}
                     return render(request, "components/event.html", ctx)
             elif team:
@@ -546,12 +550,17 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         fixture = data['fixtures']
                         get_player_fixture(fixture)
                     except Exception as e:
-                        ctx = {'unsuccessful': True, 'info': 'Error occured', 'error': format(e), 'title': "Get data",
+                        ctx = {'unsuccessful': True,
+                               'info': 'Error occured',
+                               'error': format(e),
+                               'title': "Get data",
                                'form': GetDataForm()}
                         return render(request, "components/event.html", ctx)
 
-                ctx = {'successful': True, 'info': f'Data for players in {team} has been updated',
-                       'title': "Get data", 'form': GetDataForm()}
+                ctx = {'successful': True,
+                       'info': f'Data for players in {team} has been updated',
+                       'title': "Get data",
+                       'form': GetDataForm()}
                 return render(request, "components/get_data.html", ctx)
             else:
                 ctx = {'title': "Get data", 'form': GetDataForm()}
@@ -569,8 +578,8 @@ class PlayerView(View):
         fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player, 'games': games, 'fixtures': fixtures,
-               'chart': chart}
+        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
+               'games': games, 'fixtures': fixtures, 'chart': chart}
         return render(request, 'components/player.html', ctx)
 
 
@@ -680,8 +689,10 @@ class SearchView(View):
                 paginator = Paginator(q_players, 25)
                 page = request.GET.get('page')
                 q_players = paginator.get_page(page)
-            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form, 'stat': stat, 'pos': pos}
+            ctx = {'players': q_players, 'title': 'Search',
+                   'adv_form': adv_form, 'stat': stat, 'pos': pos}
             return render(request, 'components/search.html', ctx)
         else:
-            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search', 'failure': True}
+            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search',
+                   'failure': True}
             return render(request, 'components/search.html', ctx)
