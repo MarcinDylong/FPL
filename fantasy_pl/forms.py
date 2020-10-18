@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import ValidationError, MinValueValidator
 from fantasy_pl.models import Player, Team, Position
+from django.forms import ModelChoiceField
 
 
 class LoginForm(forms.Form):
@@ -114,50 +115,56 @@ class AdvSearchForm(forms.Form):
             raise forms.ValidationError('Min and Max value must be greater than 0')
 
 
+class PlayerChoiceField(ModelChoiceField):
+
+    def label_from_instance(self, obj):
+        return f'{obj.first_name} {obj.second_name} - {obj.now_cost}\xa3'
+
+
 class UserTeamForm(forms.Form):
-    gkp = forms.ModelChoiceField(label='Goalkeeper',
+    gkp = PlayerChoiceField(label='Goalkeeper',
                                  queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    def1 = forms.ModelChoiceField(label='Defender 1',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    def2 = forms.ModelChoiceField(label='Defender 2',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    def3 = forms.ModelChoiceField(label='Defender 3',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    def4 = forms.ModelChoiceField(label='Defender 4',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf1 = forms.ModelChoiceField(label='Middlefielder 1',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf2 = forms.ModelChoiceField(label='Middlefielder 2',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf3 = forms.ModelChoiceField(label='Middlefielder 3',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf4 = forms.ModelChoiceField(label='Middlefielder 4',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    fwd1 = forms.ModelChoiceField(label='Forward 1',
-                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    fwd2 = forms.ModelChoiceField(label='Forward 2',
-                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    gkpb = forms.ModelChoiceField(label='Bench goalkepper',
+    gkpb = PlayerChoiceField(label='Bench goalkepper',
                                   queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    defb = forms.ModelChoiceField(label='Bench defender',
+    def1 = PlayerChoiceField(label='Defender 1',
                                   queryset=Player.objects.filter(position=2).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    mdfb = forms.ModelChoiceField(label='Bench middlefielder',
+    def2 = PlayerChoiceField(label='Defender 2',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    def3 = PlayerChoiceField(label='Defender 3',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    def4 = PlayerChoiceField(label='Defender 4',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    defb = PlayerChoiceField(label='Bench defender',
+                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf1 = PlayerChoiceField(label='Middlefielder 1',
                                   queryset=Player.objects.filter(position=3).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
-    fwdb = forms.ModelChoiceField(label='Bench forward',
+    mdf2 = PlayerChoiceField(label='Middlefielder 2',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf3 = PlayerChoiceField(label='Middlefielder 3',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdf4 = PlayerChoiceField(label='Middlefielder 4',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    mdfb = PlayerChoiceField(label='Bench middlefielder',
+                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    fwd1 = PlayerChoiceField(label='Forward 1',
+                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    fwd2 = PlayerChoiceField(label='Forward 2',
+                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
+                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    fwdb = PlayerChoiceField(label='Bench forward',
                                   queryset=Player.objects.filter(position=4).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))
 
