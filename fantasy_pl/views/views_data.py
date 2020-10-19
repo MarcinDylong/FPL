@@ -130,6 +130,7 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
         if form.is_valid():
             id = form.cleaned_data['id']
             team = form.cleaned_data['team']
+            all = form.cleaned_data['all']
             if id:
                 try:
                     data = get_individual_player_data(id)
@@ -166,6 +167,28 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
 
                 ctx = {'successful': True,
                        'info': f'Data for players in {team} has been updated',
+                       'title': "Get data",
+                       'form': GetDataForm()}
+                return render(request, "components/get_data.html", ctx)
+            elif all:
+                players = Player.objects.all()
+                for p in players:
+                    try:
+                        data = get_individual_player_data(p.id)
+                        history = data['history']
+                        get_player_data(history)
+                        fixture = data['fixtures']
+                        get_player_fixture(fixture)
+                    except Exception as e:
+                        ctx = {'unsuccessful': True,
+                               'info': 'Error occured',
+                               'error': format(e),
+                               'title': "Get data",
+                               'form': GetDataForm()}
+                        return render(request, "components/event.html", ctx)
+
+                ctx = {'successful': True,
+                       'info': f'Data for players in has been updated',
                        'title': "Get data",
                        'form': GetDataForm()}
                 return render(request, "components/get_data.html", ctx)

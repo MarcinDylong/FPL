@@ -13,9 +13,15 @@ class LoginForm(forms.Form):
 
 class GetDataForm(forms.Form):
     id = forms.IntegerField(label='Get by ID', required=False,
-                            widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    team = forms.ModelChoiceField(label='Get by Team', required=False, queryset=Team.objects.all().order_by('name'),
-                            widget=forms.Select(attrs={'class': 'form-control'}))
+                            widget=forms.NumberInput(
+                                attrs={'class': 'form-control'}))
+    team = forms.ModelChoiceField(label='Get by Team', required=False,
+                                  queryset=Team.objects.all().order_by('name'),
+                                  widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    all = forms.BooleanField(label='Get all', required=False,
+                             widget=forms.CheckboxInput(
+                                      attrs={'class': 'form-control'}))
 
 
 class CreateUserForm(forms.Form):
