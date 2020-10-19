@@ -1,13 +1,16 @@
 from django.urls import path
 
-from .views import IndexView, LoginView, BlankView, LogoutView, \
-    PopulateTeamsView, UpdateTeamsView, PopulatePlayersView, \
-    UpdatePlayersView, PopulatePositionsView, TeamView, StandingsView, \
-    PlayerView, PositionsView, StatsView, SearchView, ApiTeamsView, \
-    ApiTeamsListView, ApiPlayersListView, ApiPlayersView, CreateUserView, \
-    ChangetPasswordView, SendMessageView, MessageReceivedView, \
-    MessageSentView, UserTeamView, ApiUserTeamsListView, ApiUserTeamView, \
-    DownloadDataView, GetPlayersHistoryView
+from .views.main_views import IndexView, LoginView, BlankView, LogoutView, \
+     CreateUserView, ChangetPasswordView, SendMessageView, MessageReceivedView, \
+     MessageSentView
+from .views.display_views import TeamView, StandingsView, PlayerView, \
+     PositionsView, StatsView, SearchView
+from .views.api_views import ApiTeamsView, ApiTeamsListView, ApiPlayersListView, \
+     ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
+from .views.data_views import  PopulateTeamsView, UpdateTeamsView, \
+     PopulatePlayersView, UpdatePlayersView, PopulatePositionsView, \
+     DownloadDataView, GetPlayersHistoryView
+from .views.userteam_views import UserTeamView
 
 app_name = 'fantasy_pl'
 
@@ -36,10 +39,9 @@ urlpatterns = [
          name="update_players"),
     path('populate_positions/', PopulatePositionsView.as_view(),
          name="positions_players"),
-    # path('get_ind_player_history/<int:id>', GetIndividualPlayerDataView.as_view(), name="get_ind_player_history"),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),
-    ##  Teams, players, stats
+    ##  Display data
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
     path('player/<int:id>/', PlayerView.as_view(), name='player'),
@@ -53,8 +55,8 @@ urlpatterns = [
     path('api/players', ApiPlayersListView.as_view(), name='api_players'),
     path('api/players/<int:pk>', ApiPlayersView.as_view(),
          name='api_player_detail'),
-    path('api/userteams', ApiUserTeamsListView.as_view(),
+    path('api/userteam', ApiUserTeamListView.as_view(),
          name='api_user_teams'),
-    path('api/userteams/<int:pk>', ApiUserTeamView.as_view(),
+    path('api/userteam/<int:pk>', ApiUserTeamView.as_view(),
          name='api_userteam'),
 ]
