@@ -4,13 +4,14 @@ import time
 import requests
 from django.db.models import Q
 
-from .models import Team, Position, Player, PlayerHistory, Fixture
+from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixture
 
 
 def get_data():
     """ Retrieve the fpl player data from the hard-coded url
     """
-    response = requests.get("https://fantasy.premierleague.com/api/bootstrap-static/")
+    response = requests.get(
+        "https://fantasy.premierleague.com/api/bootstrap-static/")
     if response.status_code != 200:
         raise Exception("Response was code " + str(response.status_code))
     responseStr = response.text
@@ -94,7 +95,6 @@ def update_teams(teams):
         team.save()
 
 
-## Positions populate
 def populate_positions(positions):
     for p in positions:
         pos = Position()
@@ -103,7 +103,7 @@ def populate_positions(positions):
         pos.name_short = p['singular_name_short']
         pos.save()
 
-## Players updates and populates
+
 def populate_players(players):
     for p in players:
         player = Player()
@@ -155,7 +155,6 @@ def populate_players(players):
 
 
 def update_players(players):
-
     for p in players:
         player = Player.objects.get(id=p['id'])
         player.chance_of_playing_next_round = p['chance_of_playing_next_round']
@@ -203,13 +202,10 @@ def update_players(players):
 
 def get_player_data(history):
     for h in history:
-        if PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
+        if PlayerHistory.objects.filter(
+                player=Player.objects.get(id=h['element'])).filter(
                 fixture=h['fixture']):
             pass
-            # hist = PlayerHistory.objects.filter(player=Player.objects.get(id=h['element'])).filter(
-            #     fixture=h['fixture']).first()
-            # hist.fixture = i
-            # hist.save()
         else:
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=h['element'])
@@ -238,7 +234,7 @@ def get_player_data(history):
             hist.creativity = float(h['creativity'])
             hist.threat = float(h['threat'])
             hist.ict_index = float(h['ict_index'])
-            hist.value = h['value']/10
+            hist.value = h['value'] / 10
             hist.transfers_balance = h['transfers_balance']
             hist.selected = h['selected']
             hist.transfers_in = h['transfers_in']
@@ -264,5 +260,6 @@ def get_player_fixture(fixture):
             fix.difficulty = f['difficulty']
             fix.save()
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     download_json()

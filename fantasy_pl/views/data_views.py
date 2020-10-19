@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 
 from fantasy_pl.forms import GetDataForm
-from fantasy_pl.getters import read_json, get_individual_player_data, \
+from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json
 from fantasy_pl.models import Player
