@@ -118,7 +118,8 @@ class AdvSearchForm(forms.Form):
 class PlayerChoiceField(ModelChoiceField):
 
     def label_from_instance(self, obj):
-        return f'{obj.first_name} {obj.second_name} - {obj.now_cost}\xa3'
+        return f'{obj.first_name} {obj.second_name} ({obj.team.short_name}) - \
+                 {obj.now_cost}\xa3'
 
 
 class UserTeamForm(forms.Form):
