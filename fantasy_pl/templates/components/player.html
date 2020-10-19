@@ -211,47 +211,47 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for f in fixtures %}
+                                    {% for g in games %}
                                         <tr class="odd gradeX">
                                             <td align="center">
                                                 <a style='color: #000000'
-                                                   href="{% url 'fpl:team' f.team_h.id 'position' %}">
-                                                    {% if f.is_home %}
-                                                        <b>{{ f.team_h.short_name }}</b>
+                                                   href="{% url 'fpl:team' g.team_h.id 'position' %}">
+                                                    {% if g.is_home %}
+                                                        <b>{{ g.team_h.short_name }}</b>
                                                     {% else %}
-                                                        {{ f.team_h.short_name }}
+                                                        {{ g.team_h.short_name }}
                                                     {% endif %}
                                                 </a>
                                             </td>
                                             <td align="center">
                                                 <a style='color: #000000'
-                                                   href="{% url 'fpl:team' f.team_a.id 'position' %}">
-                                                    {% if f.is_home %}
-                                                        {{ f.team_a.short_name }}
+                                                   href="{% url 'fpl:team' g.team_a.id 'position' %}">
+                                                    {% if g.is_home %}
+                                                        {{ g.team_a.short_name }}
                                                     {% else %}
-                                                        <b>{{ f.team_a.short_name }}</b>
+                                                        <b>{{ g.team_a.short_name }}</b>
                                                     {% endif %}
                                                 </a>
                                             </td>
-                                            <td class="center" align="center">{{ f.kickoff_time }}</td>
+                                            <td class="center" align="center">{{ g.kickoff_time }}</td>
                                             <td class="center" align="center">
-                                                {% with ''|center:f.diff_rest as range %}
+                                                {% with ''|center:g.diff_rest as range %}
                                                     {% for i in range %}
                                                         <i class="fa fa-star-o fa-fw"></i>
                                                     {% endfor %}
                                                 {% endwith %}
-                                                {% with ''|center:f.difficulty as range %}
+                                                {% with ''|center:g.difficulty as range %}
                                                     {% for i in range %}
                                                         <i class="fa fa-star fa-fw"></i>
                                                     {% endfor %}
                                                 {% endwith %}
                                             </td>
-                                            <td class="center" align="center">{{ f.team_h.strength_overall_home }}</td>
-                                            <td class="center" align="center">{{ f.team_h.strength_defence_home }}</td>
-                                            <td class="center" align="center">{{ f.team_h.strength_attack_home }}</td>
-                                            <td class="center" align="center">{{ f.team_a.strength_overall_home }}</td>
-                                            <td class="center" align="center">{{ f.team_a.strength_defence_home }}</td>
-                                            <td class="center" align="center">{{ f.team_a.strength_attack_home }}</td>
+                                            <td class="center" align="center">{{ g.team_h.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ g.team_h.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ g.team_h.strength_attack_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_attack_home }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

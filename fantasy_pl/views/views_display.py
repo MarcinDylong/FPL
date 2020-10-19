@@ -8,7 +8,7 @@ from django.views import View
 
 from fantasy_pl.forms import SearchForm, AdvSearchForm
 from fantasy_pl.models import Team, Player, Position, PlayerHistory, \
-    Fixture
+    Games
 
 
 class TeamView(View):
@@ -19,8 +19,8 @@ class TeamView(View):
                     'threat']:
             sort = '-' + sort
         players = Player.objects.filter(team=team.id).order_by(sort, 'id')
-        fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
-        fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
+        fixtures_a = Games.objects.filter(team_a=team).filter(is_home=False)
+        fixtures_h = Games.objects.filter(team_h=team).filter(is_home=True)
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
@@ -36,12 +36,12 @@ class PlayerView(View):
         games = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
         chart = PlayerHistory.objects.filter(player=player).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
-        fixtures_a = Fixture.objects.filter(team_a=team).filter(is_home=False)
-        fixtures_h = Fixture.objects.filter(team_h=team).filter(is_home=True)
-        fixtures = fixtures_a | fixtures_h
+        games_a = Games.objects.filter(team_a=team).filter(is_home=False)
+        games_h = Games.objects.filter(team_h=team).filter(is_home=True)
+        games = games_a | games_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
-               'games': games, 'fixtures': fixtures, 'chart': chart}
+               'games': games, 'games': games, 'chart': chart}
         return render(request, 'components/player.html', ctx)
 
 

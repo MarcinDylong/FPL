@@ -173,7 +173,7 @@ class PlayerHistory(models.Model):
         return self.value * 10
 
 
-class Fixture(models.Model):
+class Games(models.Model):
     code = models.IntegerField()
     team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE, related_name='home_team')
     team_h_score = models.SmallIntegerField(null=True)

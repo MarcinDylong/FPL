@@ -4,7 +4,7 @@ import time
 import requests
 from django.db.models import Q
 
-from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixture
+from fantasy_pl.models import Team, Position, Player, PlayerHistory, Games
 
 
 def get_data():
@@ -244,10 +244,10 @@ def get_player_data(history):
 
 def get_player_fixture(fixture):
     for f in fixture:
-        if Fixture.objects.filter(Q(code=f['code']) & Q(is_home=f['is_home'])):
+        if Games.objects.filter(Q(code=f['code']) & Q(is_home=f['is_home'])):
             pass
         else:
-            fix = Fixture()
+            fix = Games()
             fix.code = f['code']
             fix.team_h = Team.objects.get(id=f['team_h'])
             fix.team_h_score = f['team_h_score']
