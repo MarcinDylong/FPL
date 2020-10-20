@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="row">
+        <div class="col-lg-12">
+            <div class="panel-group" id="accordion">
+                <div class="panel panel-zielony">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a data-toggle="collapse" href="#collapseThree">Coming games</a>
+                        </h4>
+                    </div>
+                    <div id="collapseThree" class="panel-collapse collapse" aria-expanded="false">
+                        <div class="panel-body">
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                    <tr>
+                                    <tr>
+                                        <th align="center">Home</th>
+                                        <th align="center">Away</th>
+                                        <th align="center">Kick-off time</th>
+                                        <th align="center">Difficulty</th>
+                                        <th align="center">Home overall</th>
+                                        <th align="center">Home defence</th>
+                                        <th align="center">Home attack</th>
+                                        <th align="center">Away overall</th>
+                                        <th align="center">Away defence</th>
+                                        <th align="center">Away attack</th>
+                                    </tr>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for g in games %}
+                                        <tr class="odd gradeX">
+                                            <td align="center">
+                                                <a style='color: #000000'
+                                                   href="{% url 'fpl:team' g.team_h.id 'position' %}">
+                                                    {% if g.is_home %}
+                                                        <b>{{ g.team_h.short_name }}</b>
+                                                    {% else %}
+                                                        {{ g.team_h.short_name }}
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                            <td align="center">
+                                                <a style='color: #000000'
+                                                   href="{% url 'fpl:team' g.team_a.id 'position' %}">
+                                                    {% if g.is_home %}
+                                                        {{ g.team_a.short_name }}
+                                                    {% else %}
+                                                        <b>{{ g.team_a.short_name }}</b>
+                                                    {% endif %}
+                                                </a>
+                                            </td>
+                                            <td class="center" align="center">{{ g.kickoff_time }}</td>
+                                            <td class="center" align="center">
+                                                {% with ''|center:g.diff_rest as range %}
+                                                    {% for i in range %}
+                                                        <i class="fa fa-star-o fa-fw"></i>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                                {% with ''|center:g.difficulty as range %}
+                                                    {% for i in range %}
+                                                        <i class="fa fa-star fa-fw"></i>
+                                                    {% endfor %}
+                                                {% endwith %}
+                                            </td>
+                                            <td class="center" align="center">{{ g.team_h.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ g.team_h.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ g.team_h.strength_attack_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_overall_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_defence_home }}</td>
+                                            <td class="center" align="center">{{ g.team_a.strength_attack_home }}</td>
+                                        </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

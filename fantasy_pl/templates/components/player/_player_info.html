@@ -1,10 +1,65 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="row">
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-bialy">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-4">
+                            <a href="{% url 'fpl:team' team.id 'position' %}">
+                                <img style='height: 70px; width: auto; object-fit: contain; display: block'
+                                     src="{{ photo }}">
+                            </a>
+                        </div>
+                        <div class="col-xs-8 text-right">
+                            <div class="huge">{{ team.short_name }}</div>
+                            <div>Team</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-user fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.position }}</div>
+                            <div>Position</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-money fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.now_cost }}</div>
+                            <div>Cost</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-3 col-md-6">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <div class="row">
+                        <div class="col-xs-3">
+                            <i class="fa fa-bar-chart-o fa-5x"></i>
+                        </div>
+                        <div class="col-xs-9 text-right">
+                            <div class="huge">{{ player.points_per_game }}</div>
+                            <div>Points per game</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -80,6 +80,7 @@ class PopulatePositionsView(PermissionRequiredMixin, View):
         return render(request, "components/event.html", ctx)
 
 
+
 class PopulatePlayersView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
@@ -136,8 +137,8 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     data = get_individual_player_data(id)
                     history = data['history']
                     get_player_data(history)
-                    fixture = data['fixtures']
-                    get_player_fixture(fixture)
+                    game = data['fixtures']
+                    get_player_fixture(game)
                     ctx = {'successful': True,
                            'info': f'Data for player {id} has been updated',
                            'title': "Get data",
@@ -155,8 +156,8 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         data = get_individual_player_data(p.id)
                         history = data['history']
                         get_player_data(history)
-                        fixture = data['fixtures']
-                        get_player_fixture(fixture)
+                        game = data['fixtures']
+                        get_player_fixture(game)
                     except Exception as e:
                         ctx = {'unsuccessful': True,
                                'info': 'Error occured',
@@ -177,8 +178,8 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         data = get_individual_player_data(p.id)
                         history = data['history']
                         get_player_data(history)
-                        fixture = data['fixtures']
-                        get_player_fixture(fixture)
+                        game = data['fixtures']
+                        get_player_fixture(game)
                     except Exception as e:
                         ctx = {'unsuccessful': True,
                                'info': 'Error occured',
@@ -188,7 +189,7 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         return render(request, "components/event.html", ctx)
 
                 ctx = {'successful': True,
-                       'info': f'Data for players in has been updated',
+                       'info': f'Data for players has been updated',
                        'title': "Get data",
                        'form': GetDataForm()}
                 return render(request, "components/get_data.html", ctx)

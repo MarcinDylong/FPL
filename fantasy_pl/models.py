@@ -174,10 +174,13 @@ class PlayerHistory(models.Model):
 
 
 class Games(models.Model):
+    fixture = models.IntegerField()
     code = models.IntegerField()
-    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE, related_name='home_team')
+    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='g_home_team')
     team_h_score = models.SmallIntegerField(null=True)
-    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE, related_name='away_team')
+    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='g_away_team')
     team_a_score = models.SmallIntegerField(null=True)
     finished = models.BooleanField()
     minutes = models.SmallIntegerField()
@@ -197,3 +200,21 @@ class Games(models.Model):
 
     def diff_rest(self):
         return 5 - self.difficulty
+
+
+class Fixtures(models.Model):
+    id = models.IntegerField(primary_key=True)
+    event = models.IntegerField()
+    finished = models.BooleanField()
+    kickoff_time = models.DateTimeField(null=True)
+    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='f_home_team')
+    team_h_score = models.SmallIntegerField(null=True)
+    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='f_away_team')
+    team_a_score = models.SmallIntegerField(null=True)
+    team_h_difficulty = models.IntegerField()
+    team_a_difficulty = models.IntegerField()
+
+    def __str__(self):
+        return f'{self.team_h} - {self.team_h}, {self.kickoff_time}'

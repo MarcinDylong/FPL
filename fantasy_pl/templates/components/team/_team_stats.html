@@ -1,10 +1,56 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="col-lg-4">
+        <div class="panel panel-zielony">
+            <div class="panel-heading">
+                <i class="fa fa-star fa-fw"></i> Strength
+            </div>
+            <div class="panel-body">
+                <div class="list-group">
+                    <div class="list-group-item">
+                        Form
+                        <span class="pull-right text-muted"><em>{{team.form}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength
+                        <span class="pull-right text-muted">
+                            {% with ''|center:team.strength as range %}
+                                {% for i in range %}
+                                    <i class="fa fa-star fa-fw"></i>
+                                {% endfor %}
+                            {% endwith %}
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength overall home
+                        <span class="pull-right text-muted"><em>{{team.strength_overall_home}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength overall away
+                        <span class="pull-right text-muted"><em>{{team.strength_overall_away}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength attack home
+                        <span class="pull-right text-muted"><em>{{team.strength_attack_home}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength attack away
+                        <span class="pull-right text-muted"><em>{{team.strength_attack_away}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength defence home
+                        <span class="pull-right text-muted"><em>{{team.strength_defence_home}}</em>
+                        </span>
+                    </div>
+                    <div class="list-group-item">
+                        <i class="fa fa-star fa-fw"></i> Strength defence away
+                        <span class="pull-right text-muted"><em>{{team.strength_defence_away}}</em>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,10 +1,177 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+<div class="row">
+        <div class="col-lg-8">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <i class="fa fa-user fa-fw"></i> Game stats
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead>
+                                    <tr>
+                                        <td>Total points</td>
+                                        <td>{{ player.total_points }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chance of playing this round</td>
+                                        <td>{{ player.chance_of_playing_this_round }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Chance of playing next round</td>
+                                        <td>{{ player.chance_of_playing_next_round }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cost change event</td>
+                                        <td>{{ player.cost_change_event }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cost fall event</td>
+                                        <td>{{ player.cost_change_event_fall }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Cost change start</td>
+                                        <td>{{ player.cost_change_start }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Selected by percent</td>
+                                        <td>{{ player.selected_by_percent }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>In dreamteam</td>
+                                        <td>{{ player.in_dreamteam }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dream team count</td>
+                                        <td>{{ player.dreamteam_count }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ep this</td>
+                                        <td>{{ player.ep_this }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ep next</td>
+                                        <td>{{ player.ep_next }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Form</td>
+                                        <td>{{ player.form }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Value form</td>
+                                        <td>{{ player.value_form }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Values season</td>
+                                        <td>{{ player.value_season }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bonus</td>
+                                        <td>{{ player.bonus }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Bps</td>
+                                        <td>{{ player.bps }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Influence</td>
+                                        <td>{{ player.influence }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Creativity</td>
+                                        <td>{{ player.creativity }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Threat</td>
+                                        <td>{{ player.threat }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>ICT index</td>
+                                        <td>{{ player.ict_index }}</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- /.table-responsive -->
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-8 -->
+        <div class="col-lg-4">
+            <div class="panel panel-zielony">
+                <div class="panel-heading">
+                    <i class="fa fa-star fa-fw"></i> BPL Stats
+                </div>
+                <!-- /.panel-heading -->
+                <div class="panel-body">
+                    <div class="list-group">
+                        <div class="list-group-item">
+                            Minutes
+                            <span class="pull-right text-muted"><em>{{ player.minutes }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Goals scored
+                            <span class="pull-right text-muted"><em>{{ player.goals_scored }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Assists
+                            <span class="pull-right text-muted"><em>{{ player.assists }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Clean sheets
+                            <span class="pull-right text-muted"><em>{{ player.clean_sheets }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Goals conceded
+                            <span class="pull-right text-muted"><em>{{ player.goals_conceded }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Own Goals
+                            <span class="pull-right text-muted"><em>{{ player.own_goals }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Penalty saved
+                            <span class="pull-right text-muted"><em>{{ player.penalties_saved }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Penalty missed
+                            <span class="pull-right text-muted"><em>{{ player.penalties_missed }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Yellow cards
+                            <span class="pull-right text-muted"><em>{{ player.yellow_cards }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Red cards
+                            <span class="pull-right text-muted"><em>{{ player.red_cards }}</em>
+                        </span>
+                        </div>
+                        <div class="list-group-item">
+                            Saves
+                            <span class="pull-right text-muted"><em>{{ player.saves }}</em>
+                        </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.panel-body -->
+            </div>
+            <!-- /.panel -->
+        </div>
+        <!-- /.col-lg-4 -->
+    </div>

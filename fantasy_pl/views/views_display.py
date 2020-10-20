@@ -26,7 +26,7 @@ class TeamView(View):
         cnt = len(players)
         ctx = {'team': team, 'players': players, 'cnt': cnt, 'photo': photo,
                'title': team.name, 'fixtures': fixtures}
-        return render(request, 'components/team.html', ctx)
+        return render(request, 'components/team/team.html', ctx)
 
 
 class PlayerView(View):
@@ -41,8 +41,8 @@ class PlayerView(View):
         games = games_a | games_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
-               'games': games, 'games': games, 'chart': chart}
-        return render(request, 'components/player.html', ctx)
+               'games': games, 'chart': chart}
+        return render(request, 'components/player/player.html', ctx)
 
 
 class StandingsView(View):

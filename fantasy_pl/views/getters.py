@@ -4,7 +4,7 @@ import time
 import requests
 from django.db.models import Q
 
-from fantasy_pl.models import Team, Position, Player, PlayerHistory, Games
+from fantasy_pl.models import Team, Position, Player, PlayerHistory, Games, Fixtures
 
 
 def get_data():
@@ -37,6 +37,17 @@ def get_individual_player_data(player_id):
     data = json.loads(response.text)
     return data
 
+
+def get_fixtures_for_season():
+    """ Retrieve the fixtures for entire season """
+    response = requests.get(
+        'https://fantasy.premierleague.com/api/fixtures/'
+    )
+    if response.status_code != 200:
+        raise Exception("Response was code " + str(response.status_code))
+    responseStr = response.text
+    data = json.loads(responseStr)
+    return data
 
 def download_json():
     data = get_data()
@@ -102,6 +113,22 @@ def populate_positions(positions):
         pos.name = p['singular_name']
         pos.name_short = p['singular_name_short']
         pos.save()
+
+
+def populate_fixture(fixtures):
+    for f in fixtures:
+        fix = Fixtures()
+        fix.id = f['id']
+        fix.event = f['event']
+        fix.finished = f['finished']
+        fix.kickoff_time = f['kickoff_time']
+        fix.team_h = f['team_h']
+        fix.team_h_score = f['team_h_score']
+        fix.team_a = f['team_a']
+        fix.team_a_score = f['team_a_score']
+        fix.team_h_difficulty = f['team_h_difficulty']
+        fix.team_a_difficulty = f['team_a_difficulty']
+        fix.save()
 
 
 def populate_players(players):
@@ -242,23 +269,24 @@ def get_player_data(history):
             hist.save()
 
 
-def get_player_fixture(fixture):
-    for f in fixture:
-        if Games.objects.filter(Q(code=f['code']) & Q(is_home=f['is_home'])):
+def get_player_fixture(game):
+    for g in game:
+        if Games.objects.filter(Q(code=g['code']) & Q(is_home=g['is_home'])):
             pass
         else:
-            fix = Games()
-            fix.code = f['code']
-            fix.team_h = Team.objects.get(id=f['team_h'])
-            fix.team_h_score = f['team_h_score']
-            fix.team_a = Team.objects.get(id=f['team_a'])
-            fix.team_a_score = f['team_a_score']
-            fix.finished = f['finished']
-            fix.minutes = f['minutes']
-            fix.kickoff_time = f['kickoff_time']
-            fix.is_home = f['is_home']
-            fix.difficulty = f['difficulty']
-            fix.save()
+            gam = Games()
+            gam.fixture = g['id']
+            gam.code = g['code']
+            gam.team_h = Team.objects.get(id=g['team_h'])
+            gam.team_h_score = g['team_h_score']
+            gam.team_a = Team.objects.get(id=g['team_a'])
+            gam.team_a_score = g['team_a_score']
+            gam.finished = g['finished']
+            gam.minutes = g['minutes']
+            gam.kickoff_time = g['kickoff_time']
+            gam.is_home = g['is_home']
+            gam.difficulty = g['difficulty']
+            gam.save()
 
 
 if __name__ == "__main__":
