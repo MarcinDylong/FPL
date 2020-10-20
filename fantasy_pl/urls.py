@@ -7,8 +7,8 @@ from .views.views_display import TeamView, StandingsView, PlayerView, \
      PositionsView, StatsView, SearchView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, ApiPlayersListView, \
      ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
-from .views.views_data import PopulateTablesView, UpdateTeamsView, \
-     UpdatePlayersView, DownloadDataView, GetPlayersHistoryView
+from .views.views_data import PopulateTablesView, UpdateTablesView, \
+     DownloadDataView, GetPlayersHistoryView
 from .views.views_userteam import UserTeamView
 
 app_name = 'fantasy_pl'
@@ -31,9 +31,7 @@ urlpatterns = [
     path('download_data/', DownloadDataView.as_view(), name='download_data'),
     path('populate_tables/', PopulateTablesView.as_view(),
          name="populate_tables"),
-    path('update_teams/', UpdateTeamsView.as_view(), name="update_teams"),
-    path('update_players/', UpdatePlayersView.as_view(),
-         name="update_players"),
+    path('update_tables/', UpdateTablesView.as_view(), name="update_tables"),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),
     ##  Display data

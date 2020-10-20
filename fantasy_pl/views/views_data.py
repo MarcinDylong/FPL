@@ -46,79 +46,23 @@ class PopulateTablesView(PermissionRequiredMixin, View):
         return render(request, "components/event.html", ctx)
 
 
-# class PopulatePositionsView(PermissionRequiredMixin, View):
-#     permission_required = 'fantasy_pl.add_position'
-#     permission_denied_message = 'Sorry, You do not have permission!'
-#
-#     def get(self, request):
-#         data = read_json()  ## Read data from JSON file on disk
-#         # data = get_data() ## Read data from Fantasy Premier League API
-#         positions = data['element_types']
-#         try:
-#             populate_positions(positions)
-#         except Exception as e:
-#             ctx = {'event': 'Error occured', 'error': format(e)}
-#             return render(request, "components/event.html", ctx)
-#
-#         ctx = {'event': 'Success!',
-#                'info': 'Position database has been populated.'}
-#         return render(request, "components/event.html", ctx)
-#
-#
-# class PopulatePlayersView(PermissionRequiredMixin, View):
-#     permission_required = 'fantasy_pl.add_team'
-#     permission_denied_message = 'Sorry, You do not have permission!'
-#
-#     def get(self, request):
-#         data = read_json()  ## Read data from JSON file on disk
-#         # data = get_data() ## Read data from Fantasy Premier League API
-#         players = data['elements']
-#         try:
-#             populate_players(players)
-#         except Exception as e:
-#             ctx = {'event': 'Error occured', 'error': format(e)}
-#             return render(request, "components/event.html", ctx)
-#
-#         ctx = {'event': 'Success!',
-#                'info': 'Players database has been populated.'}
-#         return render(request, "components/event.html", ctx)
-
-
-class UpdateTeamsView(PermissionRequiredMixin, View):
+class UpdateTablesView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.change_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
         data = read_json()  ## Read data from JSON file on disk
         # data = get_data() ## Read data from Fantasy Premier League API
-
         teams = data['teams']
-        try:
-            update_teams(teams)
-        except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
-
-        ctx = {'event': 'Success!', 'info': 'Teams database has been updated.'}
-        return render(request, "components/event.html", ctx)
-
-
-class UpdatePlayersView(PermissionRequiredMixin, View):
-    permission_required = 'fantasy_pl.change_team'
-    permission_denied_message = 'Sorry, You do not have permission!'
-
-    def get(self, request):
-        data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from Fantasy Premier League API
         players = data['elements']
         try:
+            update_teams(teams)
             update_players(players)
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
 
-        ctx = {'event': 'Success!',
-               'info': 'Players database has been updated.'}
+        ctx = {'event':'Success!', 'info':'Tables database has been updated.'}
         return render(request, "components/event.html", ctx)
 
 
