@@ -86,26 +86,6 @@ def populate_teams(teams):
         team.save()
 
 
-def update_teams(teams):
-    for t in teams:
-        team = Team.objects.get(id=t['id'])
-        team.draw = t['draw']
-        team.form = t['form']
-        team.loss = t['loss']
-        team.played = t['played']
-        team.points = t['points']
-        team.position = t['position']
-        team.strength = t['strength']
-        team.win = t['win']
-        team.strength_overall_home = t['strength_overall_home']
-        team.strength_overall_away = t['strength_overall_away']
-        team.strength_attack_home = t['strength_attack_home']
-        team.strength_attack_away = t['strength_attack_away']
-        team.strength_defence_home = t['strength_defence_home']
-        team.strength_defence_away = t['strength_defence_away']
-        team.save()
-
-
 def populate_positions(positions):
     for p in positions:
         pos = Position()
@@ -113,22 +93,6 @@ def populate_positions(positions):
         pos.name = p['singular_name']
         pos.name_short = p['singular_name_short']
         pos.save()
-
-
-def populate_fixture(fixtures):
-    for f in fixtures:
-        fix = Fixtures()
-        fix.id = f['id']
-        fix.event = f['event']
-        fix.finished = f['finished']
-        fix.kickoff_time = f['kickoff_time']
-        fix.team_h = f['team_h']
-        fix.team_h_score = f['team_h_score']
-        fix.team_a = f['team_a']
-        fix.team_a_score = f['team_a_score']
-        fix.team_h_difficulty = f['team_h_difficulty']
-        fix.team_a_difficulty = f['team_a_difficulty']
-        fix.save()
 
 
 def populate_players(players):
@@ -179,6 +143,42 @@ def populate_players(players):
         player.threat = float(p['threat'])
         player.ict_index = float(p['ict_index'])
         player.save()
+
+
+def update_teams(teams):
+    for t in teams:
+        team = Team.objects.get(id=t['id'])
+        team.draw = t['draw']
+        team.form = t['form']
+        team.loss = t['loss']
+        team.played = t['played']
+        team.points = t['points']
+        team.position = t['position']
+        team.strength = t['strength']
+        team.win = t['win']
+        team.strength_overall_home = t['strength_overall_home']
+        team.strength_overall_away = t['strength_overall_away']
+        team.strength_attack_home = t['strength_attack_home']
+        team.strength_attack_away = t['strength_attack_away']
+        team.strength_defence_home = t['strength_defence_home']
+        team.strength_defence_away = t['strength_defence_away']
+        team.save()
+
+
+def populate_fixture(fixtures):
+    for f in fixtures:
+        fix = Fixtures()
+        fix.id = f['id']
+        fix.event = f['event']
+        fix.finished = f['finished']
+        fix.kickoff_time = f['kickoff_time']
+        fix.team_h = f['team_h']
+        fix.team_h_score = f['team_h_score']
+        fix.team_a = f['team_a']
+        fix.team_a_score = f['team_a_score']
+        fix.team_h_difficulty = f['team_h_difficulty']
+        fix.team_a_difficulty = f['team_a_difficulty']
+        fix.save()
 
 
 def update_players(players):
