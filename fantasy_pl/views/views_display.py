@@ -8,7 +8,7 @@ from django.views import View
 
 from fantasy_pl.forms import SearchForm, AdvSearchForm
 from fantasy_pl.models import Team, Player, Position, PlayerHistory, \
-    Games
+    Games, Fixtures
 
 
 class TeamView(View):
@@ -56,8 +56,8 @@ class StandingsView(View):
 class FixtureView(View):
 
     def get(self, request):
-        table = Team.objects.all().order_by('position')
-        ctx = {'table': table, 'title': 'Table'}
+        fixture = Fixtures.objects.all().order_by('kickoff_time')
+        ctx = {'fixture': fixture, 'title': 'Table'}
         return render(request, 'components/fixture.html', ctx)
 
 
