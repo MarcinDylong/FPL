@@ -56,7 +56,7 @@ class IndexView(View):
         except:
             pass
 
-        return render(request, "components/index.html", ctx)
+        return render(request, "components/index/index.html", ctx)
 
 
 class BlankView(View):
