@@ -31,33 +31,33 @@
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {% for g in games %}
+                                    {% for h in hist %}
                                         <tr class="odd gradeX">
                                             <td align="center">
                                                 <a style='color: #000000'
-                                                   href="{% url 'fpl:team' g.opponent_team.id 'position' %}">
-                                                    {{ g.opponent_team.short_name }}
+                                                   href="{% url 'fpl:team' h.opponent_team.id 'position' %}">
+                                                    {{ h.opponent_team.short_name }}
                                                 </a>
-                                                {% if g.was_home %}
+                                                {% if h.was_home %}
                                                     (H)
                                                 {% else %}
                                                     (A)
                                                 {% endif %}
                                             </td>
                                             <td class="center" align="center">
-                                                {{ g.team_h_score }} - {{ g.team_a_score }}
+                                                {{ h.team_h_score }} - {{ h.team_a_score }}
                                             </td>
-                                            <td class="center" align="center">{{ g.minutes }}</td>
-                                            <td class="center" align="center">{{ g.goals_scored }}</td>
-                                            <td class="center" align="center">{{ g.assists }}</td>
-                                            <td class="center" align="center">{{ g.yellow_cards }}</td>
-                                            <td class="center" align="center">{{ g.red_cards }}</td>
-                                            <td class="center" align="center">{{ g.own_goals }}</td>
-                                            <td class="center" align="center">{{ g.penalties_saved }}</td>
-                                            <td class="center" align="center">{{ g.penalties_missed }}</td>
-                                            <td class="center" align="center">{{ g.saves }}</td>
-                                            <td class="center" align="center">{{ g.value }}</td>
-                                            <td class="center" align="center">{{ g.total_points }}</td>
+                                            <td class="center" align="center">{{ h.minutes }}</td>
+                                            <td class="center" align="center">{{ h.goals_scored }}</td>
+                                            <td class="center" align="center">{{ h.assists }}</td>
+                                            <td class="center" align="center">{{ h.yellow_cards }}</td>
+                                            <td class="center" align="center">{{ h.red_cards }}</td>
+                                            <td class="center" align="center">{{ h.own_goals }}</td>
+                                            <td class="center" align="center">{{ h.penalties_saved }}</td>
+                                            <td class="center" align="center">{{ h.penalties_missed }}</td>
+                                            <td class="center" align="center">{{ h.saves }}</td>
+                                            <td class="center" align="center">{{ h.value }}</td>
+                                            <td class="center" align="center">{{ h.total_points }}</td>
                                         </tr>
                                     {% endfor %}
                                     </tbody>

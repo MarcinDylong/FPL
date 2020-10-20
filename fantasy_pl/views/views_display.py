@@ -33,7 +33,7 @@ class PlayerView(View):
 
     def get(self, request, id):
         player = Player.objects.get(id=id)
-        games = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
+        hist = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
         chart = PlayerHistory.objects.filter(player=player).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         games_a = Games.objects.filter(team_a=team).filter(is_home=False)
@@ -41,7 +41,7 @@ class PlayerView(View):
         games = games_a | games_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
-               'games': games, 'chart': chart}
+               'games': games, 'hist': hist, 'chart': chart}
         return render(request, 'components/player/player.html', ctx)
 
 
