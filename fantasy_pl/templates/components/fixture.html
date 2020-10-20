@@ -54,6 +54,30 @@
                             {% endfor %}
                         </tbody>
                     </table>
+                    {% if fixture.has_other_pages %}
+                        <ul class="pagination">
+                            {% if fixture.has_previous %}
+                                <li class="page-item"><a class="page-link" href="?page={{ fixture.previous_page_number }}"><
+                                    Previous</a></li>
+                            {% else %}
+                                <li class="disabled"><span class="page-link">< Previous </span></li>
+                            {% endif %}
+                            {% for i in fixture.paginator.page_range %}
+                                {% if fixture.number == i %}
+                                    <li class="active page-item"><span class="page-link">{{ i }}<span
+                                            class="sr-only">(current)</span></span></li>
+                                {% else %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if fixture.has_next %}
+                                <li class="page-item"><a class="page-link" href="?page={{ fixture.next_page_number }}">Next
+                                    ></a></li>
+                            {% else %}
+                                <li class="disabled"><span class="page-link">Next ></span></li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
                 </div>
             </div>
             <!-- /.panel-body -->

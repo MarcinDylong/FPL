@@ -56,8 +56,11 @@ class StandingsView(View):
 class FixtureView(View):
 
     def get(self, request):
-        fixture = Fixtures.objects.all().order_by('kickoff_time')
-        ctx = {'fixture': fixture, 'title': 'Table'}
+        fixture = Fixtures.objects.all().order_by('event', 'kickoff_time')
+        paginator = Paginator(fixture, 10)
+        page = request.GET.get('page')
+        fixture = paginator.get_page(page)
+        ctx = {'fixture': fixture, 'title': 'Fixtures'}
         return render(request, 'components/fixture.html', ctx)
 
 
