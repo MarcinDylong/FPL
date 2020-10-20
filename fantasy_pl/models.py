@@ -204,7 +204,7 @@ class Games(models.Model):
 
 class Fixtures(models.Model):
     id = models.IntegerField(primary_key=True)
-    event = models.IntegerField()
+    event = models.IntegerField(null=True)
     finished = models.BooleanField()
     kickoff_time = models.DateTimeField(null=True)
     team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
@@ -217,4 +217,4 @@ class Fixtures(models.Model):
     team_a_difficulty = models.IntegerField()
 
     def __str__(self):
-        return f'{self.team_h} - {self.team_h}, {self.kickoff_time}'
+        return f'{self.team_h} - {self.team_a}, {self.kickoff_time}'

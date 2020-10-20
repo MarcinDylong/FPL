@@ -4,11 +4,11 @@ from .views.views_main import IndexView, LoginView, BlankView, LogoutView, \
      CreateUserView, ChangetPasswordView, SendMessageView, MessageReceivedView, \
      MessageSentView
 from .views.views_display import TeamView, StandingsView, PlayerView, \
-     PositionsView, StatsView, SearchView
+    PositionsView, StatsView, SearchView, FixtureView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, ApiPlayersListView, \
      ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
 from .views.views_data import PopulateTablesView, UpdateTablesView, \
-     DownloadDataView, GetPlayersHistoryView
+    DownloadDataView, GetPlayersHistoryView, GetFixtureView
 from .views.views_userteam import UserTeamView
 
 app_name = 'fantasy_pl'
@@ -34,9 +34,11 @@ urlpatterns = [
     path('update_tables/', UpdateTablesView.as_view(), name="update_tables"),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),
+    path('get_fixture/', GetFixtureView.as_view(), name="get_fixture"),
     ##  Display data
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
+    path('fixture/', FixtureView.as_view(), name='fixture'),
     path('player/<int:id>/', PlayerView.as_view(), name='player'),
     path('positions/<str:pos>/<str:sort>', PositionsView.as_view(),
          name='positions'),

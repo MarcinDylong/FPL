@@ -89,6 +89,14 @@ def populate_players(players):
         player.save()
 
 
+def populate_fixture(fixtures):
+    for f in fixtures:
+        fix = Fixtures()
+        fix.id = f['id']
+        data_to_fixture(fix, f)
+        fix.save()
+
+
 def update_teams(teams):
     for t in teams:
         team = Team.objects.get(id=t['id'])
@@ -108,21 +116,18 @@ def update_players(players):
             data_to_player(player, p)
             player.save()
 
-def populate_fixture(fixtures):
-    for f in fixtures:
-        fix = Fixtures()
-        fix.id = f['id']
-        fix.event = f['event']
-        fix.finished = f['finished']
-        fix.kickoff_time = f['kickoff_time']
-        fix.team_h = f['team_h']
-        fix.team_h_score = f['team_h_score']
-        fix.team_a = f['team_a']
-        fix.team_a_score = f['team_a_score']
-        fix.team_h_difficulty = f['team_h_difficulty']
-        fix.team_a_difficulty = f['team_a_difficulty']
-        fix.save()
 
+def update_fixture(fixtures):
+    for f in fixtures:
+        try:
+            fix = Fixtures.objects.get(id=f['id'])
+            data_to_fixture(fix, f)
+            fix.save()
+        except:
+            fix = Fixtures()
+            fix.id = f['id']
+            data_to_fixture(fix, f)
+            fix.save()
 
 def get_player_data(history):
     for h in history:
@@ -248,6 +253,18 @@ def data_to_player(player, p):
     player.creativity = float(p['creativity'])
     player.threat = float(p['threat'])
     player.ict_index = float(p['ict_index'])
+
+
+def data_to_fixture(fix, f):
+    fix.event = f['event']
+    fix.finished = f['finished']
+    fix.kickoff_time = f['kickoff_time']
+    fix.team_h = Team.objects.get(id=f['team_h'])
+    fix.team_h_score = f['team_h_score']
+    fix.team_a = Team.objects.get(id=f['team_a'])
+    fix.team_a_score = f['team_a_score']
+    fix.team_h_difficulty = f['team_h_difficulty']
+    fix.team_a_difficulty = f['team_a_difficulty']
 
 
 if __name__ == "__main__":

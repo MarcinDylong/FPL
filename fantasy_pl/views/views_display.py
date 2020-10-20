@@ -53,6 +53,14 @@ class StandingsView(View):
         return render(request, 'components/standings.html', ctx)
 
 
+class FixtureView(View):
+
+    def get(self, request):
+        table = Team.objects.all().order_by('position')
+        ctx = {'table': table, 'title': 'Table'}
+        return render(request, 'components/fixture.html', ctx)
+
+
 class PositionsView(View):
 
     def get(self, request, pos, sort):

@@ -24,6 +24,15 @@ class GetDataForm(forms.Form):
                                       attrs={'class': 'form-control'}))
 
 
+CHOICES = [(0, 'Download Fixtures'), (1, 'Update Fixtures')]
+
+class GetFixtureForm(forms.Form):
+    choice = forms.ChoiceField(widget=forms.RadioSelect(
+                                    attrs={'class': 'custom-radio-list'}),
+                               label='Choose option',
+                               choices=CHOICES)
+
+
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='User name:', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
