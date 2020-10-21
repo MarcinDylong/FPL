@@ -82,23 +82,23 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
             team = form.cleaned_data['team']
             all = form.cleaned_data['all']
             if id:
-                try:
-                    data = get_individual_player_data(id)
-                    history = data['history']
-                    get_player_data(history)
-                    game = data['fixtures']
-                    get_player_fixture(game, id)
-                    ctx = {'successful': True,
-                           'info': f'Data for player {id} has been updated',
-                           'title': "Get data",
-                           'form': GetDataForm()}
-                    return render(request, "components/get_data.html", ctx)
-                except Exception as e:
-                    ctx = {'unsuccessful': True,
-                           'error': format(e),
-                           'title': "Get data",
-                           'form': GetDataForm()}
-                    return render(request, "components/event.html", ctx)
+                # try:
+                data = get_individual_player_data(id)
+                history = data['history']
+                get_player_data(history)
+                game = data['fixtures']
+                get_player_fixture(game, id)
+                ctx = {'successful': True,
+                       'info': f'Data for player {id} has been updated',
+                       'title': "Get data",
+                       'form': GetDataForm()}
+                return render(request, "components/get_data.html", ctx)
+                # except Exception as e:
+                #     ctx = {'unsuccessful': True,
+                #            'error': format(e),
+                #            'title': "Get data",
+                #            'form': GetDataForm()}
+                #     return render(request, "components/event.html", ctx)
             elif team:
                 players = Player.objects.filter(team=team)
                 for p in players:

@@ -188,6 +188,8 @@ class PlayerHistory(models.Model):
     value = models.FloatField(null=True)
     selected = models.IntegerField(null=True)
 
+    class Meta:
+        unique_together = ('fixture','player',)
 
     def __str__(self):
         if self.is_home:
