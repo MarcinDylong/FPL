@@ -134,105 +134,33 @@ def get_player_data(history):
         try:
             hist = PlayerHistory.objects.filter(player=Player.objects.get(id=h['element']))\
                                 .filter(fixture=Fixtures.objects.get(id=h['fixture'])).first()
-            hist.round = Fixtures.objects.get(id=h['fixture']).event
-            hist.opponent_team = Team.objects.get(id=h['opponent_team'])
-            hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
-            hist.team_a = Fixtures.objects.get(id=h['fixture']).team_a
-            hist.total_points = h['total_points']
-            hist.is_home = h['was_home']
-            hist.kickoff_time = h['kickoff_time']
-            hist.team_h_score = h['team_h_score']
-            hist.team_a_score = h['team_a_score']
-            hist.finished = True
-            hist.minutes = h['minutes']
-            hist.goals_scored = h['goals_scored']
-            hist.assists = h['assists']
-            hist.clean_sheets = h['clean_sheets']
-            hist.goals_conceded = h['goals_conceded']
-            hist.own_goals = h['own_goals']
-            hist.penalties_saved = h['penalties_saved']
-            hist.penalties_missed = h['penalties_missed']
-            hist.yellow_cards = h['yellow_cards']
-            hist.red_cards = h['red_cards']
-            hist.saves = h['saves']
-            hist.bonus = h['bonus']
-            hist.bps = h['bps']
-            hist.influence = float(h['influence'])
-            hist.creativity = float(h['creativity'])
-            hist.threat = float(h['threat'])
-            hist.ict_index = float(h['ict_index'])
-            hist.value = h['value'] / 10
-            hist.selected = h['selected']
+            data_to_player_data(hist, h)
             hist.save()
         except:
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=h['element'])
             hist.fixture = Fixtures.objects.get(id=h['fixture'])
-            hist.round = Fixtures.objects.get(id=h['fixture']).event
-            hist.opponent_team = Team.objects.get(id=h['opponent_team'])
-            hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
-            hist.team_a = Fixtures.objects.get(id=h['fixture']).team_a
-            hist.total_points = h['total_points']
-            hist.is_home = h['was_home']
-            hist.kickoff_time = h['kickoff_time']
-            hist.team_h_score = h['team_h_score']
-            hist.team_a_score = h['team_a_score']
-            hist.finished = True
-            hist.minutes = h['minutes']
-            hist.goals_scored = h['goals_scored']
-            hist.assists = h['assists']
-            hist.clean_sheets = h['clean_sheets']
-            hist.goals_conceded = h['goals_conceded']
-            hist.own_goals = h['own_goals']
-            hist.penalties_saved = h['penalties_saved']
-            hist.penalties_missed = h['penalties_missed']
-            hist.yellow_cards = h['yellow_cards']
-            hist.red_cards = h['red_cards']
-            hist.saves = h['saves']
-            hist.bonus = h['bonus']
-            hist.bps = h['bps']
-            hist.influence = float(h['influence'])
-            hist.creativity = float(h['creativity'])
-            hist.threat = float(h['threat'])
-            hist.ict_index = float(h['ict_index'])
-            hist.value = h['value'] / 10
-            hist.selected = h['selected']
+            data_to_player_data(hist, h)
             hist.save()
+
 
 def get_player_fixture(game, id):
     for g in game:
         try:
             hist = PlayerHistory.objects.filter(player=Player.objects.get(id=id))\
                                     .filter(fixture=Fixtures.objects.get(id=g['id'])).first()
-            hist.round = Fixtures.objects.get(id=g['id']).event
-            hist.team_h = Team.objects.get(id=g['team_h'])
-            hist.team_h_score = g['team_h_score']
-            hist.team_a = Team.objects.get(id=g['team_a'])
-            hist.team_a_score = g['team_a_score']
-            hist.finished = g['finished']
-            hist.minutes = g['minutes']
-            hist.kickoff_time = g['kickoff_time']
-            hist.is_home = g['is_home']
-            hist.difficulty = g['difficulty']
+            data_to_player_fixture(hist, g)
             hist.save()
         except:
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=id)
             hist.fixture = Fixtures.objects.get(id=g['id'])
-            hist.round = Fixtures.objects.get(id=g['id']).event
-            hist.team_h = Team.objects.get(id=g['team_h'])
-            hist.team_h_score = g['team_h_score']
-            hist.team_a = Team.objects.get(id=g['team_a'])
-            hist.team_a_score = g['team_a_score']
-            hist.finished = g['finished']
-            hist.minutes = g['minutes']
-            hist.kickoff_time = g['kickoff_time']
-            hist.is_home = g['is_home']
-            hist.difficulty = g['difficulty']
+            data_to_player_fixture(hist, g)
             hist.save()
 
 
 
+### Functions for data assignment
 def data_to_team(team, t):
     team.draw = t['draw']
     team.form = t['form']
@@ -309,6 +237,51 @@ def data_to_fixture(fix, f):
         fix.team_a_score = str(f['team_a_score'])
     fix.team_h_difficulty = f['team_h_difficulty']
     fix.team_a_difficulty = f['team_a_difficulty']
+
+
+def data_to_player_data(hist, h):
+    hist.round = Fixtures.objects.get(id=h['fixture']).event
+    hist.opponent_team = Team.objects.get(id=h['opponent_team'])
+    hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
+    hist.team_a = Fixtures.objects.get(id=h['fixture']).team_a
+    hist.total_points = h['total_points']
+    hist.is_home = h['was_home']
+    hist.kickoff_time = h['kickoff_time']
+    hist.team_h_score = h['team_h_score']
+    hist.team_a_score = h['team_a_score']
+    hist.finished = True
+    hist.minutes = h['minutes']
+    hist.goals_scored = h['goals_scored']
+    hist.assists = h['assists']
+    hist.clean_sheets = h['clean_sheets']
+    hist.goals_conceded = h['goals_conceded']
+    hist.own_goals = h['own_goals']
+    hist.penalties_saved = h['penalties_saved']
+    hist.penalties_missed = h['penalties_missed']
+    hist.yellow_cards = h['yellow_cards']
+    hist.red_cards = h['red_cards']
+    hist.saves = h['saves']
+    hist.bonus = h['bonus']
+    hist.bps = h['bps']
+    hist.influence = float(h['influence'])
+    hist.creativity = float(h['creativity'])
+    hist.threat = float(h['threat'])
+    hist.ict_index = float(h['ict_index'])
+    hist.value = h['value'] / 10
+    hist.selected = h['selected']
+
+
+def data_to_player_fixture(hist, g):
+    hist.round = Fixtures.objects.get(id=g['id']).event
+    hist.team_h = Team.objects.get(id=g['team_h'])
+    hist.team_h_score = g['team_h_score']
+    hist.team_a = Team.objects.get(id=g['team_a'])
+    hist.team_a_score = g['team_a_score']
+    hist.finished = g['finished']
+    hist.minutes = g['minutes']
+    hist.kickoff_time = g['kickoff_time']
+    hist.is_home = g['is_home']
+    hist.difficulty = g['difficulty']
 
 
 if __name__ == "__main__":
