@@ -14,6 +14,7 @@
                                     <thead>
                                     <tr>
                                     <tr>
+                                        <th align="center">GW</th>
                                         <th align="center">Opponent</th>
                                         <th align="center">Score</th>
                                         <th align="center">Minutes</th>
@@ -33,6 +34,7 @@
                                     <tbody>
                                     {% for h in hist %}
                                         <tr class="odd gradeX">
+                                            <td class="center" align="center">{{ h.round }}</td>
                                             <td align="center">
                                                 <a style='color: #000000'
                                                    href="{% url 'fpl:team' h.opponent_team.id 'position' %}">

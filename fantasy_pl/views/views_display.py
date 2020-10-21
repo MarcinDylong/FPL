@@ -21,10 +21,10 @@ class TeamView(View):
         players = Player.objects.filter(team=team.id).order_by(sort, 'id')
         fixtures_a = PlayerHistory.objects.filter(team_a=team)\
             .filter(is_home=False).filter(finished=False)\
-            .order_by('-kickoff_time').distinct('kickoff_time')
+            .order_by('kickoff_time').distinct('kickoff_time')
         fixtures_h = PlayerHistory.objects.filter(team_h=team) \
             .filter(is_home=True).filter(finished=False) \
-            .order_by('-kickoff_time').distinct('kickoff_time')
+            .order_by('kickoff_time').distinct('kickoff_time')
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
@@ -39,12 +39,14 @@ class PlayerView(View):
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player)\
                                     .filter(finished=True)\
-                                    .order_by('-kickoff_time')
-        chart = PlayerHistory.objects.filter(player=player).order_by('kickoff_time')
+                                    .order_by('kickoff_time')
+        chart = hist
+        # chart = PlayerHistory.objects.filter(player=player)\
+        #                      .filter(finished=True).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         games = PlayerHistory.objects.filter(player=player)\
                                     .filter(finished=False)\
-                                    .order_by('-kickoff_time')
+                                    .order_by('kickoff_time')
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
                'games': games, 'hist': hist, 'chart': chart}

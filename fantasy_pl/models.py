@@ -151,6 +151,7 @@ class Fixtures(models.Model):
 class PlayerHistory(models.Model):
     player = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
     fixture = models.ForeignKey(Fixtures, null=True, on_delete=models.SET_NULL)
+    round = models.SmallIntegerField()
     kickoff_time = models.DateTimeField(null=True)
     difficulty = models.SmallIntegerField(null=True)
     team_h = models.ForeignKey(Team, null=True,

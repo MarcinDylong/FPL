@@ -139,6 +139,7 @@ def get_player_data(history):
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=h['element'])
             hist.fixture = Fixtures.objects.get(id=h['fixture'])
+            hist.round = Fixtures.objects.get(id=h['fixture']).event
             hist.opponent_team = Team.objects.get(id=h['opponent_team'])
             hist.total_points = h['total_points']
             hist.is_home = h['was_home']
@@ -170,10 +171,10 @@ def get_player_data(history):
 
 def get_player_fixture(game, id):
     for g in game:
-
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=id)
             hist.fixture = Fixtures.objects.get(id=g['id'])
+            hist.round = Fixtures.objects.get(id=g['id']).event
             hist.team_h = Team.objects.get(id=g['team_h'])
             hist.team_h_score = g['team_h_score']
             hist.team_a = Team.objects.get(id=g['team_a'])
