@@ -49,6 +49,18 @@ def get_fixtures_for_season():
     data = json.loads(responseStr)
     return data
 
+
+def get_fpl_team(player_id: int):
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/'
+    response = requests.get(base_url)
+
+    if response.status_code != 200:
+        raise Exception('Response was code ' + str(response.status_code))
+    responseStr = response.txt
+    data = json.loads(responseStr)
+    return data
+
+
 def download_json():
     data = get_data()
     with open('data.json', 'w') as outf:
