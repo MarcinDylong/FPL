@@ -130,66 +130,63 @@ class UserTeam(models.Model):
     novelty = models.FloatField(default=0)
 
 
-class PlayerHistory(models.Model):
-    player = models.ForeignKey(Player, on_delete=models.CASCADE)
-    fixture = models.SmallIntegerField()
-    kickoff_time = models.DateTimeField()
-    was_home = models.BooleanField()
-    opponent_team = models.ForeignKey(Team, null=True, on_delete=models.SET_NULL)
-    team_h_score = models.SmallIntegerField()
-    team_a_score = models.SmallIntegerField()
-    round = models.SmallIntegerField()
-    total_points = models.SmallIntegerField()
-    minutes = models.SmallIntegerField()
-    goals_scored = models.SmallIntegerField()
-    assists = models.SmallIntegerField()
-    clean_sheets = models.SmallIntegerField()
-    goals_conceded = models.SmallIntegerField()
-    own_goals = models.SmallIntegerField()
-    penalties_saved = models.SmallIntegerField()
-    penalties_missed = models.SmallIntegerField()
-    yellow_cards = models.SmallIntegerField()
-    red_cards = models.SmallIntegerField()
-    saves = models.SmallIntegerField()
-    bonus = models.SmallIntegerField()
-    bps = models.SmallIntegerField()
-    influence = models.FloatField()
-    creativity = models.FloatField()
-    threat = models.FloatField()
-    ict_index = models.FloatField()
-    value = models.FloatField()
-    transfers_balance = models.IntegerField()
-    selected = models.IntegerField()
-    transfers_in = models.IntegerField()
-    transfers_out = models.IntegerField()
-
-    class Meta:
-        unique_together = [['player', 'fixture']]
+class Fixtures(models.Model):
+    id = models.IntegerField(primary_key=True)
+    event = models.IntegerField(null=True)
+    finished = models.BooleanField()
+    kickoff_time = models.DateTimeField(null=True)
+    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='f_home_team')
+    team_h_score = models.CharField(max_length=4, default='-')
+    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
+                               related_name='f_away_team')
+    team_a_score = models.CharField(max_length=4, default='-')
+    team_h_difficulty = models.IntegerField()
+    team_a_difficulty = models.IntegerField()
 
     def __str__(self):
-        return f'{self.player} - {self.fixture}'
-
-    def chart_value(self):
-        return self.value * 10
+        return f'{self.team_h} - {self.team_a}, {self.kickoff_time}'
 
 
-class Games(models.Model):
-    fixture = models.IntegerField()
-    code = models.IntegerField()
-    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
-                               related_name='g_home_team')
+class PlayerHistory(models.Model):
+    player = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
+    fixture = models.ForeignKey(Fixtures, null=True, on_delete=models.SET_NULL)
+    kickoff_time = models.DateTimeField(null=True)
+    difficulty = models.SmallIntegerField(null=True)
+    team_h = models.ForeignKey(Team, null=True,
+                               on_delete=models.SET_NULL,
+                               related_name='p_home_team')
     team_h_score = models.SmallIntegerField(null=True)
-    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
-                               related_name='g_away_team')
+    team_a = models.ForeignKey(Team, null=True,
+                               on_delete=models.SET_NULL,
+                               related_name='p_away_team')
     team_a_score = models.SmallIntegerField(null=True)
+    is_home = models.BooleanField()
+    opponent_team = models.ForeignKey(Team, null=True,
+                                      on_delete=models.SET_NULL,
+                                      related_name='opp_team')
     finished = models.BooleanField()
     minutes = models.SmallIntegerField()
-    kickoff_time = models.DateTimeField(null=True)
-    is_home = models.BooleanField()
-    difficulty = models.SmallIntegerField()
+    total_points = models.SmallIntegerField(null=True)
+    goals_scored = models.SmallIntegerField(null=True)
+    assists = models.SmallIntegerField(null=True)
+    clean_sheets = models.SmallIntegerField(null=True)
+    goals_conceded = models.SmallIntegerField(null=True)
+    own_goals = models.SmallIntegerField(null=True)
+    penalties_saved = models.SmallIntegerField(null=True)
+    penalties_missed = models.SmallIntegerField(null=True)
+    yellow_cards = models.SmallIntegerField(null=True)
+    red_cards = models.SmallIntegerField(null=True)
+    saves = models.SmallIntegerField(null=True)
+    bonus = models.SmallIntegerField(null=True)
+    bps = models.SmallIntegerField(null=True)
+    influence = models.FloatField(null=True)
+    creativity = models.FloatField(null=True)
+    threat = models.FloatField(null=True)
+    ict_index = models.FloatField(null=True)
+    value = models.FloatField(null=True)
+    selected = models.IntegerField(null=True)
 
-    class Meta:
-        unique_together=[['code','is_home']]
 
     def __str__(self):
         if self.is_home:
@@ -200,21 +197,3 @@ class Games(models.Model):
 
     def diff_rest(self):
         return 5 - self.difficulty
-
-
-class Fixtures(models.Model):
-    id = models.IntegerField(primary_key=True)
-    event = models.IntegerField(null=True)
-    finished = models.BooleanField()
-    kickoff_time = models.DateTimeField(null=True)
-    team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
-                               related_name='f_home_team')
-    team_h_score = models.SmallIntegerField(null=True)
-    team_a = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
-                               related_name='f_away_team')
-    team_a_score = models.SmallIntegerField(null=True)
-    team_h_difficulty = models.IntegerField()
-    team_a_difficulty = models.IntegerField()
-
-    def __str__(self):
-        return f'{self.team_h} - {self.team_a}, {self.kickoff_time}'

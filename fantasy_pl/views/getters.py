@@ -4,8 +4,7 @@ import time
 import requests
 from django.db.models import Q
 
-from fantasy_pl.models import Team, Position, Player, PlayerHistory, Games, \
-     Fixtures
+from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures
 
 
 def get_data():
@@ -130,22 +129,23 @@ def update_fixture(fixtures):
             fix.save()
 
 def get_player_data(history):
+
     for h in history:
-        if PlayerHistory.objects.filter(
-                player=Player.objects.get(id=h['element'])).filter(
-                fixture=h['fixture']):
-            pass
-        else:
+        # if PlayerHistory.objects.\
+        #         filter(player=Player.objects.get(id=h['element'])).\
+        #         filter(fixture=Fixtures.objects.get(id=h['fixture'])):
+        #     pass
+        # else:
             hist = PlayerHistory()
             hist.player = Player.objects.get(id=h['element'])
-            hist.fixture = h['fixture']
+            hist.fixture = Fixtures.objects.get(id=h['fixture'])
             hist.opponent_team = Team.objects.get(id=h['opponent_team'])
             hist.total_points = h['total_points']
-            hist.was_home = h['was_home']
+            hist.is_home = h['was_home']
             hist.kickoff_time = h['kickoff_time']
             hist.team_h_score = h['team_h_score']
             hist.team_a_score = h['team_a_score']
-            hist.round = h['round']
+            hist.finished = True
             hist.minutes = h['minutes']
             hist.goals_scored = h['goals_scored']
             hist.assists = h['assists']
@@ -164,31 +164,26 @@ def get_player_data(history):
             hist.threat = float(h['threat'])
             hist.ict_index = float(h['ict_index'])
             hist.value = h['value'] / 10
-            hist.transfers_balance = h['transfers_balance']
             hist.selected = h['selected']
-            hist.transfers_in = h['transfers_in']
-            hist.transfers_out = h['transfers_out']
             hist.save()
 
 
-def get_player_fixture(game):
+def get_player_fixture(game, id):
     for g in game:
-        if Games.objects.filter(Q(code=g['code']) & Q(is_home=g['is_home'])):
-            pass
-        else:
-            gam = Games()
-            gam.fixture = g['id']
-            gam.code = g['code']
-            gam.team_h = Team.objects.get(id=g['team_h'])
-            gam.team_h_score = g['team_h_score']
-            gam.team_a = Team.objects.get(id=g['team_a'])
-            gam.team_a_score = g['team_a_score']
-            gam.finished = g['finished']
-            gam.minutes = g['minutes']
-            gam.kickoff_time = g['kickoff_time']
-            gam.is_home = g['is_home']
-            gam.difficulty = g['difficulty']
-            gam.save()
+
+            hist = PlayerHistory()
+            hist.player = Player.objects.get(id=id)
+            hist.fixture = Fixtures.objects.get(id=g['id'])
+            hist.team_h = Team.objects.get(id=g['team_h'])
+            hist.team_h_score = g['team_h_score']
+            hist.team_a = Team.objects.get(id=g['team_a'])
+            hist.team_a_score = g['team_a_score']
+            hist.finished = g['finished']
+            hist.minutes = g['minutes']
+            hist.kickoff_time = g['kickoff_time']
+            hist.is_home = g['is_home']
+            hist.difficulty = g['difficulty']
+            hist.save()
 
 
 def data_to_team(team, t):
@@ -207,6 +202,7 @@ def data_to_team(team, t):
     team.strength_attack_home = t['strength_attack_home']
     team.strength_attack_away = t['strength_attack_away']
     team.strength_defence_home = t['strength_defence_home']
+    team.strength_defence_away = t['strength_defence_away']
 
 
 def data_to_player(player, p):
@@ -260,9 +256,10 @@ def data_to_fixture(fix, f):
     fix.finished = f['finished']
     fix.kickoff_time = f['kickoff_time']
     fix.team_h = Team.objects.get(id=f['team_h'])
-    fix.team_h_score = f['team_h_score']
     fix.team_a = Team.objects.get(id=f['team_a'])
-    fix.team_a_score = f['team_a_score']
+    if f['finished'] == True:
+        fix.team_h_score = str(f['team_h_score'])
+        fix.team_a_score = str(f['team_a_score'])
     fix.team_h_difficulty = f['team_h_difficulty']
     fix.team_a_difficulty = f['team_a_difficulty']
 
