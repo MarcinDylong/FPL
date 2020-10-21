@@ -4,7 +4,8 @@ import time
 import requests
 from django.db.models import Q
 
-from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures
+from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
+    UserTeam
 
 
 def get_data():
@@ -50,13 +51,25 @@ def get_fixtures_for_season():
     return data
 
 
-def get_fpl_team(player_id: int):
+def get_fpl_user(player_id: int):
     base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/'
     response = requests.get(base_url)
 
     if response.status_code != 200:
         raise Exception('Response was code ' + str(response.status_code))
-    responseStr = response.txt
+    responseStr = response.text
+    data = json.loads(responseStr)
+    return data
+
+
+def get_fpl_userteam(player_id: int, gw: int):
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/' \
+               f'event/{gw}/picks/'
+    response = requests.get(base_url)
+
+    if response.status_code != 200:
+        raise Exception('Response was code ' + str(response.status_code))
+    responseStr = response.text
     data = json.loads(responseStr)
     return data
 
@@ -139,6 +152,18 @@ def update_fixture(fixtures):
             fix.id = f['id']
             data_to_fixture(fix, f)
             fix.save()
+
+
+def update_userteam(user, player_list):
+    try:
+        usrtm = UserTeam.objects.get(user=user)
+        data_to_userteam(usrtm, player_list)
+        usrtm.save()
+    except:
+        usrtm = UserTeam()
+        usrtm.user = user
+        data_to_userteam(usrtm, player_list)
+        usrtm.save()
 
 
 def get_player_data(history):
@@ -294,6 +319,24 @@ def data_to_player_fixture(hist, g):
     hist.kickoff_time = g['kickoff_time']
     hist.is_home = g['is_home']
     hist.difficulty = g['difficulty']
+
+
+def data_to_userteam(usrtm, player_list):
+    usrtm['gkp'].initial = player_list[0]
+    usrtm['def1'].initial = player_list[1]
+    usrtm['def2'].initial = player_list[2]
+    usrtm['def3'].initial = player_list[3]
+    usrtm['def4'].initial = player_list[4]
+    usrtm['mdf1'].initial = player_list[5]
+    usrtm['mdf2'].initial = player_list[6]
+    usrtm['mdf3'].initial = player_list[7]
+    usrtm['mdf4'].initial = player_list[8]
+    usrtm['fwd1'].initial = player_list[9]
+    usrtm['fwd2'].initial = player_list[10]
+    usrtm['gkpb'].initial = player_list[11]
+    usrtm['defb'].initial = player_list[12]
+    usrtm['mdfb'].initial = player_list[13]
+    usrtm['fwdb'].initial = player_list[14]
 
 
 if __name__ == "__main__":
