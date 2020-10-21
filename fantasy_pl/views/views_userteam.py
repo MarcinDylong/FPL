@@ -68,7 +68,7 @@ class UserTeamView(View):
             form.fields['fwdb'].initial = uteam.fwdb_id
             self.team_overall(uteam, ctx)
 
-        return render(request, 'components/userteam.html', ctx)
+        return render(request, 'components/userteam/userteam.html', ctx)
 
     def post(self, request):
         form = UserTeamForm(request.POST)
@@ -118,10 +118,10 @@ class UserTeamView(View):
             uteam = UserTeam.objects.get(user=request.user)
             self.team_overall(uteam, ctx)
             ctx['form'] = form
-            return render(request, 'components/userteam.html', ctx)
+            return render(request, 'components/userteam/userteam.html', ctx)
         else:
             uteam = UserTeam.objects.get(user=request.user)
             self.team_overall(uteam, ctx)
             ctx['failure'] = True
             ctx['form'] = form
-            return render(request, 'components/userteam.html', ctx)
+            return render(request, 'components/userteam/userteam.html', ctx)
