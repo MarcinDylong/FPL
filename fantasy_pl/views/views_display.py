@@ -8,7 +8,7 @@ from django.views import View
 
 from fantasy_pl.forms import SearchForm, AdvSearchForm
 from fantasy_pl.models import Team, Player, Position, PlayerHistory, \
-    Games, Fixtures
+    Fixtures
 
 
 class TeamView(View):
@@ -19,8 +19,12 @@ class TeamView(View):
                     'threat']:
             sort = '-' + sort
         players = Player.objects.filter(team=team.id).order_by(sort, 'id')
-        fixtures_a = Games.objects.filter(team_a=team).filter(is_home=False)
-        fixtures_h = Games.objects.filter(team_h=team).filter(is_home=True)
+        fixtures_a = PlayerHistory.objects.filter(team_a=team)\
+            .filter(is_home=False).filter(finished=False)\
+            .order_by('-kickoff_time').distinct('kickoff_time')
+        fixtures_h = PlayerHistory.objects.filter(team_h=team) \
+            .filter(is_home=True).filter(finished=False) \
+            .order_by('-kickoff_time').distinct('kickoff_time')
         fixtures = fixtures_a | fixtures_h
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
@@ -33,12 +37,14 @@ class PlayerView(View):
 
     def get(self, request, id):
         player = Player.objects.get(id=id)
-        hist = PlayerHistory.objects.filter(player=player).order_by('-kickoff_time')
+        hist = PlayerHistory.objects.filter(player=player)\
+                                    .filter(finished=True)\
+                                    .order_by('-kickoff_time')
         chart = PlayerHistory.objects.filter(player=player).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
-        games_a = Games.objects.filter(team_a=team).filter(is_home=False)
-        games_h = Games.objects.filter(team_h=team).filter(is_home=True)
-        games = games_a | games_h
+        games = PlayerHistory.objects.filter(player=player)\
+                                    .filter(finished=False)\
+                                    .order_by('-kickoff_time')
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
                'games': games, 'hist': hist, 'chart': chart}
