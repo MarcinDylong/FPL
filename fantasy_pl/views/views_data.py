@@ -87,7 +87,7 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     history = data['history']
                     get_player_data(history)
                     game = data['fixtures']
-                    get_player_fixture(game)
+                    get_player_fixture(game, id)
                     ctx = {'successful': True,
                            'info': f'Data for player {id} has been updated',
                            'title': "Get data",
@@ -107,7 +107,7 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         history = data['history']
                         get_player_data(history)
                         game = data['fixtures']
-                        get_player_fixture(game)
+                        get_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'unsuccessful': True,
                                'error': format(e),
@@ -128,7 +128,7 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         history = data['history']
                         get_player_data(history)
                         game = data['fixtures']
-                        get_player_fixture(game)
+                        get_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'unsuccessful': True,
                                'error': format(e),
