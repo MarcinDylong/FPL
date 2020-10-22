@@ -3,12 +3,12 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from fantasy_pl.forms import GetDataForm, GetFixtureForm
+from fantasy_pl.models import Player, User, Fixtures
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
-    get_fpl_userteam, get_fpl_user, update_userteam
-from fantasy_pl.models import Player, User, UserTeam
+    get_fpl_userteam, update_userteam
 
 
 class DownloadDataView(PermissionRequiredMixin, View):
@@ -30,8 +30,8 @@ class DownloadUserteamView(View):
     def get(self, request, player_id):
         ### Try download data for User by ID
         try:
-            user = get_fpl_user(player_id)
-            gw = user['current_event']
+            last_game = Fixtures.objects.filter(finished=True).last()
+            gw = last_game.event
             team = get_fpl_userteam(player_id, gw)
             player = team['picks']
             player_list = [p['element'] for p in player]
