@@ -39,6 +39,7 @@ urlpatterns = [
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
     path('fixture/', FixtureView.as_view(), name='fixture'),
+    # path('fixture/(?P<page>[0-9]+)/', FixtureView.as_view(), name='fixture'),
     path('player/<int:id>/', PlayerView.as_view(), name='player'),
     path('positions/<str:pos>/<str:sort>', PositionsView.as_view(),
          name='positions'),

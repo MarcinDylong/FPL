@@ -12,7 +12,7 @@ def my_cp(request):
         'teams': teams,
         'positions': positions,
         'search_form': SearchForm,
-        'messages_short': messages
+        'messages_short': messages,
     }
 
     return ctx

@@ -65,8 +65,9 @@ class FixtureView(View):
 
     def get(self, request):
         fixture = Fixtures.objects.all().order_by('event', 'kickoff_time')
+        curr_event = Fixtures.objects.filter(finished=True).last().event
         paginator = Paginator(fixture, 10)
-        page = request.GET.get('page')
+        page = request.GET.get('page', curr_event)
         fixture = paginator.get_page(page)
         ctx = {'fixture': fixture, 'title': 'Fixtures'}
         return render(request, 'components/fixture.html', ctx)
