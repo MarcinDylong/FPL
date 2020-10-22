@@ -60,10 +60,10 @@
             <div class="panel-heading">
                 <i class="fa fa-users fa-fw"></i> Searching results
             </div>
-            <!-- /.panel-heading -->
+
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <table class="table table-striped table-bordered table-hover" id="dataTables-example">
+                    <table class="table table-striped table-bordered table-hover" id="table1">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -93,32 +93,9 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    {% if players.has_other_pages %}
-                        <ul class="pagination">
-                            {% if players.has_previous %}
-                                <li class="page-item"><a class="page-link" href="?page={{ players.previous_page_number }}"><
-                                    Previous</a></li>
-                            {% else %}
-                                <li class="disabled"><span class="page-link">< Previous </span></li>
-                            {% endif %}
-                            {% for i in players.paginator.page_range %}
-                                {% if players.number == i %}
-                                    <li class="active page-item"><span class="page-link">{{ i }}<span
-                                            class="sr-only">(current)</span></span></li>
-                                {% else %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-                                {% endif %}
-                            {% endfor %}
-                            {% if players.has_next %}
-                                <li class="page-item"><a class="page-link" href="?page={{ players.next_page_number }}">Next
-                                    ></a></li>
-                            {% else %}
-                                <li class="disabled"><span class="page-link">Next ></span></li>
-                            {% endif %}
-                        </ul>
-                    {% endif %}
                 </div>
             </div>
+
             <!-- /.panel-body -->
         </div>
         <!-- /.panel -->
@@ -134,33 +111,16 @@
 
 
 <!-- DataTables JavaScript -->
-<script src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
-<script src="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
 
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
 $(document).ready(function() {
-    $('#dataTables-example').DataTable({
-            {#pagingType: 'full_numbers',#}
-            pagingType: 'full',
-            language: {
-                paginate: {
-                    first:    '«',
-                    previous: '‹',
-                    next:     '›',
-                    last:     '»'
-                    },
-            aria: {
-                paginate: {
-                    first:    'First',
-                    previous: 'Previous',
-                    next:     'Next',
-                    last:     'Last'
-                    }
-                }
-            }
-        });
-});
+    $('#table1').DataTable({
+       "info":     false
+    });
+} );
 </script>
 
 {% endblock extrajs %}

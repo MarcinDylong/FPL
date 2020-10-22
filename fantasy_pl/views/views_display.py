@@ -6,7 +6,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
 
-from fantasy_pl.forms import SearchForm, AdvSearchForm
+from fantasy_pl.forms import SearchForm, PlayerSearchForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures
 
 
@@ -92,7 +92,7 @@ class PlayersSearchView(View):
 
     def get(self, request):
         form = SearchForm(request.GET)
-        adv_form = AdvSearchForm()
+        adv_form = PlayerSearchForm()
         if form.is_valid():
             query_search = form.cleaned_data['search']
             q_players = Player.objects.filter(
@@ -107,47 +107,21 @@ class PlayersSearchView(View):
         return render(request, 'components/player_search.html', ctx)
 
     def post(self, request):
-        adv_form = AdvSearchForm(request.POST)
+        adv_form = PlayerSearchForm(request.POST)
         if adv_form.is_valid():
-            q_list = []
             pos = adv_form.cleaned_data['position']
-            if pos is not None:
-                q_list.append((Q(position=pos)))
-
-            min = adv_form.cleaned_data['min']
-            if min is None:
-                min = 0
-
             max = adv_form.cleaned_data['max']
-            if max is None:
-                max = 2000
+            q_players = Player.objects.order_by('-now_cost')
 
-            stat = adv_form.cleaned_data['stats']
-            if stat:
-                if stat == 'points_per_game':
-                    q_list.append((Q(points_per_game__gte=min)))
-                    q_list.append((Q(points_per_game__lte=max)))
-                elif stat == 'now_cost':
-                    q_list.append((Q(now_cost__gte=min)))
-                    q_list.append((Q(now_cost__lte=max)))
-                elif stat == 'form':
-                    q_list.append((Q(form__gte=min)))
-                    q_list.append((Q(form__lte=max)))
-                elif stat == 'total_points':
-                    q_list.append((Q(total_points__gte=min)))
-                    q_list.append((Q(total_points__lte=max)))
+            if pos is not None:
+                q_players = q_players.filter(position=pos)
+            if max is not None:
+                q_players = q_players.filter(now_cost__lte=max)
 
-            if len(q_list) == 0:
-                q_players = None
-            else:
-                q_players = Player.objects.filter(reduce(operator.and_, q_list)).order_by('-' + stat)
-                paginator = Paginator(q_players, 25)
-                page = request.GET.get('page')
-                q_players = paginator.get_page(page)
             ctx = {'players': q_players, 'title': 'Search',
-                   'adv_form': adv_form, 'stat': stat, 'pos': pos}
+                   'adv_form': adv_form, 'pos': pos}
             return render(request, 'components/player_search.html', ctx)
         else:
-            ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search',
-                   'failure': True}
+            ctx = {'adv_form': PlayerSearchForm(request.POST),
+                   'title': 'Search', 'failure': True}
             return render(request, 'components/player_search.html', ctx)

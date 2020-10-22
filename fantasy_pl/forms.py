@@ -109,31 +109,20 @@ stats = (
 )
 
 
-class AdvSearchForm(forms.Form):
+class PlayerSearchForm(forms.Form):
     position = forms.ModelChoiceField(label='Position', queryset=Position.objects.all(), required=False,
                                       widget=forms.Select(attrs={'class': 'form-control'}))
-    stats = forms.ChoiceField(label='Stat', choices=stats, required=False,
-                              widget=forms.Select(attrs={'class': 'form-control'}))
-    min = forms.FloatField(label='Min Value',
-                           required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
-    max = forms.FloatField(label='Max Value',
+    max = forms.FloatField(label='Max Cost',
                            required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def clean(self):
-        position = self.cleaned_data['position']
-        stats = self.cleaned_data['stats']
-        min = self.cleaned_data['min']
-        if min == None:
-            min = 0
+
         max = self.cleaned_data['max']
         if max == None:
-            max = 1500
+            max = 100
 
-        if (min != None and max != None) and (min >= max):
-            raise forms.ValidationError('Minimum value has to be smaller than maximum.')
-
-        if min < 0 or max < 0:
-            raise forms.ValidationError('Min and Max value must be greater than 0')
+        if max < 0:
+            raise forms.ValidationError('Max value must be greater than 0')
 
 
 class PlayerChoiceField(ModelChoiceField):
