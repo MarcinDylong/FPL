@@ -4,12 +4,12 @@ from .views.views_main import IndexView, LoginView, BlankView, LogoutView, \
      CreateUserView, ChangetPasswordView, SendMessageView, MessageReceivedView, \
      MessageSentView
 from .views.views_display import TeamView, StandingsView, PlayerView, \
-    PositionsView, StatsView, SearchView, FixtureView
+     StatsView, PlayersSearchView, FixtureView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, ApiPlayersListView, \
      ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
 from .views.views_data import PopulateTablesView, UpdateTablesView, \
-    DownloadDataView, GetPlayersHistoryView, GetFixtureView, \
-    DownloadUserteamView
+     DownloadDataView, GetPlayersHistoryView, GetFixtureView, \
+     DownloadUserteamView
 from .views.views_userteam import UserTeamView
 
 app_name = 'fantasy_pl'
@@ -41,12 +41,9 @@ urlpatterns = [
     path('team/<int:id>/<str:sort>', TeamView.as_view(), name='team'),
     path('standings/', StandingsView.as_view(), name='standings'),
     path('fixture/', FixtureView.as_view(), name='fixture'),
-    # path('fixture/(?P<page>[0-9]+)/', FixtureView.as_view(), name='fixture'),
     path('player/<int:id>/', PlayerView.as_view(), name='player'),
-    path('positions/<str:pos>/<str:sort>', PositionsView.as_view(),
-         name='positions'),
     path('stats/', StatsView.as_view(), name='stats'),
-    path('search/', SearchView.as_view(), name='search'),
+    path('search/', PlayersSearchView.as_view(), name='search'),
     ## API
     path('api/teams', ApiTeamsListView.as_view(), name='api_teams'),
     path('api/teams/<int:pk>', ApiTeamsView.as_view(), name='api_team_detail'),

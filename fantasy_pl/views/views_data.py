@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
+from django.contrib import messages
 
-from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm
-from fantasy_pl.models import Player, User, Fixtures
+from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm, \
+                             UserTeamForm
+from fantasy_pl.models import Player, Fixtures
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
@@ -38,10 +40,9 @@ def DownloadUserteamView(request):
         except Exception as e:
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
-        ### Check logged user
         user = request.user
-        ### Try to update user team or create if non existed
         update_userteam(user, player_list)
+        messages.success(request,"Your team was succesfully downloaded.")
         return redirect('/user_team/')
 
 

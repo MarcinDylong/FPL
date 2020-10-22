@@ -23,6 +23,13 @@
 {# Form block col-lg-12#}
 <div class="row">
     {% include 'components/userteam/_userteam_form_get_userteam.html' %}
+    {% if messages %}
+        {% for message in messages %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
 </div>
 {# Forms and data block col-lg-4 and col-lg-8#}
 <div class="row">

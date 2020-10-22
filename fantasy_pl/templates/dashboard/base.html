@@ -122,20 +122,6 @@
                             <a href="{% url 'fpl:fixture' %}" class="bialy"><i class="fa fa-calendar fa-fw"></i>Fixture</a>
                         </li>
                         <li>
-                            <a href="#" class="bialy">
-                                <i class="fa fa-users fa-fw" class="bialy"></i>Players<span class="fa arrow"></span>
-                            </a>
-                            <ul class="nav nav-second-level">
-                                {% for pos in positions %}
-                                    <li class="rozowy">
-                                        <a href="{% url 'fpl:positions' pos.name_short 'id' %}"
-                                           class="bialy-nap">{{ pos.name }}s</a>
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                            <!-- /.nav-second-level -->
-                        </li>
-                        <li>
                             <a href="{% url 'fpl:stats' %}" class="bialy">
                                 <i class="fa fa-bar-chart-o fa-fw"></i>Stats
                             </a>
@@ -143,7 +129,7 @@
                         </li>
                         <li>
                             <a href="{% url 'fpl:search' %}" class="bialy">
-                                <i class="fa fa-search-plus fa-fw"></i> Advance Search
+                                <i class="fa fa-users fa-fw"></i> Players Search
                             </a>
                             <!-- /.nav-second-level -->
                         </li>

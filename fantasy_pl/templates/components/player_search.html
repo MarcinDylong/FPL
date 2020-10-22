@@ -26,12 +26,15 @@
             <div class="panel panel-zielony">
                 <div class="panel-heading">
                     <h4 class="panel-title">
-                        <a data-toggle="collapse" style="color: #ffffff" href="#collapseOne">Advanced Search</a>
+                        <a data-toggle="collapse" style="color: #ffffff" href="#collapseOne">Players Search</a>
                     </h4>
                 </div>
-            {% if failure %}
                 <div id="collapseOne" class="panel-collapse" aria-expanded="True">
+                    {% if failure %}
                     <div class="panel-body alert-danger">
+                    {% else %}
+                    <div class="panel-body">
+                    {% endif %}
                         <form action="#" method="POST">
                             <div>
                                 {% csrf_token %}
@@ -45,23 +48,6 @@
                         </form>
                     </div>
                 </div>
-            {% else %}
-                <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false">
-                    <div class="panel-body">
-                        <form action="#" method="POST">
-                            <div>
-                                {% csrf_token %}
-                                {{ adv_form.as_p }}
-                            </div>
-                            <span class="input-group-btn">
-                                <button class="btn btn-zielony" type="'submit">
-                                    <i class="fa fa-search">Search</i>
-                                </button>
-                            </span>
-                        </form>
-                    </div>
-                </div>
-            {% endif %}
             </div>
         </div>
     </div>

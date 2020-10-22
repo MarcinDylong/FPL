@@ -7,8 +7,7 @@ from django.shortcuts import render
 from django.views import View
 
 from fantasy_pl.forms import SearchForm, AdvSearchForm
-from fantasy_pl.models import Team, Player, Position, PlayerHistory, \
-    Fixtures
+from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures
 
 
 class TeamView(View):
@@ -73,22 +72,6 @@ class FixtureView(View):
         return render(request, 'components/fixture.html', ctx)
 
 
-class PositionsView(View):
-
-    def get(self, request, pos, sort):
-        pos = Position.objects.get(name_short=pos)
-        if pos.name_short == 'ALL':
-            players = Player.objects.filter().order_by('-' + sort)
-        else:
-            players = Player.objects.filter(position=pos).order_by('-' + sort)
-
-        paginator = Paginator(players, 25)
-        page = request.GET.get('page')
-        players = paginator.get_page(page)
-        ctx = {'pos': pos, 'players': players, 'title': pos.name_short}
-        return render(request, 'components/positions.html', ctx)
-
-
 class StatsView(View):
 
     def get(self, request):
@@ -105,7 +88,7 @@ class StatsView(View):
         return render(request, 'components/stats.html', ctx)
 
 
-class SearchView(View):
+class PlayersSearchView(View):
 
     def get(self, request):
         form = SearchForm(request.GET)
@@ -121,7 +104,7 @@ class SearchView(View):
             ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form}
         else:
             ctx = {'title': 'Search', 'adv_form': adv_form}
-        return render(request, 'components/search.html', ctx)
+        return render(request, 'components/player_search.html', ctx)
 
     def post(self, request):
         adv_form = AdvSearchForm(request.POST)
@@ -163,8 +146,8 @@ class SearchView(View):
                 q_players = paginator.get_page(page)
             ctx = {'players': q_players, 'title': 'Search',
                    'adv_form': adv_form, 'stat': stat, 'pos': pos}
-            return render(request, 'components/search.html', ctx)
+            return render(request, 'components/player_search.html', ctx)
         else:
             ctx = {'adv_form': AdvSearchForm(request.POST), 'title': 'Search',
                    'failure': True}
-            return render(request, 'components/search.html', ctx)
+            return render(request, 'components/player_search.html', ctx)
