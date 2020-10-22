@@ -322,21 +322,21 @@ def data_to_player_fixture(hist, g):
 
 
 def data_to_userteam(usrtm, player_list):
-    usrtm['gkp'].initial = player_list[0]
-    usrtm['def1'].initial = player_list[1]
-    usrtm['def2'].initial = player_list[2]
-    usrtm['def3'].initial = player_list[3]
-    usrtm['def4'].initial = player_list[4]
-    usrtm['mdf1'].initial = player_list[5]
-    usrtm['mdf2'].initial = player_list[6]
-    usrtm['mdf3'].initial = player_list[7]
-    usrtm['mdf4'].initial = player_list[8]
-    usrtm['fwd1'].initial = player_list[9]
-    usrtm['fwd2'].initial = player_list[10]
-    usrtm['gkpb'].initial = player_list[11]
-    usrtm['defb'].initial = player_list[12]
-    usrtm['mdfb'].initial = player_list[13]
-    usrtm['fwdb'].initial = player_list[14]
+    usrtm.gkp = Player.objects.get(id=player_list[0])
+    usrtm.def1 = Player.objects.get(id=player_list[1])
+    usrtm.def2 = Player.objects.get(id=player_list[2])
+    usrtm.def3 = Player.objects.get(id=player_list[3])
+    usrtm.def4 = Player.objects.get(id=player_list[4])
+    usrtm.mdf1 = Player.objects.get(id=player_list[5])
+    usrtm.mdf2 = Player.objects.get(id=player_list[6])
+    usrtm.mdf3 = Player.objects.get(id=player_list[7])
+    usrtm.mdf4 = Player.objects.get(id=player_list[8])
+    usrtm.fwd1 = Player.objects.get(id=player_list[9])
+    usrtm.fwd2 = Player.objects.get(id=player_list[10])
+    usrtm.gkpb = Player.objects.get(id=player_list[11])
+    usrtm.defb = Player.objects.get(id=player_list[12])
+    usrtm.mdfb = Player.objects.get(id=player_list[13])
+    usrtm.fwdb = Player.objects.get(id=player_list[14])
 
 
 if __name__ == "__main__":

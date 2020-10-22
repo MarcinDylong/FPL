@@ -2,7 +2,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render
 from django.views import View
 
-from fantasy_pl.forms import UserTeamForm
+from fantasy_pl.forms import UserTeamForm, GetUserteamForm
 from fantasy_pl.models import UserTeam
 
 
@@ -46,7 +46,9 @@ class UserTeamView(View):
     def get(self, request):
         ctx = {}
         form = UserTeamForm()
+        form_gut = GetUserteamForm()
         ctx['form'] = form
+        ctx['form_gut'] = form_gut
         ctx['title'] = 'Your Team'
 
         if UserTeam.objects.filter(user=request.user):
@@ -118,10 +120,12 @@ class UserTeamView(View):
             uteam = UserTeam.objects.get(user=request.user)
             self.team_overall(uteam, ctx)
             ctx['form'] = form
+            ctx['form_gut'] = GetUserteamForm()
             return render(request, 'components/userteam/userteam.html', ctx)
         else:
             uteam = UserTeam.objects.get(user=request.user)
             self.team_overall(uteam, ctx)
             ctx['failure'] = True
             ctx['form'] = form
+            ctx['form_gut'] = GetUserteamForm()
             return render(request, 'components/userteam/userteam.html', ctx)

@@ -33,6 +33,12 @@ class GetFixtureForm(forms.Form):
                                choices=CHOICES)
 
 
+class GetUserteamForm(forms.Form):
+    fpl_id = forms.IntegerField(label='Insert user ID from FPL account: ',
+                                widget=forms.NumberInput(
+                                    attrs={'class': 'form-control'}))
+
+
 class CreateUserForm(forms.Form):
     username = forms.CharField(label='User name:', widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'class': 'form-control'}))

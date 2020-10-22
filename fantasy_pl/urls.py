@@ -8,7 +8,8 @@ from .views.views_display import TeamView, StandingsView, PlayerView, \
 from .views.views_api import ApiTeamsView, ApiTeamsListView, ApiPlayersListView, \
      ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
 from .views.views_data import PopulateTablesView, UpdateTablesView, \
-    DownloadDataView, GetPlayersHistoryView, GetFixtureView
+    DownloadDataView, GetPlayersHistoryView, GetFixtureView, \
+    DownloadUserteamView
 from .views.views_userteam import UserTeamView
 
 app_name = 'fantasy_pl'
@@ -26,6 +27,7 @@ urlpatterns = [
          name='received_message'),
     path('sent_message/', MessageSentView.as_view(), name='sent_message'),
     path('user_team/', UserTeamView.as_view(), name='user_team'),
+    path('download_userteam/', DownloadUserteamView, name="download_userteam"),
     path('blank/', BlankView.as_view(), name="blank"),
     ##  Data download & update
     path('download_data/', DownloadDataView.as_view(), name='download_data'),

@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import render, redirect
 from django.views import View
 
-from fantasy_pl.forms import GetDataForm, GetFixtureForm
+from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm
 from fantasy_pl.models import Player, User, Fixtures
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
@@ -25,10 +25,10 @@ class DownloadDataView(PermissionRequiredMixin, View):
             return render(request, "components/event.html", ctx)
 
 
-class DownloadUserteamView(View):
-
-    def get(self, request, player_id):
-        ### Try download data for User by ID
+def DownloadUserteamView(request):
+    form = GetUserteamForm(request.POST)
+    if form.is_valid():
+        player_id = form.cleaned_data['fpl_id']
         try:
             last_game = Fixtures.objects.filter(finished=True).last()
             gw = last_game.event
@@ -39,12 +39,10 @@ class DownloadUserteamView(View):
             ctx = {'event': 'Error occured', 'error': format(e)}
             return render(request, "components/event.html", ctx)
         ### Check logged user
-        if 'user_name' in request.session:
-            username = request.session['user_name']
-            user = User.objects.get(username=username)
+        user = request.user
         ### Try to update user team or create if non existed
         update_userteam(user, player_list)
-        return redirect('user_team/')
+        return redirect('/user_team/')
 
 
 class PopulateTablesView(PermissionRequiredMixin, View):
