@@ -93,7 +93,7 @@ def league_table_scraper():
         except:
             pass
 
-    table = {int(pulse_id[i]): [i + 1] + data[6 * i: 6 * (i + 1)] for i in
+    table = {int(pulse_id[i]): [i + 1] + data[8 * i: 8 * (i + 1)] for i in
              range(len(pulse_id))}
 
     return table
@@ -235,8 +235,8 @@ def data_to_team(team, t, perf):
     team.loss = t_perf[4]
     team.gf = t_perf[5]
     team.ga = t_perf[6]
-    team.gd = t_perf[5] - t_perf[6]
-    team.points = 3*t_perf[2] + t_perf[3]
+    team.gd = t_perf[7]
+    team.points = t_perf[8]
     team.form = t['form']
     team.name = t['name']
     team.short_name = t['short_name']
