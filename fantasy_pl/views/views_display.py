@@ -40,12 +40,8 @@ class PlayerView(View):
                                     .filter(finished=True)\
                                     .order_by('kickoff_time')
         chart = hist
-        # chart = PlayerHistory.objects.filter(player=player)\
-        #                      .filter(finished=True).order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
-        games = PlayerHistory.objects.filter(player=player)\
-                                    .filter(finished=False)\
-                                    .order_by('kickoff_time')
+
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
                'games': games, 'hist': hist, 'chart': chart}

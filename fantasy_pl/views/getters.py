@@ -1,5 +1,7 @@
 import json
 import time
+import bs4 as bs
+import urllib.request
 
 import requests
 from django.db.models import Q
@@ -74,6 +76,29 @@ def get_fpl_userteam(player_id: int, gw: int):
     return data
 
 
+def league_table_scraper():
+    source_url = 'https://www.premierleague.com/tables'
+    source = urllib.request.urlopen(source_url)
+    soup = bs.BeautifulSoup(source, 'lxml')
+    table = soup.find('tbody', class_='tableBodyContainer isPL')
+
+    tr_name = table.find_all('a', attrs={'class': 'expandableTeam'})
+    pulse_id = [a.get('href').split('/')[2] for a in tr_name]
+
+    td_data = table.find_all('td')
+    data = []
+    for td in td_data:
+        try:
+            data.append(int(td.string))
+        except:
+            pass
+
+    table = {int(pulse_id[i]): [i + 1] + data[6 * i: 6 * (i + 1)] for i in
+             range(len(pulse_id))}
+
+    return table
+
+
 def download_json():
     data = get_data()
     with open('data.json', 'w') as outf:
@@ -89,10 +114,11 @@ def read_json():
 
 # Team updates and populates
 def populate_teams(teams):
+    perf = league_table_scraper()
     for t in teams:
         team = Team()
         team.id = int(t['id'])
-        data_to_team(team, t)
+        data_to_team(team, t, perf)
         team.save()
 
 
@@ -122,9 +148,10 @@ def populate_fixture(fixtures):
 
 
 def update_teams(teams):
+    perf = league_table_scraper()
     for t in teams:
         team = Team.objects.get(id=t['id'])
-        data_to_team(team,t)
+        data_to_team(team, t, perf)
         team.save()
 
 
@@ -198,17 +225,22 @@ def get_player_fixture(game, id):
 
 
 ### Functions for data assignment
-def data_to_team(team, t):
-    team.draw = t['draw']
+def data_to_team(team, t, perf):
+    team.pulse_id = t['pulse_id']
+    t_perf = perf[team.pulse_id]
+    team.position = t_perf[0]
+    team.played = t_perf[1]
+    team.win = t_perf[2]
+    team.draw = t_perf[3]
+    team.loss = t_perf[4]
+    team.gf = t_perf[5]
+    team.ga = t_perf[6]
+    team.gd = t_perf[5] - t_perf[6]
+    team.points = 3*t_perf[2] + t_perf[3]
     team.form = t['form']
-    team.loss = t['loss']
     team.name = t['name']
-    team.played = t['played']
-    team.points = t['points']
-    team.position = t['position']
     team.short_name = t['short_name']
     team.strength = t['strength']
-    team.win = t['win']
     team.strength_overall_home = t['strength_overall_home']
     team.strength_overall_away = t['strength_overall_away']
     team.strength_attack_home = t['strength_attack_home']

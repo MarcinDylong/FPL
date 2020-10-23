@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 
 class Team(models.Model):
     id = models.SmallIntegerField(primary_key=True)
+    pulse_id = models.SmallIntegerField(null=True)
     name = models.CharField(max_length=32)
     short_name = models.CharField(max_length=4)
     position = models.SmallIntegerField()
@@ -10,6 +11,9 @@ class Team(models.Model):
     win = models.SmallIntegerField()
     draw = models.SmallIntegerField()
     loss = models.SmallIntegerField()
+    gf = models.SmallIntegerField(null=True)
+    ga = models.SmallIntegerField(null=True)
+    gd = models.SmallIntegerField(null=True)
     points = models.SmallIntegerField()
     form = models.TextField(max_length=8, null=True)
     strength = models.SmallIntegerField()
@@ -44,6 +48,7 @@ class Player(models.Model):
     news_added = models.DateTimeField(null=True)
     # Stats from BPL
     minutes = models.IntegerField()
+    # minutes_pg = models.FloatField(null=True)
     goals_scored = models.IntegerField()
     assists = models.IntegerField()
     clean_sheets = models.IntegerField()

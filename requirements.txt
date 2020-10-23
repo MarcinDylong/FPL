@@ -10,3 +10,4 @@ psycopg2-binary==2.8.4
 pytz==2019.2
 urllib3==1.25.11
 Werkzeug==0.16.0
+beautifulsoup4==4.9.3
