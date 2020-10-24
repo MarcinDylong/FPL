@@ -60,10 +60,9 @@
             <div class="panel-heading">
                 <i class="fa fa-users fa-fw"></i> Searching results
             </div>
-
             <div class="panel-body">
                 <div class="dataTable_wrapper">
-                    <table class="table table-striped table-bordered table-hover" id="table1">
+                    <table class="table table-striped table-bordered table-hover" id="tableSearch">
                         <thead>
                             <tr>
                                 <th>ID</th>
@@ -95,12 +94,8 @@
                     </table>
                 </div>
             </div>
-
-            <!-- /.panel-body -->
         </div>
-        <!-- /.panel -->
     </div>
-    <!-- /.col-lg-12 -->
 </div>
 {% endif %}
 
@@ -109,7 +104,6 @@
 
 {% block extrajs %}
 
-
 <!-- DataTables JavaScript -->
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
@@ -117,7 +111,7 @@
 <!-- Page-Level Demo Scripts - Tables - Use for reference -->
 <script>
 $(document).ready(function() {
-    $('#table1').DataTable({
+    $('#tableSearch').DataTable({
        "info":     false
     });
 } );

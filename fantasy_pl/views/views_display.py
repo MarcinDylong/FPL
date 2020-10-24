@@ -39,6 +39,9 @@ class PlayerView(View):
         hist = PlayerHistory.objects.filter(player=player)\
                                     .filter(finished=True)\
                                     .order_by('kickoff_time')
+        games = PlayerHistory.objects.filter(player=player) \
+            .filter(finished=False) \
+            .order_by('kickoff_time')
         chart = hist
         team = Team.objects.get(name=player.team)
 
@@ -72,15 +75,7 @@ class StatsView(View):
 
     def get(self, request):
         ctx = {'title': 'Stats'}
-        ctx['goals'] = Player.objects.all().order_by('-goals_scored')[:10:1]
-        ctx['minutes'] = Player.objects.all().order_by('-minutes')[:10:1]
-        ctx['assists'] = Player.objects.all().order_by('-assists')[:10:1]
-        ctx['own_goals'] = Player.objects.all().order_by('-own_goals')[:10:1]
-        ctx['penalties_saved'] = Player.objects.all().order_by('-penalties_saved')[:10:1]
-        ctx['yellow_cards'] = Player.objects.all().order_by('-yellow_cards')[:10:1]
-        ctx['red_cards'] = Player.objects.all().order_by('-red_cards')[:10:1]
-        ctx['total_points'] = Player.objects.all().order_by('-total_points')[:10:1]
-        ctx['points_per_game'] = Player.objects.all().order_by('-points_per_game')[:10:1]
+        ctx['stats'] = Player.objects.all().order_by()
         return render(request, 'components/stats.html', ctx)
 
 
@@ -92,12 +87,11 @@ class PlayersSearchView(View):
         if form.is_valid():
             query_search = form.cleaned_data['search']
             q_players = Player.objects.filter(
-                Q(first_name__icontains=query_search) | Q(second_name__icontains=query_search)).order_by(
-                '-selected_by_percent')
-            paginator = Paginator(q_players, 25)
-            page = request.GET.get('page')
-            q_players = paginator.get_page(page)
-            ctx = {'players': q_players, 'title': 'Search', 'adv_form': adv_form}
+                Q(first_name__icontains=query_search) |
+                Q(second_name__icontains=query_search)).order_by(
+                    '-selected_by_percent')
+            ctx = {'players': q_players, 'title': 'Search',
+                   'adv_form': adv_form}
         else:
             ctx = {'title': 'Search', 'adv_form': adv_form}
         return render(request, 'components/player_search.html', ctx)
