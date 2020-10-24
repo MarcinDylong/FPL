@@ -159,7 +159,7 @@ def update_players(players):
     for p in players:
         try:
             player = Player.objects.get(id=p['id'])
-            data_to_player(player,p)
+            data_to_player(player, p)
             player.save()
         except:
             player = Player()
@@ -170,15 +170,18 @@ def update_players(players):
 
 def update_fixture(fixtures):
     for f in fixtures:
-        try:
-            fix = Fixtures.objects.get(id=f['id'])
-            data_to_fixture(fix, f)
-            fix.save()
-        except:
-            fix = Fixtures()
-            fix.id = f['id']
-            data_to_fixture(fix, f)
-            fix.save()
+        if f['finished'] == False:
+            pass
+        else:
+            try:
+                fix = Fixtures.objects.get(id=f['id'])
+                data_to_fixture(fix, f)
+                fix.save()
+            except:
+                fix = Fixtures()
+                fix.id = f['id']
+                data_to_fixture(fix, f)
+                fix.save()
 
 
 def update_userteam(user, player_list):
