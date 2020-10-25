@@ -75,7 +75,7 @@ class StatsView(View):
 
     def get(self, request):
         ctx = {'title': 'Stats'}
-        ctx['stats'] = Player.objects.all().order_by()
+        ctx['stats'] = Player.objects.filter(minutes__gt=0)
         return render(request, 'components/stats.html', ctx)
 
 
