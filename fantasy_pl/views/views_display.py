@@ -1,6 +1,3 @@
-import operator
-from functools import reduce
-
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
