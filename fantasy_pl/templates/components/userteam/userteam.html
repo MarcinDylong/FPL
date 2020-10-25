@@ -60,6 +60,18 @@
 
 
 <script>
+
+$(document).ready(function() {
+    $('#UserTeam').DataTable({
+            responsive: true,
+            info: false,
+            paging: false,
+            searching: false
+    });
+});
+
+
+
    new Morris.Bar({
       // ID of the element in which to draw the chart.
       element: 'cost',

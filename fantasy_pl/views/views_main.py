@@ -30,7 +30,7 @@ class IndexView(View):
             pass
         # Random player
         try:
-            player = list(Player.objects.all())
+            player = list(Player.objects.filter(points_per_game__gt=4))
             random.shuffle(player)
             tp = Team.objects.get(name=player[0].team)
             tpphoto = "/static/logos/" + tp.short_name.lower() + ".png "
