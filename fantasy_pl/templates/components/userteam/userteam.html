@@ -53,16 +53,13 @@
 
 {% block extrajs %}
 
-<!-- Morris Charts JavaScript -->
-<script src="{% static "bower_components/raphael/raphael-min.js" %}"></script>
-<script src="{% static "bower_components/morrisjs/morris.min.js" %}"></script>
-<script src="{% static "js/morris-data.js" %}"></script>
+
 
 
 <script>
 
 $(document).ready(function() {
-    $('#UserTeam').DataTable({
+    $('#UserTeamList').DataTable({
             responsive: true,
             info: false,
             paging: false,
