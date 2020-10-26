@@ -11,10 +11,7 @@ class TeamView(View):
 
     def get(self, request, id, sort):
         team = Team.objects.get(id=id)
-        if sort in ['points_per_game', 'influence', 'now_cost', 'creativity',
-                    'threat']:
-            sort = '-' + sort
-        players = Player.objects.filter(team=team.id).order_by(sort, 'id')
+        players = Player.objects.filter(team=team.id)
         fixtures_a = PlayerHistory.objects.filter(team_a=team)\
             .filter(is_home=False).filter(finished=False)\
             .order_by('kickoff_time').distinct('kickoff_time')

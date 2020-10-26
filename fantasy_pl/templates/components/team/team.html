@@ -38,5 +38,15 @@
 
 {% block extrajs %}
 
+<script>
+$(document).ready(function() {
+    $('#PlayerList').DataTable({
+            responsive: true,
+            info: false,
+            paging: false,
+            searching: false
+    });
+});
+</script>
 
 {% endblock extrajs %}

@@ -4,10 +4,10 @@
                 <i class="fa fa-users fa-fw"></i> Team
                 <div class="pull-right">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
-                            Sort by
-                            <span class="caret"></span>
-                        </button>
+{#                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">#}
+{#                            Sort by#}
+{#                            <span class="caret"></span>#}
+{#                        </button>#}
                         <ul class="dropdown-menu pull-right" role="menu">
                             <li><a href="{% url 'fpl:team' team.id 'id' %}">ID</a>
                             </li>
@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="table-responsive">
-                            <table class="table table-bordered table-hover table-striped">
+                            <table class="table table-bordered table-hover table-striped" id="PlayerList">
                                 <thead>
                                     <tr>
                                         <th>ID</th>
