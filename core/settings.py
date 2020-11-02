@@ -80,7 +80,7 @@ DATABASES = {
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': 'coderslab'
+        'PASSWORD': 'your_secret_password'
     }
 }
 
