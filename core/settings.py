@@ -1,14 +1,27 @@
 import os
+import json
 from decouple import config
 from unipath import Path
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
+with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+    secrets = json.load(secrets_file)
+
+def get_secret(setting, secrets=secrets):
+    """Get secret setting or fail with ImproperlyConfigured"""
+    try:
+        return secrets[setting]
+    except KeyError:
+        raise ImproperlyConfigured("Set the {} setting".format(setting))
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
+# SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
+SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True)
@@ -30,8 +43,7 @@ INSTALLED_APPS = [
     'fantasy_pl',
     'rest_framework',
     'django_extensions',
-    'django_filters',
-    # 'coverage'
+    'django_filters'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
@@ -80,7 +92,7 @@ DATABASES = {
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': 'your_secret_password'
+        'PASSWORD': get_secret('DB_PASSWORD')
     }
 }
 
