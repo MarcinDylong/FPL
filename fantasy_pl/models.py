@@ -100,13 +100,6 @@ class Player(models.Model):
         else:
             return 0
 
-class Message(models.Model):
-    subject = models.CharField(max_length=64, null=False)
-    content = models.TextField()
-    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='recipient')
-    sender = models.ForeignKey(User, on_delete=models.CASCADE, related_name='sender')
-    date_sent = models.DateTimeField(auto_now_add=True)
-
 
 class UserTeam(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -155,6 +148,7 @@ class Fixtures(models.Model):
 
 class PlayerHistory(models.Model):
     player = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
+    position = models.SmallIntegerField(null=True)
     fixture = models.ForeignKey(Fixtures, null=True, on_delete=models.SET_NULL)
     round = models.SmallIntegerField()
     kickoff_time = models.DateTimeField(null=True)
@@ -205,3 +199,4 @@ class PlayerHistory(models.Model):
 
     def diff_rest(self):
         return 5 - self.difficulty
+

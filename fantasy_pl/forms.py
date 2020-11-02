@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.validators import ValidationError, MinValueValidator
 from fantasy_pl.models import Player, Team, Position
@@ -14,91 +13,36 @@ class LoginForm(forms.Form):
 class GetDataForm(forms.Form):
     id = forms.IntegerField(label='Get by ID', required=False,
                             widget=forms.NumberInput(
-                                attrs={'class': 'form-control'}))
+                                attrs={'class': 'form-control',
+                                       'placeholder': 'Id number of player'}))
     team = forms.ModelChoiceField(label='Get by Team', required=False,
                                   queryset=Team.objects.all().order_by('name'),
                                   widget=forms.Select(
                                       attrs={'class': 'form-control'}))
     all = forms.BooleanField(label='Get all', required=False,
                              widget=forms.CheckboxInput(
-                                      attrs={'class': 'form-control'}))
+                                    attrs={'class': 'form-control'}))
 
 
 CHOICES = [(0, 'Download Fixtures'), (1, 'Update Fixtures')]
 
 class GetFixtureForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect(
-                                    attrs={'class': 'custom-radio-list'}),
-                               label='Choose option',
+                               attrs={'class': 'custom-radio'}),
+                               label = False,
                                choices=CHOICES)
 
 
 class GetUserteamForm(forms.Form):
-    fpl_id = forms.IntegerField(label='Insert user ID from FPL account: ',
+    fpl_id = forms.IntegerField(label=False,
                                 widget=forms.NumberInput(
-                                    attrs={'class': 'form-control'}))
-
-
-class CreateUserForm(forms.Form):
-    username = forms.CharField(label='User name:', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label='Password:', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    rep_password = forms.CharField(label='Repeat password:',
-                                   widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    email = forms.EmailField(label='E-mail:', widget=forms.TextInput(attrs={'class': 'form-control'}))
-
-    def clean(self):
-        # Automatically called by form.is_valid()
-        # ...can also use 'clean_FIELDNAME()' for individual fields
-
-        username = self.cleaned_data['username']
-
-        if User.objects.filter(username=username).exists():
-            raise ValidationError('This name is already taken')
-
-        password = self.cleaned_data['password']
-        rep_password = self.cleaned_data['rep_password']
-
-        if password != rep_password:
-            raise ValidationError('Repeated password do not match')
-
-
-class ResetPasswordForm(forms.Form):
-    user_id = forms.IntegerField(widget=forms.HiddenInput)
-    old_password = forms.CharField(label='Old password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    new_password = forms.CharField(label='New password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    rep_password = forms.CharField(label='Repeat new password',
-                                   widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-    def clean(self):
-        user_id = self.cleaned_data['user_id']
-        old_password = self.cleaned_data['old_password']
-        new_password = self.cleaned_data['new_password']
-        rep_password = self.cleaned_data['rep_password']
-
-        user = User.objects.get(pk=user_id)
-
-        if user is None:
-            raise forms.ValidationError('User do no exist')
-
-        if not authenticate(username=user.username, password=old_password):
-            raise forms.ValidationError('Wrong old password')
-
-        if new_password != rep_password:
-            raise forms.ValidationError('Repeated password do not match')
-
-
-class MessageForm(forms.Form):
-    subject = forms.CharField(label='Subject', max_length=64, widget=forms.TextInput(
-        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Subject...'}))
-    recipient = forms.ModelChoiceField(label='Recipient', queryset=User.objects.all(),
-                                       widget=forms.Select(attrs={'class': 'form-control'}))
-    content = forms.CharField(label='Content', widget=forms.Textarea(
-        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Content....'}))
+                                    attrs={'class': 'form-control',
+                                           'placeholder': 'Provide ID of your user in FPL'}))
 
 
 class SearchForm(forms.Form):
     search = forms.CharField(label='', max_length=64, widget=forms.TextInput(
-        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search...'}))
+        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search for player...'}))
 
 
 stats = (
@@ -135,7 +79,7 @@ class PlayerChoiceField(ModelChoiceField):
 class UserTeamForm(forms.Form):
     gkp = PlayerChoiceField(label='Goalkeeper',
                                  queryset=Player.objects.filter(position=1).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control'}))
+                                 widget=forms.Select(attrs={'class': 'form-control',}))
     gkpb = PlayerChoiceField(label='Bench goalkepper',
                                   queryset=Player.objects.filter(position=1).order_by('-now_cost'),
                                   widget=forms.Select(attrs={'class': 'form-control'}))

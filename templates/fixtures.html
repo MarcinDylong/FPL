@@ -1,0 +1,83 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - Fixtures {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h3 class="m-b-10">Premier League Fixtures</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ Standing-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <table class="table table-hr table-hover" id="Fixtures">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>GW</th>
+                                                <th>Home Team</th>
+                                                <th>Away Team</th>
+                                                <th>Result</th>
+                                                <th>Kick-off Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for f in fixture %}
+                                            <tr class="center" align="center">
+                                                <td>{{f.event}}</td>
+                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_h.id %}">{{f.team_h}}</a></td>
+                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_a.id %}">{{f.team_a}}</a></td>
+                                                <td>{{f.team_h_score}} - {{f.team_a_score}}</td>
+                                                <td>{{f.kickoff_time}}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                    {% if fixture.has_other_pages %}
+                                    <ul class="pagination">
+                                        {% for i in fixture.paginator.page_range %}
+                                            {% if fixture.number == i %}
+                                                <li class="active page-item"><span class="page-link">{{ i }}<span
+                                                        class="sr-only">(current)</span></span></li>
+                                            {% else %}
+                                                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </ul>
+                                {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Standing-table ] end -->
+                </div>
+                <!-- [ Main Content ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}   {% endblock javascripts %}

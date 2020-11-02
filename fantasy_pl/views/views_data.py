@@ -3,14 +3,14 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
 
-from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm, \
-                             UserTeamForm
+
+from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm
 from fantasy_pl.models import Player, Fixtures
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
-    get_fpl_userteam, update_userteam
+    get_fpl_userteam, update_userteam, get_data
 
 
 class DownloadDataView(PermissionRequiredMixin, View):
@@ -20,11 +20,11 @@ class DownloadDataView(PermissionRequiredMixin, View):
     def get(self, request):
         try:
             download_json()
-            ctx = {'event': 'Success!', 'info': 'Data has been downloaded'}
-            return render(request, "components/event.html", ctx)
+            ctx = {'event': 'success', 'info': 'Data has been downloaded'}
+            return render(request, "page-event.html", ctx)
         except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
+            ctx = {'event': 'error', 'error': format(e)}
+            return render(request, "page-event.html", ctx)
 
 
 def DownloadUserteamView(request):
@@ -38,12 +38,13 @@ def DownloadUserteamView(request):
             player = team['picks']
             player_list = [p['element'] for p in player]
         except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
+            messages.error(request, f"Failure downloading your team: "
+                                    f"{format(e)}")
+            return redirect('/user-team/')
         user = request.user
         update_userteam(user, player_list)
-        messages.success(request,"Your team was succesfully downloaded.")
-        return redirect('/user_team/')
+        messages.success(request, "Your team was succesfully downloaded.")
+        return redirect('/user-team/')
 
 
 class PopulateTablesView(PermissionRequiredMixin, View):
@@ -61,12 +62,12 @@ class PopulateTablesView(PermissionRequiredMixin, View):
             populate_positions(positions)
             populate_players(players)
         except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
+            ctx = {'event': 'error', 'error': format(e)}
+            return render(request, "page-event.html", ctx)
 
-        ctx = {'event': 'Success!',
+        ctx = {'event': 'success',
                'info': 'Tables Team, Position, Player has been populated.'}
-        return render(request, "components/event.html", ctx)
+        return render(request, "page-event.html", ctx)
 
 
 class UpdateTablesView(PermissionRequiredMixin, View):
@@ -82,20 +83,21 @@ class UpdateTablesView(PermissionRequiredMixin, View):
             update_teams(teams)
             update_players(players)
         except Exception as e:
-            ctx = {'event': 'Error occured', 'error': format(e)}
-            return render(request, "components/event.html", ctx)
+            ctx = {'event': 'error', 'error': format(e)}
+            return render(request, "page-event.html", ctx)
 
-        ctx = {'event': 'Success!',
+        ctx = {'event': 'success',
                'info': 'Tables database has been updated.'}
-        return render(request, "components/event.html", ctx)
+        return render(request, "page-event.html", ctx)
 
 
 class GetPlayersHistoryView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_player'
+    permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        ctx = {'title': "Get data", 'form': GetDataForm()}
-        return render(request, 'components/get_data.html', ctx)
+        ctx = {'form': GetDataForm()}
+        return render(request, 'get_player_data.html', ctx)
 
     def post(self, request):
         form = GetDataForm(request.POST)
@@ -110,17 +112,14 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     get_player_data(history)
                     game = data['fixtures']
                     get_player_fixture(game, id)
-                    ctx = {'successful': True,
+                    ctx = {'event': 'success',
                            'info': f'Data for player {id} has been updated',
-                           'title': "Get data",
                            'form': GetDataForm()}
-                    return render(request, "components/get_data.html", ctx)
+                    return render(request, "get_player_data.html", ctx)
                 except Exception as e:
-                    ctx = {'unsuccessful': True,
-                           'error': format(e),
-                           'title': "Get data",
+                    ctx = {'event': 'error', 'error': format(e),
                            'form': GetDataForm()}
-                    return render(request, "components/event.html", ctx)
+                    return render(request, "get_player_data.html", ctx)
             elif team:
                 players = Player.objects.filter(team=team)
                 for p in players:
@@ -131,17 +130,14 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         game = data['fixtures']
                         get_player_fixture(game, p.id)
                     except Exception as e:
-                        ctx = {'unsuccessful': True,
-                               'error': format(e),
-                               'title': "Get data",
+                        ctx = {'event': 'error', 'error': format(e),
                                'form': GetDataForm()}
-                        return render(request, "components/event.html", ctx)
+                        return render(request, "get_player_data.html", ctx)
 
-                ctx = {'successful': True,
+                ctx = {'event': 'success',
                        'info': f'Data for players in {team} has been updated',
-                       'title': "Get data",
                        'form': GetDataForm()}
-                return render(request, "components/get_data.html", ctx)
+                return render(request, "get_player_data.html", ctx)
             elif all:
                 players = Player.objects.all()
                 for p in players:
@@ -152,28 +148,27 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         game = data['fixtures']
                         get_player_fixture(game, p.id)
                     except Exception as e:
-                        ctx = {'unsuccessful': True,
+                        ctx = {'event': 'error',
                                'error': format(e),
-                               'title': "Get data",
                                'form': GetDataForm()}
-                        return render(request, "components/event.html", ctx)
+                        return render(request, "get_player_data.html", ctx)
 
-                ctx = {'successful': True,
+                ctx = {'event': 'success',
                        'info': f'Data for players has been updated',
-                       'title': "Get data",
                        'form': GetDataForm()}
-                return render(request, "components/get_data.html", ctx)
+                return render(request, "get_player_data.html", ctx)
             else:
-                ctx = {'title': "Get data", 'form': GetDataForm()}
-                return render(request, 'components/get_data.html', ctx)
+                ctx = {'form': GetDataForm()}
+                return render(request, 'get_player_data.html', ctx)
 
 
 class GetFixtureView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_fixture'
+    permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        ctx = {'title': 'Get fixtures', 'form': GetFixtureForm()}
-        return render(request, 'components/get_fixture.html', ctx)
+        ctx = {'form': GetFixtureForm()}
+        return render(request, 'get_fixture.html', ctx)
 
     def post(self, request):
         form = GetFixtureForm(request.POST)
@@ -183,32 +178,21 @@ class GetFixtureView(PermissionRequiredMixin, View):
                 try:
                     fixture = get_fixtures_for_season()
                     populate_fixture(fixture)
-                    ctx = {'successful': True,
-                           'info': 'Fixture downloaded',
-                           'title': 'Get Fixture',
+                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
                            'form': GetFixtureForm()}
-                    return render(request, 'components/get_fixture.html',ctx)
+                    return render(request, 'get_fixture.html', ctx)
                 except Exception as e:
-                    ctx = {'unsuccessful': True,
-                           'error': format(e),
-                           'title': "Get Fixture",
+                    ctx = {'event': 'error', 'error': format(e),
                            'form': GetFixtureForm()}
-                    return render(request, "components/event.html", ctx)
-            elif choice == 1:
+                    return render(request, "page-event.html", ctx)
+            else:
                 try:
                     fixture = get_fixtures_for_season()
                     update_fixture(fixture)
-                    ctx = {'successful': True,
-                           'info': 'Fixture updated',
-                           'title': 'Get Fixture',
+                    ctx = {'event': 'success', 'info': 'Fixture updated',
                            'form': GetFixtureForm()}
-                    return render(request, 'components/get_fixture.html', ctx)
+                    return render(request, 'get_fixture.html', ctx)
                 except Exception as e:
-                    ctx = {'unsuccessful': True,
-                           'error': format(e),
-                           'title': "Get Fixture",
+                    ctx = {'event': 'error', 'error': format(e),
                            'form': GetFixtureForm()}
-                    return render(request, "components/event.html", ctx)
-            else:
-                ctx = {'title': "Get fixture", 'form': GetFixtureForm()}
-                return render(request, 'components/get_fixture.html', ctx)
+                    return render(request, "page-event.html", ctx)

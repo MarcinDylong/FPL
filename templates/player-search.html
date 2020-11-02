@@ -1,0 +1,125 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - Player Search {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h3 class="m-b-10">Player search</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ Search-form-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="#" method="POST">
+                                    <div>
+                                        {% csrf_token %}
+                                        {{ adv_form.as_p }}
+                                    </div>
+                                    <span>
+                                        <button class="btn btn-primary" type="Submit">Search</button>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Search-form-table ] end -->
+                </div>
+                {% if players %}
+                <div class="row">
+                    <!-- [ Search-results-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="playerSearch">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Team</th>
+                                                <th>Position</th>
+                                                <th>Cost</th>
+                                                <th>PPG</th>
+                                                <th>Total points</th>
+                                                <th>Minutes</th>
+                                                <th>Form</th>
+                                                <th>Selected</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for p in players %}
+                                            <tr class="center" align="center">
+                                                <td>
+                                                {% if p.id in ut_ids %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    {{ p.id }}
+                                                {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' p.id %}">
+                                                        <h6 class="mb-1">{{p.second_name}}</h6>
+                                                        <p class="text-muted m-0">{{p.first_name}}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ p.team.short_name }}</td>
+                                                <td>{{ p.position }}</td>
+                                                <td>{{ p.now_cost }}</td>
+                                                <td>{{ p.points_per_game }}</td>
+                                                <td>{{ p.total_points }}</td>
+                                                <td>{{ p.minutes }}</td>
+                                                <td>{{ p.form }}</td>
+                                                <td>{{ p.selected_by_percent }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Search-results-table ] end -->
+                </div>
+                {% endif %}
+                <!-- [ Main Content ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+ <script>
+$(document).ready(function() {
+    $('#playerSearch').DataTable({
+            responsive: true,
+            info: false,
+            paging: true,
+            searching: true,
+            order: [[5,'desc'], [6,'desc']]
+    });
+});
+</script>
+{% endblock javascripts %}

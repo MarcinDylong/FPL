@@ -313,6 +313,7 @@ def data_to_fixture(fix, f):
 
 def data_to_player_data(hist, h):
     hist.round = Fixtures.objects.get(id=h['fixture']).event
+    hist.position = hist.player.position_id
     hist.opponent_team = Team.objects.get(id=h['opponent_team'])
     hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
     hist.team_a = Fixtures.objects.get(id=h['fixture']).team_a

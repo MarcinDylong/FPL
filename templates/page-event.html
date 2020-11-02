@@ -1,0 +1,40 @@
+{% extends "layouts/base-fullscreen.html" %}
+
+{% block title %} - event {% endblock %}
+
+{% block content %}   
+
+    <div class="auth-wrapper">
+        <div class="auth-content">
+            <div class="auth-bg">
+                <span class="r"></span>
+                <span class="r s"></span>
+                <span class="r s"></span>
+                <span class="r"></span>
+            </div>
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="mb-4">
+                        <i class="feather x-circle"></i>
+                    </div>
+                    <span>
+                            {% if event == 'error' %}
+                            <h3 class="text-danger mb-1">
+                                {{ error }}
+                            </h3>
+                            {% else %}
+                            <h3 class="text-success mb-1">
+                                {{ info }}
+                            </h3>
+                            {% endif %}
+                        </span>
+                    <br/>
+                    <span class="mb-0 text-muted">
+                        Back - <a href="/">Home</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}

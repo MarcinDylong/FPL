@@ -1,0 +1,285 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - Dashboard {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+
+            <!-- [ breadcrumb ] end -->
+            <div class="main-body">
+                <div class="page-wrapper">
+                    <!-- [ Main Content ] start -->
+                    <div class="row">
+                        <!--[ Best eleven of current GW ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <h5>Current GW Bests</h5>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="gwBestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>Id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Team</th>
+                                                    <th>Points</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for g in gwbest %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if g.player.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ g.player.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ g.player.position.name_short }}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.player.id %}">
+                                                                <h6 class="mb-1">{{ g.player.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ g.player.first_name }}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ g.player.team.short_name }}</td>
+                                                        <td>{{ g.total_points }}</td>
+                                                        <td>{{ g.player.now_cost }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Best eleven of current GW ] end-->
+                        <!--[ Best eleven of season ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <h5>All season Best 11</h5>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="bestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Team</th>
+                                                    <th>PPG</th>
+                                                    <th>Total Points</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for b in ball %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if b.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ b.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{b.position.name_short}}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' b.id %}">
+                                                                <h6 class="mb-1">{{b.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{b.first_name}}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{b.team.short_name}}</td>
+                                                        <td>{{b.points_per_game}}</td>
+                                                        <td>{{b.total_points}}</td>
+                                                        <td>{{b.now_cost}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Best eleven of season ] end-->
+                    </div>
+                    <div class="row">
+                        <!-- [ availability ] start -->
+                        <div class="col-xl-12">
+                            <div class="card">
+                                <div class="card-block table-border-style">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="availability">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>ID</th>
+                                                    <th>Name</th>
+                                                    <th>Team</th>
+                                                    <th>Chance of playing</th>
+                                                    <th>Chance for next round</th>
+                                                    <th>Reason</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for a in avl %}
+                                                <tr class="center" align="center">
+                                                    <td>
+                                                        {% if a.id in ut_ids %}
+                                                            <i class="fas fa-star"></i>
+                                                        {% else %}
+                                                            {{ a.id }}
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        <a class='golink' href="{% url 'fantasy_pl:player' a.id %}">
+                                                            <h6 class="mb-1">{{ a.second_name }}</h6>
+                                                            <p class="text-muted m-0">{{ a.first_name }}</p>
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ a.team.short_name }}</td>
+                                                    <td>{{ a.chance_of_playing_this_round }}%</td>
+                                                    <td>{{ a.chance_of_playing_next_round }}%</td>
+                                                    <td>{{ a.news }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- [ Availability-table ] end -->
+                    </div>
+                    <div class="row">
+                        <!--[ Most popular eleven ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <h5>Most popular</h5>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="mostPopularEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Team</th>
+                                                    <th>Popularity [%]</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for p in popular %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if p.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ p.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ p.position.name_short}}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' p.id %}">
+                                                                <h6 class="mb-1">{{ p.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ p.first_name}}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ p.team.short_name}}</td>
+                                                        <td>{{ p.selected_by_percent}}</td>
+                                                        <td>{{ p.now_cost}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Most popular eleven ] end-->
+                        <!--[ Most bonus of gw ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <h5>Bonus for current GW</h5>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="gwBpsEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Team</th>
+                                                    <th>Bonus</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for g in gwbonus %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if g.player.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ g.player.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ g.player.position.name_short }}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.player.id %}">
+                                                                <h6 class="mb-1">{{ g.player.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ g.player.first_name }}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ g.player.team.short_name }}</td>
+                                                        <td>{{ g.bonus }}</td>
+                                                        <td>{{ g.player.now_cost }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Most pbs of gw ] end-->
+                    </div>
+                    <!-- [ Main Content ] end -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $('#availability').DataTable({
+            lengthMenu: [[5, 10, 25, -1], [5, 10, 25, "All"]],
+            responsive: true,
+            info: false,
+            paging: true,
+            searching: true,
+            order: [[0,'asc']]
+    });
+});
+</script>
+{% endblock javascripts %}

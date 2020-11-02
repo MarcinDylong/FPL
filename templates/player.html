@@ -1,0 +1,547 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - {{ player }} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ Header ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-11">
+                                    <div class="page-header-title">
+                                        <h1 class="m-b-10">{{ player }}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- [ Header ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Basic Info Content ] start -->
+                            <div class="row">
+                                <!-- [ Basic info ] start -->
+                                <div class="col-xl-3 col-md-6">
+                                    <a href="{% url 'fpl:team' player.team.id %}">
+                                        <div class="card">
+                                            <div class="card-block border-bottom">
+                                                <div class="row d-flex align-items-center">
+                                                    <div class="col-auto">
+                                                        <i class="fas fa-users text-c-purple f-50"></i>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h3 class="f-w-300">{{ player.team.short_name }}</h3>
+                                                        <span class="text-dark d-block text-uppercase">Team</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-futbol f-50 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ player.points_per_game }}</h3>
+                                                    <span class="d-block text-uppercase">Points pg</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-money-bill-alt f-50 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ player.now_cost }}</h3>
+                                                    <span class="d-block text-uppercase">Cost now</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-5">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fa fa-star f-50 text-c-red"></i>
+                                                </div>
+                                                <div class="col">
+                                                        <h3>{{ player.position }}</h3>
+                                                    <span class="d-block text-uppercase">Position</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Basif info ] end -->
+                            </div>
+                            <!-- [ Basic Info Content ] end -->
+                            <!-- [ News content ] start -->
+                            {% if player.news %}
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>{{player.news_added}} : {{player.news}}</h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+                            <!-- [ Player stats per game ] start -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active text-uppercase" id="coming-tab"
+                                               data-toggle="tab" href="#coming" role="tab" aria-controls="coming" aria-selected="true">Coming games</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="played-tab"
+                                               data-toggle="tab" href="#played" role="tab" aria-controls="played" aria-selected="false">Finished games</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="coming" role="tabpanel" aria-labelledby="coming-tab">
+                                            <div class="card-block px-0 py-3">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover" id="comingGames">
+                                                        <thead>
+                                                            <tr>
+                                                                <th align="center">GW</th>
+                                                                <th align="center">Home</th>
+                                                                <th align="center">Away</th>
+                                                                <th align="center">Kick-off time</th>
+                                                                <th align="center">Difficulty</th>
+                                                                <th align="center">Home overall</th>
+                                                                <th align="center">Home defence</th>
+                                                                <th align="center">Home attack</th>
+                                                                <th align="center">Away overall</th>
+                                                                <th align="center">Away defence</th>
+                                                                <th align="center">Away attack</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for g in games %}
+                                                                <tr class="unread">
+                                                                    <td class="center" align="center">{{g.round}}</td>
+                                                                    <td align="center">
+                                                                        <a class="golink" href="{% url 'fpl:team' g.team_h.id %}">
+                                                                            {% if g.is_home %}
+                                                                                <h6 class="mb-1"><b>{{g.team_h.short_name}}</b></h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1">{{g.team_h.short_name}}</h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td align="center">
+                                                                        <a class="golink" href="{% url 'fpl:team' g.team_a.id %}">
+                                                                            {% if g.is_home %}
+                                                                                <h6 class="mb-1">{{g.team_a.short_name}}</h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1"><b>{{g.team_a.short_name}}</b></h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td class="center" align="center">{{g.kickoff_time}}</td>
+                                                                    <td class="center" align="center">
+                                                                        {% with ''|center:g.diff_rest as range %}
+                                                                            {% for i in range %}
+                                                                                <i class="far fa-star"></i>
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                        {% with ''|center:g.difficulty as range %}
+                                                                            {% for i in range %}
+                                                                                <i class="fas fa-star"></i>
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                    </td>
+                                                                    <td class="center" align="center">{{g.team_h.strength_overall_home}}</td>
+                                                                    <td class="center" align="center">{{g.team_h.strength_defence_home}}</td>
+                                                                    <td class="center" align="center">{{g.team_h.strength_attack_home}}</td>
+                                                                    <td class="center" align="center">{{g.team_a.strength_overall_home}}</td>
+                                                                    <td class="center" align="center">{{g.team_a.strength_defence_home}}</td>
+                                                                    <td class="center" align="center">{{g.team_a.strength_attack_home}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="played" role="tabpanel" aria-labelledby="played-tab">
+                                            <div class="card-block px-0 py-3">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover" id="playedGames">
+                                                        <thead>
+                                                            <tr>
+                                                                <th align="center">GW</th>
+                                                                <th align="center">Opponent</th>
+                                                                <th align="center">Score</th>
+                                                                <th align="center">Minutes</th>
+                                                                <th align="center">Points</th>
+                                                                <th align="center">Goals</th>
+                                                                <th align="center">Assists</th>
+                                                                <th align="center">Yellow card</th>
+                                                                <th align="center">Read card</th>
+                                                                <th align="center">Own goal</th>
+                                                                <th align="center">Pen Saved</th>
+                                                                <th align="center">Pen Missed</th>
+                                                                <th align="center">Saves</th>
+                                                                <th align="center">Value</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for h in hist %}
+                                                                <tr class="unread">
+                                                                    <td class="center" align="center">{{h.round}}</td>
+                                                                    <td align="center">
+                                                                        <a class="golink" href="{% url 'fpl:team' h.opponent_team.id %}">
+                                                                            <h6 class=" text-dark mb-1"> {{ h.opponent_team.short_name }}
+                                                                            {% if h.is_home %}
+                                                                                (H)
+                                                                            {% else %}
+                                                                                (A)
+                                                                            {% endif %}
+                                                                            </h6>
+                                                                        </a>
+                                                                    </td>
+                                                                    <td class="center" align="center">{{ h.team_h_score }} - {{ h.team_a_score }}</td>
+                                                                    <td class="center" align="center">{{ h.minutes }}</td>
+                                                                    <td class="center" align="center"><b>{{ h.total_points }}</b></td>
+                                                                    <td class="center" align="center">{{ h.goals_scored }}</td>
+                                                                    <td class="center" align="center">{{ h.assists }}</td>
+                                                                    <td class="center" align="center">{{ h.yellow_cards }}</td>
+                                                                    <td class="center" align="center">{{ h.red_cards }}</td>
+                                                                    <td class="center" align="center">{{ h.own_goals }}</td>
+                                                                    <td class="center" align="center">{{ h.penalties_saved }}</td>
+                                                                    <td class="center" align="center">{{ h.penalties_missed }}</td>
+                                                                    <td class="center" align="center">{{ h.saves }}</td>
+                                                                    <td class="center" align="center">{{ h.value }}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Player stats per game ] end -->
+                            <br>
+                            <!-- [ Player charts ] start -->
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>ICT chart</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div id="ictChart"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Player charts ] end -->
+                            <br>
+                            <!-- [ Player stats for season ] start -->
+                            <div class="row">
+                                <!--[ Players stats from fantasy ] start-->
+                                <div class="col-xl-6 col-md-6">
+                                    <div class="card Recent-Users">
+                                        <div class="card-header">
+                                            <h5>Player stats from Fantasy</h5>
+                                        </div>
+                                        <div class="card-block px-0 py-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered" id="statsFPL">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Total points</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.total_points }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Selected by percent</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.selected_by_percent }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">In dreamteam</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{% if player.in_dreamteam %} Yes {% else %} No {% endif %}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Dream team count</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.dreamteam_count }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Form</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.form }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Value Form</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.value_form }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Value Season</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.value_form }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Bonus</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.bonus }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Bonus points system</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.bps }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Influence</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.influence }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Creativity</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.creativity }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Threat</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.threat }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">ICT index</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.ict_index }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--[ Players stats from fantasy ] end-->
+                                <!--[ Players stats from BPL ] start-->
+                                <div class="col-xl-6 col-md-6">
+                                    <div class="card Recent-Users">
+                                        <div class="card-header">
+                                            <h5>Player stats from BPL</h5>
+                                        </div>
+                                        <div class="card-block px-0 py-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover table-bordered" id="statsFPL">
+                                                    <tbody>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Minutes total</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.minutes }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Goals scored</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.goals_scored }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Assists</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.assists }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Clean Sheets</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.clean_sheets }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Goals conceded</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.goals_conceded }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Own Goals</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.own_goals }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Penalties saved</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.penalties_saved }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Penalties missed</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.penalties_missed }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Yellow cards</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.yellow_cards }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Red cards</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.red_cards }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Saves</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.saves }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--[ Players stats from BPL ] end-->
+                            </div>
+                            <!-- [ Player stats for season ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $('#comingGames').DataTable({
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 25, "All"]],
+            responsive: true,
+            info: false,
+            searching: false
+    });
+});
+
+$(document).ready(function() {
+    $('#playedGames').DataTable({
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 25, "All"]],
+            responsive: true,
+            info: false,
+            searching: false,
+            order: [[0, 'desc']]
+    });
+});
+
+new Morris.Line({
+        element: 'ictChart',
+        data: [
+            {% for c in chart %}
+                {
+                    Fixture: '{{ c.opponent_team.short_name }}',
+                    Cost: '{{ c.value }}',
+                    Influence: '{{ c.influence }}',
+                    Creativity: '{{ c.creativity }}',
+                    Threat: '{{ c.threat }}'
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        xLabelAngle: 45,
+        parseTime: false,
+        xkey: 'Fixture',
+        ykeys: ['Cost','Influence','Creativity','Threat'],
+        ymax: 150,
+        labels: ['Cost','Influence','Creativity','Threat']
+    });
+</script>
+{% endblock javascripts %}

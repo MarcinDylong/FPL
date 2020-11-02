@@ -1,0 +1,114 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - Stats {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h3 class="m-b-10">Premier League Stats</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ Stats-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <table class="table table-hover" id="Stats">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>Pos.</th>
+                                                <th>Goals</th>
+                                                <th>Assists</th>
+                                                <th>Minutes</th>
+                                                <th>G+A</th>
+                                                <th>Yel. cards</th>
+                                                <th>Red cards</th>
+                                                <th>Own goals</th>
+                                                <th>Cl. sheet</th>
+                                                <th>Saves</th>
+                                                <th>Pen. missed</th>
+                                                <th>Pen. saved</th>
+                                                <th>Goals conc.</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for s in stats %}
+                                            <tr class="center" align="center">
+                                                <td>
+                                                {% if s.id in ut_ids %}
+                                                    <i class="fas fa-star"></i>
+                                                {% else %}
+                                                    {{ s.id }}
+                                                {% endif %}
+                                                </td>
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' s.id %}">
+                                                        <h6 class="mb-1">{{s.second_name}}</h6>
+                                                        <p class="text-muted m-0">{{s.first_name}}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ s.position.name_short }}</td>
+                                                <td>{{ s.goals_scored }}</td>
+                                                <td>{{ s.assists }}</td>
+                                                <td>{{ s.minutes }}</td>
+                                                <td>{{ s.goals_scored|add:s.assists }}</td>
+                                                <td>{{ s.yellow_cards }}</td>
+                                                <td>{{ s.red_cards }}</td>
+                                                <td>{{ s.own_goals }}</td>
+                                                <td>{{ s.clean_sheets }}</td>
+                                                <td>{{ s.saves }}</td>
+                                                <td>{{ s.penalties_missed }}</td>
+                                                <td>{{ s.penalties_saved }}</td>
+                                                <td>{{ s.goals_conceded }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Standing-table ] end -->
+                </div>
+                <!-- [ Main Content ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $('#Stats').DataTable({
+            responsive: true,
+            info: false,
+            paging: true,
+            searching: true,
+            order: [[3,'desc'], [4,'desc']]
+    });
+});
+</script>
+{% endblock javascripts %}

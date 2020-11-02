@@ -1,0 +1,93 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - Standings {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h3 class="m-b-10">Premier League Standings</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ Standing-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <table class="table table-hr table-striped table-hover" id="Standings">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th><i class="fas fa-trophy"></i></th>
+                                                <th>Team</th>
+                                                <th>Games</th>
+                                                <th>Win</th>
+                                                <th>Draw</th>
+                                                <th>Loss</th>
+                                                <th>Points</th>
+                                                <th>GF</th>
+                                                <th>GA</th>
+                                                <th>GD</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for t in table %}
+                                            <tr class="center" align="center">
+                                                <td>{{t.position}}</td>
+                                                <td><a class="text-dark" href="{% url 'fpl:team' t.id %}">{{t.name}}</a></td>
+                                                <td>{{t.played}}</td>
+                                                <td>{{t.win}}</td>
+                                                <td>{{ t.draw }}</td>
+                                                <td>{{ t.loss }}</td>
+                                                <td><b>{{ t.points }}</b></td>
+                                                <td>{{ t.gf }}</td>
+                                                <td>{{ t.ga }}</td>
+                                                <td>{{ t.gd }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Standing-table ] end -->
+                </div>
+                <!-- [ Main Content ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+ <script>
+$(document).ready(function() {
+    $('#Standings').DataTable({
+            responsive: true,
+            info: false,
+            paging: false,
+            searching: false,
+            order: [[0,'asc']]
+    });
+});
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,432 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} - {{ team }} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+            <div class="pcoded-content">
+                <div class="pcoded-inner-content">
+                    <!-- [ Header ] start -->
+                    <div class="page-header">
+                        <div class="page-block">
+                            <div class="row align-items-center">
+                                <div class="col-md-1">
+                                    <div class="page-header-title">
+                                        <img width="70px" src="{{photo}}">
+                                    </div>
+                                </div>
+                                <div class="col-md-11">
+                                    <div class="page-header-title">
+                                        <h1 class="m-b-10">{{ team }}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- [ Header ] end -->
+                    <div class="main-body">
+                        <div class="page-wrapper">
+                            <!-- [ Team Info ] start -->
+                            <div class="row">
+                                <!-- [ Basic info ] start -->
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-trophy text-c-purple f-50"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.points }}</h3>
+                                                    <span class="d-block text-uppercase">Points</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-list-ol f-50 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.position }}</h3>
+                                                    <span class="d-block text-uppercase">Position</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-users f-50 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ cnt }}</h3>
+                                                    <span class="d-block text-uppercase">Players</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-md-5">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fa fa-star f-50 text-c-red"></i>
+                                                </div>
+                                                <div class="col">
+                                                    {% with ''|center:team.strength as range %}
+                                                        <h3>
+                                                        {% for i in range %}
+                                                            <i class="fa fa-star fa-fw f-10"></i>
+                                                        {% endfor %}
+                                                        </h3>
+                                                    {% endwith %}
+                                                    <span class="d-block text-uppercase">Strength</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Basif info ] end -->
+                            </div>
+                            <!-- [ Team Info ] end -->
+                            <br>
+                            <!-- [ Team Fixtures ] start -->
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active text-uppercase" id="coming-tab"
+                                               data-toggle="tab" href="#coming" role="tab" aria-controls="coming" aria-selected="true">Coming games</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-uppercase" id="played-tab"
+                                               data-toggle="tab" href="#played" role="tab" aria-controls="played" aria-selected="false">Finished games</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content" id="myTabContent">
+                                        <div class="tab-pane fade show active" id="coming" role="tabpanel" aria-labelledby="coming-tab">
+                                            <div class="card-block px-0 py-3">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover" id="comingGames">
+                                                        <thead>
+                                                            <tr class="center" align="center">
+                                                                <th>GW</th>
+                                                                <th>Home</th>
+                                                                <th>Away</th>
+                                                                <th>Kick-off time</th>
+                                                                <th>Difficulty</th>
+                                                                <th>Home overall</th>
+                                                                <th>Home defence</th>
+                                                                <th>Home attack</th>
+                                                                <th>Away overall</th>
+                                                                <th>Away defence</th>
+                                                                <th>Away attack</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for f in fixtures %}
+                                                                <tr class="unread center" align="center">
+                                                                    <td>{{f.round}}</td>
+                                                                    <td>
+                                                                        <a class="golink" href="{% url 'fpl:team' f.team_h.id %}">
+                                                                            {% if f.is_home %}
+                                                                                <h6 class="mb-1"><b>{{f.team_h.short_name}}</b></h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1">{{f.team_h.short_name}}</h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="golink" href="{% url 'fpl:team' f.team_a.id %}">
+                                                                            {% if f.is_home %}
+                                                                                <h6 class="mb-1">{{f.team_a.short_name}}</h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1"><b>{{f.team_a.short_name}}</b></h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>{{f.kickoff_time}}</td>
+                                                                    <td>
+                                                                        {% with ''|center:f.diff_rest as range %}
+                                                                            {% for i in range %}
+                                                                                <i class="far fa-star"></i>
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                        {% with ''|center:f.difficulty as range %}
+                                                                            {% for i in range %}
+                                                                                <i class="fas fa-star"></i>
+                                                                            {% endfor %}
+                                                                        {% endwith %}
+                                                                    </td>
+                                                                    <td>{{f.team_h.strength_overall_home}}</td>
+                                                                    <td>{{f.team_h.strength_defence_home}}</td>
+                                                                    <td>{{f.team_h.strength_attack_home}}</td>
+                                                                    <td>{{f.team_a.strength_overall_home}}</td>
+                                                                    <td>{{f.team_a.strength_defence_home}}</td>
+                                                                    <td>{{f.team_a.strength_attack_home}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="played" role="tabpanel" aria-labelledby="played-tab">
+                                            <div class="card-block px-0 py-3">
+                                                <div class="table-responsive">
+                                                    <table class="table table-striped table-bordered table-hover" id="playedGames">
+                                                        <thead>
+                                                            <tr class="center" align="center">
+                                                                <th>GW</th>
+                                                                <th>Home</th>
+                                                                <th>Away</th>
+                                                                <th>Kick-off time</th>
+                                                                <th>Result</th>
+                                                                <th>Home overall</th>
+                                                                <th>Home defence</th>
+                                                                <th>Home attack</th>
+                                                                <th>Away overall</th>
+                                                                <th>Away defence</th>
+                                                                <th>Away attack</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {% for p in played %}
+                                                                <tr class="unread center" align="center">
+                                                                    <td>{{p.round}}</td>
+                                                                    <td>
+                                                                        <a class="golink" href="{% url 'fpl:team' p.team_h.id %}">
+                                                                            {% if p.is_home %}
+                                                                                <h6 class="mb-1"><b>{{p.team_h.short_name}}</b></h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1">{{p.team_h.short_name}}</h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="golink" href="{% url 'fpl:team' p.team_a.id %}">
+                                                                            {% if p.is_home %}
+                                                                                <h6 class="mb-1">{{p.team_a.short_name}}</h6>
+                                                                            {% else %}
+                                                                                <h6 class="mb-1"><b>{{p.team_a.short_name}}</b></h6>
+                                                                            {% endif %}
+                                                                        </a>
+                                                                    </td>
+                                                                    <td>{{p.kickoff_time}}</td>
+                                                                    <td>{{p.team_a_score}}-{{p.team_h_score}}</td>
+                                                                    <td>{{p.team_h.strength_overall_home}}</td>
+                                                                    <td>{{p.team_h.strength_defence_home}}</td>
+                                                                    <td>{{p.team_h.strength_attack_home}}</td>
+                                                                    <td>{{p.team_a.strength_overall_home}}</td>
+                                                                    <td>{{p.team_a.strength_defence_home}}</td>
+                                                                    <td>{{p.team_a.strength_attack_home}}</td>
+                                                                </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Team Fixtures ] end -->
+                            <br>
+                            <!-- [ Player lists] start -->
+                            <div class="row">
+                                <!--[ Players list ] start-->
+                                <div class="col-xl-8 col-md-6">
+                                    <div class="card Recent-Users">
+                                        <div class="card-header">
+                                            <h5>Players</h5>
+                                        </div>
+                                        <div class="card-block px-0 py-3">
+                                            <div class="table-responsive">
+                                                <table class="table table-hover" id="players">
+                                                    <thead>
+                                                        <tr class="center" align="center">
+                                                            <th>ID</th>
+                                                            <th>Name</th>
+                                                            <th>Pos</th>
+                                                            <th>Cost</th>
+                                                            <th>PPG</th>
+                                                            <th>Influence</th>
+                                                            <th>Creativity</th>
+                                                            <th>Threat</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for p in players %}
+                                                        <tr class="unread center" align="center">
+                                                            <td>
+                                                            {% if p.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ p.id }}
+                                                            {% endif %}
+                                                            </td>
+                                                            <td>
+                                                                <a class='golink' href="{% url 'fantasy_pl:player' p.id %}">
+                                                                    <h6 class="mb-1">{{p.second_name}}</h6>
+                                                                    <p class="text-muted m-0">{{p.first_name}}</p>
+                                                                </a>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="text-muted">{{ p.position}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="mb-1" align="center">{{ p.now_cost}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="mb-1" align="center">{{ p.points_per_game}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="mb-1" align="center">{{ p.influence}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="mb-1" align="center">{{ p.creativity}}</h6>
+                                                            </td>
+                                                            <td>
+                                                                <h6 class="mb-1" align="center">{{ p.threat}}</h6>
+                                                            </td>
+                                                         </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--[ Players list ] end-->
+                                <!-- [ Team Strength ] start -->
+                                <div class="col-xl-2 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-purple"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_overall_home }}</h3>
+                                                    <span class="d-block text-uppercase">Home Overall</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_defence_home }}</h3>
+                                                    <span class="d-block text-uppercase">Home defence</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_attack_home }}</h3>
+                                                    <span class="d-block text-uppercase">Home attack</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-2 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-purple"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_overall_away }}</h3>
+                                                    <span class="d-block text-uppercase">Away Overall</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_defence_away }}</h3>
+                                                    <span class="d-block text-uppercase">Away defence</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card-block">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-star f-30 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ team.strength_attack_away }}</h3>
+                                                    <span class="d-block text-uppercase">Away attack</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Team Strength ] end -->
+                            </div>
+                            <!-- [ Player lists ] end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $('#players').DataTable({
+            responsive: true,
+            info: false,
+            paging: false,
+            searching: false
+    });
+});
+
+$(document).ready(function() {
+    $('#comingGames').DataTable({
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 25, "All"]],
+            responsive: true,
+            info: false,
+            searching: false
+    });
+});
+
+$(document).ready(function() {
+    $('#playedGames').DataTable({
+            lengthMenu: [[5, 10, 20, -1], [5, 10, 25, "All"]],
+            responsive: true,
+            info: false,
+            searching: false,
+            order: [[0,'desc']]
+    });
+});
+</script>
+{% endblock javascripts %}
