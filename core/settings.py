@@ -21,14 +21,17 @@ def get_secret(setting, secrets=secrets):
 
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
-SECRET_KEY = get_secret('SECRET_KEY')
+# SECRET_KEY = get_secret('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True)
+# DEBUG = config('DEBUG', default=True)
 # DEBUG = False
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
 # load production server from .env
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', config('SERVER', default='127.0.0.1')]
+# ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 # Application definition
 
@@ -92,7 +95,10 @@ DATABASES = {
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': get_secret('DB_PASSWORD')
+        'PASSWORD': get_secret('DB_PASSWORD'),
+        'PORT': '5432',
+        'OPTIONS': {
+            'client_encoding': 'UTF8',},
     }
 }
 
