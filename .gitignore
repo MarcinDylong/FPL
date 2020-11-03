@@ -26,3 +26,4 @@ staticfiles/*
 !staticfiles/.gitkeep 
 data.json
 .git_
+secrets.json
