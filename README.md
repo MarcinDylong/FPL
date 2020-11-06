@@ -47,7 +47,7 @@ $ # Start the application (development mode)
 $ python3 manage.py runserver # default port 8000
 $
 $ # Start the app - custom port 
-$ # python3 manage.py runserver 0.0.0.0:<your_port>
+$ # python3 manage.py runserver
 $
 $ # Access the web app in browser: http://127.0.0.1:8000/
 ```
@@ -115,7 +115,7 @@ https://fantasy.premierleague.com/api/entry/{user_id}/event/{gw}/picks/
 ## Development:
 - Providing more data from different sources to help better pick squad;
 - Better data visualization;
-- Implementing the ML algorithms for players data;
+- Implementing the ML algorithms for players data;~~~~~~~~
 - Improvement in User Team View for better user experience;
 - Bug Fixes;
 
