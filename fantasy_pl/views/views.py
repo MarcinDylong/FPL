@@ -62,7 +62,10 @@ class IndexView(LoginRequiredMixin, View):
         ctx = {}
         ctx['segment'] = 'home'
         players_raw = Player.objects.filter(minutes__gt=0)
-        gw = Fixtures.objects.filter(finished=True).last().event
+        try:
+            gw = Fixtures.objects.filter(finished=True).last().event
+        except:
+            gw=1
         phistory_raw = PlayerHistory.objects.filter(round=gw)\
                                             .filter(minutes__gt=0)
 
@@ -73,10 +76,13 @@ class IndexView(LoginRequiredMixin, View):
 
 
         ctx['avl'] = avl
-        ctx['ball'] = self.season_best_eleven(players_raw, '-total_points')
-        ctx['popular'] = self.season_best_eleven(players_raw, '-selected_by_percent')
-        ctx['gwbest'] = self.gw_best_eleven(phistory_raw, '-total_points')
-        ctx['gwbonus'] = self.gw_best_eleven(phistory_raw, '-bonus')
+        try:
+            ctx['ball'] = self.season_best_eleven(players_raw, '-total_points')
+            ctx['popular'] = self.season_best_eleven(players_raw, '-selected_by_percent')
+            ctx['gwbest'] = self.gw_best_eleven(phistory_raw, '-total_points')
+            ctx['gwbonus'] = self.gw_best_eleven(phistory_raw, '-bonus')
+        except:
+            pass
         return render(request, 'index.html', ctx)
 
 

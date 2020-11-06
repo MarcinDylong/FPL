@@ -75,8 +75,8 @@ class UpdateTablesView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from Fantasy Premier League API
+        # data = read_json()  ## Read data from JSON file on disk
+        data = get_data() ## Read data from Fantasy Premier League API
         teams = data['teams']
         players = data['elements']
         try:
