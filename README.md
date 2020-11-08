@@ -31,9 +31,10 @@ $
 $ # Install modules
 $ pip3 install -r requirements.txt
 $
-$ # Configure connection to database in core/settings.py
-$ # Provide username and password
+$ # Configure connection to database in _secrets.json
+$ # Provide username and password and remove "_" from json file name
 $ # Create database fpl_data
+$ # If necessary change parameters for DB connection in core/settings.py
 $
 $ # Create tables
 $ python3 manage.py makemigrations
@@ -43,11 +44,8 @@ $ # Create in PostgreSQl database called fpl_dta
 $ # Import data from fpl_dump.sql
 $ pg_restore -d fpl_data < fpl_dump.sql
 $
-$ # Start the application (development mode)
-$ python3 manage.py runserver # default port 8000
-$
-$ # Start the app - custom port 
-$ # python3 manage.py runserver
+$ # Start the application
+$ python3 manage.py runserver --settings core.settings_local
 $
 $ # Access the web app in browser: http://127.0.0.1:8000/
 ```
@@ -60,12 +58,11 @@ $ # Follow instructions in terminal to create Super User
 ```
 You may also use User from loaded database: <br>
 Data for log in: <br>
-User: admin, Pass:admin
- 
- 
-<br />
+User: admin <br>
+Pass: admin
+<br/>
 
-## Deployment !! Do poprawy przed wystawieniem !!
+## Deployment in Docker
 
 The app is provided with a basic configuration to be executed in [Docker](https://www.docker.com/)
 
@@ -81,13 +78,26 @@ $ git clone https://github.com/app-generator/django-dashboard-dattaable.git
 $ cd django-dashboard-dattaable
 ```
 
+> Set secret key and db password in _secret.json
+> After it rename file to secret.json
+> If necessary change db connection in core/settings_docker.py
+
 > Start the app in Docker
 
 ```bash
 $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose up -d
 ```
 
-Visit `http://localhost:5005` in your browser. The app should be up & running.
+> Populate database of project
+```
+$ sudo docker exec -i -u postgres fpl_postgres_1 pg_restore -d fpl_data < fpl_dump.sql
+$ sudo docker-compose exec web python manage.py migrate
+```
+
+Visit `http://localhost:8000` in your browser. The app should be up & running.<br/>
+Note: You may use User from database and log in as:<br/>
+Username: admin<br/>
+password: admin
 
 ## API endpoints used in project
 
@@ -115,7 +125,7 @@ https://fantasy.premierleague.com/api/entry/{user_id}/event/{gw}/picks/
 ## Development:
 - Providing more data from different sources to help better pick squad;
 - Better data visualization;
-- Implementing the ML algorithms for players data;~~~~~~~~
+- Implementing the ML algorithms for players data;
 - Improvement in User Team View for better user experience;
 - Bug Fixes;
 

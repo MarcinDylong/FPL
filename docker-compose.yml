@@ -1,13 +1,9 @@
 version: "3.8"
 
 services:
-  postgres:
+  db:
     restart: always
     image: postgres
-    environment:
-      - POSTGRES_DB=fpl_data
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=coderslab
     networks:
       - db_network
     volumes:
@@ -21,26 +17,12 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - postgres
+      - db
     networks:
       - db_network
-      - web_network
-  nginx:
-    restart: always
-    image: "nginx:latest"
-    ports:
-      - "85:85"
-    volumes:
-      - ./nginx:/etc/nginx/conf.d
-      - ./static:/opt/services/app/static/
-    depends_on:
-      - web
-    networks:
-      - web_network
+
 networks:
   db_network:
-    driver: bridge
-  web_network:
     driver: bridge
 
 volumes:
