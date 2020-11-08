@@ -33,14 +33,14 @@ $ pip3 install -r requirements.txt
 $
 $ # Configure connection to database in _secrets.json
 $ # Provide username and password and remove "_" from json file name
-$ # Create database fpl_data
-$ # If necessary change parameters for DB connection in core/settings.py
+$ # If necessary change parameters for DB connection in core/settings_local.py
 $
 $ # Create tables
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 $
-$ # Create in PostgreSQl database called fpl_dta
+$ # Create in PostgreSQl database called fpl_data
+$ sudo -u postgres psql -c 'create database fpl_data;'
 $ # Import data from fpl_dump.sql
 $ pg_restore -d fpl_data < fpl_dump.sql
 $
@@ -56,7 +56,7 @@ $ # Create Super User
 $ python manage.py createsuperuser
 $ # Follow instructions in terminal to create Super User
 ```
-You may also use User from loaded database: <br>
+You may also use User from loaded database; <br>
 Data for log in: <br>
 User: admin <br>
 Pass: admin
@@ -78,9 +78,8 @@ $ git clone https://github.com/app-generator/django-dashboard-dattaable.git
 $ cd django-dashboard-dattaable
 ```
 
-> Set secret key and db password in _secret.json
-> After it rename file to secret.json
-> If necessary change db connection in core/settings_docker.py
+> Set secret key and db password in secret.json
+> If necessary change db connection in core/settings.py
 
 > Start the app in Docker
 
