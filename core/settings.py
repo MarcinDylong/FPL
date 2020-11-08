@@ -96,7 +96,7 @@ DATABASES = {
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': get_secret('DB_PASSWORD'),
+        'PASSWORD': 'postgres',
         'PORT': 5432,
         'OPTIONS': {
             'client_encoding': 'UTF8'},

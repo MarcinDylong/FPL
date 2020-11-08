@@ -89,7 +89,7 @@ $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose u
 
 > Populate database of project
 ```
-$ sudo docker exec -i -u postgres fpl_postgres_1 pg_restore -d fpl_data < fpl_dump.sql
+$ sudo docker exec -i -u postgres fpl_db_1 pg_restore -d fpl_data < fpl_dump.sql
 $ sudo docker-compose exec web python manage.py migrate
 ```
 
