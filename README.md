@@ -78,9 +78,6 @@ $ git clone https://github.com/app-generator/django-dashboard-dattaable.git
 $ cd django-dashboard-dattaable
 ```
 
-> Set secret key and db password in secret.json
-> If necessary change db connection in core/settings.py
-
 > Start the app in Docker
 
 ```bash
