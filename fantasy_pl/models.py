@@ -62,10 +62,10 @@ class Player(models.Model):
     # Stats in game
     chance_of_playing_next_round = models.IntegerField(null=True)
     chance_of_playing_this_round = models.IntegerField(null=True)
-    cost_change_event = models.IntegerField()
-    cost_change_event_fall = models.IntegerField()
-    cost_change_start = models.IntegerField()
-    cost_change_start_fall = models.IntegerField
+    cost_change_event = models.IntegerField(null=True)
+    cost_change_event_fall = models.IntegerField(null=True)
+    cost_change_start = models.IntegerField(null=True)
+    cost_change_start_fall = models.IntegerField(null=True)
     dreamteam_count = models.IntegerField()
     ep_next = models.FloatField()
     ep_this = models.FloatField()
