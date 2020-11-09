@@ -9,7 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
-with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+with open(os.path.join(BASE_DIR, 'secret.json')) as secrets_file:
     secrets = json.load(secrets_file)
 
 def get_secret(setting, secrets=secrets):
