@@ -94,6 +94,9 @@ class Player(models.Model):
     def form_str(self):
         return f'{self.first_name} {self.second_name} - {self.now_cost} Ł'
 
+    def ppg_chart_str(self):
+        return f'{self.second_name}'
+
     def ratio(self):
         if self.now_cost != 0:
             return round(self.points_per_game/self.now_cost,2)

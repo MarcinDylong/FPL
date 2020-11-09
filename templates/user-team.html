@@ -238,7 +238,7 @@ new Morris.Bar({
       element: 'ppg2cost',
       data: [
                 {% for u in uteam %}
-                    { Player: '{{ u }}', Ratio: '{{ u.ratio }}' }{% if not forloop.last %},{% endif %}
+                    { Player: '{{ u.ppg_chart_str }}', Ratio: '{{ u.ratio }}' }{% if not forloop.last %},{% endif %}
                 {% endfor %}
                   ],
       xkey: 'Player',
