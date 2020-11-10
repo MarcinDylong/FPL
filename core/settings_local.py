@@ -9,7 +9,7 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
-with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+with open(os.path.join(BASE_DIR, 'secret.json')) as secrets_file:
     secrets = json.load(secrets_file)
 
 def get_secret(setting, secrets=secrets):
@@ -24,7 +24,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 # load production server from .env
 ALLOWED_HOSTS = '*'
@@ -90,7 +90,7 @@ DATABASES = {
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': get_secret('DB_PASSWORD'),
+        'PASSWORD': 'coderslab', #get_secret('DB_PASSWORD'),
         'PORT': 5432,
         'OPTIONS': {
             'client_encoding': 'UTF8'},
