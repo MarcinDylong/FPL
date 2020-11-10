@@ -106,6 +106,16 @@ class Player(models.Model):
         else:
             return 0
 
+    def next_game(self):
+        games = PlayerHistory.objects.filter(player_id=self.id)
+        next_game = games.filter(finished=True).order_by('round').first()
+        try:
+            if next_game.is_home == True:
+                return f'H - {next_game.team_a.short_name}'
+            else:
+                return f'A - {next_game.team_h.short_name}'
+        except AttributeError:
+            return '-'
 
 class UserTeam(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
