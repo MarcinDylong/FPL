@@ -116,9 +116,124 @@
                         <!--[ Best eleven of season ] end-->
                     </div>
                     <div class="row">
+                        <!--[ Transfers IN of current GW ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <div class="col-9">
+                                        <h5 class="d-flex align-items-center">
+                                            <i class="fas fa-arrow-up text-c-green f-30 m-r-10"></i>
+                                            Most transfers in of current GW
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="gwBestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>Id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Tran. IN</th>
+                                                    <th>Team</th>
+                                                    <th>PPG</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in tri %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if t.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ t.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ t.position.name_short }}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' t.id %}">
+                                                                <h6 class="mb-1">{{ t.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ t.first_name }}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ t.transfers_in_event }}</td>
+                                                        <td>{{ t.team.short_name }}</td>
+                                                        <td>{{ t.points_per_game }}</td>
+                                                        <td>{{ t.now_cost }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Transfers IN of current GW ] end-->
+                        <!--[ Transfers OUT of current GW ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <div class="col-9">
+                                        <h5 class="d-flex align-items-center">
+                                            <i class="fas fa-arrow-down text-c-red f-30 m-r-10"></i>
+                                            Most transfers out of current GW
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="bestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Tran. OUT</th>
+                                                    <th>Team</th>
+                                                    <th>PPG</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in tro %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if t.id in ut_ids %}
+                                                                <i class="fas fa-star"></i>
+                                                            {% else %}
+                                                                {{ t.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{t.position.name_short}}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' t.id %}">
+                                                                <h6 class="mb-1">{{t.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{t.first_name}}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{t.transfers_out_event}}</td>
+                                                        <td>{{t.team.short_name}}</td>
+                                                        <td>{{t.points_per_game}}</td>
+                                                        <td>{{t.now_cost}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Transfers OUT of current GW ] end-->
+                    </div>
+                    <div class="row">
                         <!-- [ availability ] start -->
                         <div class="col-xl-12">
                             <div class="card">
+                                <div class="card-header">
+                                    <h5>Player Availability</h5>
+                                </div>
                                 <div class="card-block table-border-style">
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered table-hover" id="availability">

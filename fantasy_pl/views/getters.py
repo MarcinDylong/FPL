@@ -274,6 +274,10 @@ def data_to_player(player, p):
     player.points_per_game = p['points_per_game']
     player.second_name = p['second_name']
     player.selected_by_percent = p['selected_by_percent']
+    player.transfers_in = p['transfers_in']
+    player.transfers_in_event = p['transfers_in_event']
+    player.transfers_out = p['transfers_out']
+    player.transfers_out_event = p['transfers_out_event']
     player.special = p['special']
     player.team = Team.objects.get(id=p['team'])
     player.total_points = p['total_points']
@@ -291,7 +295,7 @@ def data_to_player(player, p):
     player.red_cards = p['red_cards']
     player.saves = p['saves']
     player.bonus = p['bonus']
-    player.bps = p['bps']
+    player.bps = p['bps'] / 10
     player.influence = float(p['influence'])
     player.creativity = float(p['creativity'])
     player.threat = float(p['threat'])

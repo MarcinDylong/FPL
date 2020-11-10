@@ -73,9 +73,13 @@ class IndexView(LoginRequiredMixin, View):
         avl = players_raw.filter(chance_of_playing_this_round__lt=100)\
                          .filter(~Q(news__contains='Joined'))\
                          .order_by('chance_of_playing_this_round')
-
-
         ctx['avl'] = avl
+        ### Transfers In of current GW
+        tri = players_raw.order_by('-transfers_in_event')[:5]
+        ctx['tri'] = tri
+        ### Transfers Out of current GW
+        tro = players_raw.order_by('-transfers_out_event')[:5]
+        ctx['tro'] = tro
         try:
             ctx['ball'] = self.season_best_eleven(players_raw, '-total_points')
             ctx['popular'] = self.season_best_eleven(players_raw, '-selected_by_percent')
