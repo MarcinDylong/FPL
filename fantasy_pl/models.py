@@ -238,3 +238,33 @@ class PlayerHistory(models.Model):
     def diff_rest(self):
         return 5 - self.difficulty
 
+
+class Event(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=16)
+    deadline_time = models.DateTimeField()
+    average_entry_score = models.IntegerField()
+    finished = models.BooleanField()
+    data_checked = models.BooleanField()
+    highest_score = models.IntegerField()
+    is_previous = models.BooleanField()
+    is_current = models.BooleanField()
+    is_next = models.BooleanField()
+    most_selected = models.ForeignKey(Player, null=True,
+                                      on_delete=models.SET_NULL,
+                                      related_name='most_selected')
+    most_transferred_in = models.ForeignKey(Player, null=True,
+                                            on_delete=models.SET_NULL,
+                                            related_name='most_transferred_ind')
+    top_element = models.ForeignKey(Player, null=True,
+                                    on_delete=models.SET_NULL,
+                                    related_name='top_element')
+    top_element_points = models.IntegerField()
+    transfers_made = models.IntegerField()
+    most_captained = models.ForeignKey(Player, null=True,
+                                       on_delete=models.SET_NULL,
+                                       related_name='most_captained')
+    most_vice_captained = models.ForeignKey(Player, null=True,
+                                            on_delete=models.SET_NULL,
+                                            related_name='most_vice_captained')
+    total_players = models.IntegerField()
