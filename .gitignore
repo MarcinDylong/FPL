@@ -27,3 +27,6 @@ staticfiles/*
 data.json
 .git_
 secrets.json
+
+##### Temporary ignore
+core
