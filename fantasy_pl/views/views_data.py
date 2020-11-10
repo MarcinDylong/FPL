@@ -10,7 +10,7 @@ from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
-    get_fpl_userteam, update_userteam, get_data
+    get_fpl_userteam, update_userteam, get_data, get_fpl_user, update_user
 
 
 def DownloadUserteamView(request):
@@ -31,6 +31,22 @@ def DownloadUserteamView(request):
         update_userteam(user, player_list)
         messages.success(request, "Your team was succesfully downloaded.")
         return redirect('/user-team/')
+
+
+def DownloadUserView(request):
+    form = GetUserteamForm(request.POST)
+    if form.is_valid():
+        player_id = form.cleaned_data['fpl_id']
+        try:
+            user_fpl = get_fpl_user(player_id)
+        except Exception as e:
+            messages.error(request, f"Failure updating your profile: "
+                                    f"{format(e)}")
+            return redirect('/user-profile/')
+        user = request.user
+        update_user(user, user_fpl)
+        messages.success(request, "Your Profile was succesfully updated.")
+        return redirect('/user-profile/')
 
 
 def DownloadDataJSON():

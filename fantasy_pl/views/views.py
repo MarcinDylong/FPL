@@ -342,3 +342,12 @@ class UserTeamView(View):
             ctx['form'] = form
             ctx['form_gut'] = GetUserteamForm()
             return render(request, 'user-team.html', ctx)
+
+
+class UserProfile(View):
+
+    def get(self, request):
+        ctx = {}
+        ctx['form'] = GetUserteamForm()
+
+        return render(request, 'user-profile.html', ctx)

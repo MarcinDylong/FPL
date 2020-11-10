@@ -6,7 +6,7 @@ import urllib.request
 import requests
 
 from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
-    UserTeam
+    UserTeam, UserFpl
 
 
 def get_data():
@@ -195,6 +195,18 @@ def update_userteam(user, player_list):
         usrtm.save()
 
 
+def update_user(user, user_fpl):
+    try:
+        usr = UserFpl.objects.get(user=user)
+        data_to_user(usr, user_fpl)
+        usr.save()
+    except:
+        usr = UserFpl()
+        usr.user = user
+        data_to_user(usr, user_fpl)
+        usr.save()
+
+
 def get_player_data(history):
     for h in history:
         try:
@@ -376,6 +388,27 @@ def data_to_userteam(usrtm, player_list):
     usrtm.defb = Player.objects.get(id=player_list[12])
     usrtm.mdfb = Player.objects.get(id=player_list[13])
     usrtm.fwdb = Player.objects.get(id=player_list[14])
+
+
+def data_to_user(usr, user_fpl):
+    usr.fpl = user_fpl['id']
+    usr.joined_time = user_fpl['joined_time']
+    usr.started_event = user_fpl['started_event']
+    usr.favourite_team = user_fpl['favourite_team']
+    usr.player_first_name = user_fpl['player_first_name']
+    usr.player_last_name = user_fpl['player_last_name']
+    usr.player_region_name = user_fpl['player_region_name']
+    usr.player_region_iso_code_short = user_fpl['player_region_iso_code_short']
+    usr.player_region_iso_code_long = user_fpl['player_region_iso_code_long']
+    usr.summary_overall_points = user_fpl['summary_overall_points']
+    usr.summary_overall_rank = user_fpl['summary_overall_rank']
+    usr.summary_event_points = user_fpl['summary_event_points']
+    usr.summary_event_rank = user_fpl['summary_event_rank']
+    usr.current_event = user_fpl['current_event']
+    usr.name = user_fpl['name']
+    usr.last_deadline_bank = user_fpl['last_deadline_bank']
+    usr.last_deadline_value = user_fpl['last_deadline_value']
+    usr.last_deadline_total_transfers = user_fpl['last_deadline_total_transfers']
 
 
 if __name__ == "__main__":

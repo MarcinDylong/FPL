@@ -1,6 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
+class UserFpl(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    fpl = models.IntegerField(null=True)
+    joined_time = models.DateTimeField(null=True)
+    started_event = models.IntegerField(null=True)
+    favourite_team = models.IntegerField(null=True)
+    player_first_name = models.CharField(max_length=16, null=True)
+    player_last_name = models.CharField(max_length=16, null=True)
+    player_region_name = models.CharField(max_length=32, null=True)
+    player_region_iso_code_short = models.CharField(max_length=6, null=True)
+    player_region_iso_code_long = models.CharField(max_length=6, null=True)
+    summary_overall_points = models.IntegerField(null=True)
+    summary_overall_rank = models.IntegerField(null=True)
+    summary_event_points = models.IntegerField(null=True)
+    summary_event_rank = models.IntegerField(null=True)
+    current_event = models.IntegerField(null=True)
+    name = models.CharField(max_length=64, null=True)
+    last_deadline_bank = models.FloatField(null=True)
+    last_deadline_value = models.FloatField(null=True)
+    last_deadline_total_transfers = models.IntegerField(null=True)
+
 class Team(models.Model):
     id = models.SmallIntegerField(primary_key=True)
     pulse_id = models.SmallIntegerField(null=True)
