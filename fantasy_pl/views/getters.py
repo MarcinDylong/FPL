@@ -4,7 +4,6 @@ import bs4 as bs
 import urllib.request
 
 import requests
-from django.db.models import Q
 
 from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
     UserTeam

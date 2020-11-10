@@ -1,12 +1,11 @@
-from django.urls import path, re_path
+from django.urls import path
 
 from .views.views import IndexView, TeamView, PlayerView, StandingsView, \
     FixtureView, StatsView, PlayersSearchView, UserTeamView
-from .views.views_data import PopulateTablesView, UpdateTablesView, \
-    DownloadDataView, GetPlayersHistoryView, GetFixtureView, \
-    DownloadUserteamView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
     ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
+from .views.views_data import GetPlayersHistoryView, GetFixtureView, \
+    DownloadUserteamView, GetDataView
 
 app_name = 'fantasy_pl'
 
@@ -22,10 +21,7 @@ urlpatterns = [
     path('player-search/', PlayersSearchView.as_view(), name='player-search'),
     path('user-team/', UserTeamView.as_view(), name='user-team'),
     ### Data download views
-    path('download_data/', DownloadDataView.as_view(), name='download_json'),
-    path('populate_table/', PopulateTablesView.as_view(),
-         name='populate_tables'),
-    path('update_table/', UpdateTablesView.as_view(), name='update_tables'),
+    path('get_data/', GetDataView.as_view(), name='get_data'),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),
     path('get_fixture/', GetFixtureView.as_view(), name="get_fixture"),

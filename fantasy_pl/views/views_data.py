@@ -3,28 +3,14 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib import messages
 
-
-from fantasy_pl.forms import GetDataForm, GetFixtureForm, GetUserteamForm
+from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
+    GetUserteamForm, GetDataForm
 from fantasy_pl.models import Player, Fixtures
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
     get_fpl_userteam, update_userteam, get_data
-
-
-class DownloadDataView(PermissionRequiredMixin, View):
-    permission_required = 'fantasy_pl.add_team'
-    permission_denied_message = 'Sorry, You do not have permission!'
-
-    def get(self, request):
-        try:
-            download_json()
-            ctx = {'event': 'success', 'info': 'Data has been downloaded'}
-            return render(request, "page-event.html", ctx)
-        except Exception as e:
-            ctx = {'event': 'error', 'error': format(e)}
-            return render(request, "page-event.html", ctx)
 
 
 def DownloadUserteamView(request):
@@ -47,48 +33,70 @@ def DownloadUserteamView(request):
         return redirect('/user-team/')
 
 
-class PopulateTablesView(PermissionRequiredMixin, View):
+def DownloadDataJSON():
+    try:
+        download_json()
+        ctx = {'event': 'success', 'info': 'Data has been downloaded to JSON'}
+        return ctx
+    except Exception as e:
+        ctx = {'event': 'error', 'error': format(e)}
+        return ctx
+
+
+def PopulateTables():
+    # data = read_json()  ## Read data from JSON file on disk
+    data = get_data() ## Read data from Fantasy Premier League API
+    teams = data['teams']
+    positions = data['element_types']
+    players = data['elements']
+    try:
+        populate_teams(teams)
+        populate_positions(positions)
+        populate_players(players)
+        ctx = {'event': 'success',
+               'info': 'Tables Team, Position & Player has been populated.'}
+        return ctx
+    except Exception as e:
+        ctx = {'event': 'error', 'error': format(e)}
+
+
+def UpdateTables():
+    # data = read_json()  ## Read data from JSON file on disk
+    data = get_data()  ## Read data from Fantasy Premier League API
+    teams = data['teams']
+    players = data['elements']
+    try:
+        update_teams(teams)
+        update_players(players)
+        ctx = {'event': 'success',
+               'info': 'Tables Team & Player in database has been updated.'}
+        return ctx
+    except Exception as e:
+        ctx = {'event': 'error', 'error': format(e)}
+        return ctx
+
+
+class GetDataView(PermissionRequiredMixin, View):
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        data = read_json()  ## Read data from JSON file on disk
-        # data = get_data() ## Read data from Fantasy Premier League API
-        teams = data['teams']
-        positions = data['element_types']
-        players = data['elements']
-        try:
-            populate_teams(teams)
-            populate_positions(positions)
-            populate_players(players)
-        except Exception as e:
-            ctx = {'event': 'error', 'error': format(e)}
-            return render(request, "page-event.html", ctx)
+        ctx = {'form': GetDataForm}
+        return render(request, 'get_data.html', ctx)
 
-        ctx = {'event': 'success',
-               'info': 'Tables Team, Position, Player has been populated.'}
-        return render(request, "page-event.html", ctx)
-
-
-class UpdateTablesView(PermissionRequiredMixin, View):
-    permission_required = 'fantasy_pl.change_team'
-    permission_denied_message = 'Sorry, You do not have permission!'
-
-    def get(self, request):
-        # data = read_json()  ## Read data from JSON file on disk
-        data = get_data() ## Read data from Fantasy Premier League API
-        teams = data['teams']
-        players = data['elements']
-        try:
-            update_teams(teams)
-            update_players(players)
-        except Exception as e:
-            ctx = {'event': 'error', 'error': format(e)}
-            return render(request, "page-event.html", ctx)
-
-        ctx = {'event': 'success',
-               'info': 'Tables database has been updated.'}
-        return render(request, "page-event.html", ctx)
+    def post(self, request):
+        form = GetDataForm(request.POST)
+        ctx = {}
+        if form.is_valid():
+            choice = int(form.cleaned_data['choice'])
+            if choice == 0:
+                ctx = DownloadDataJSON()
+            elif choice == 1:
+                ctx = PopulateTables()
+            else:
+                ctx = UpdateTables()
+            ctx['form'] = GetDataForm
+            return render(request, 'get_data.html', ctx)
 
 
 class GetPlayersHistoryView(PermissionRequiredMixin, View):
@@ -96,11 +104,11 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
     permission_denied_message = 'Sorry, You do not have permission!'
 
     def get(self, request):
-        ctx = {'form': GetDataForm()}
+        ctx = {'form': GetPlayerDataForm()}
         return render(request, 'get_player_data.html', ctx)
 
     def post(self, request):
-        form = GetDataForm(request.POST)
+        form = GetPlayerDataForm(request.POST)
         if form.is_valid():
             id = form.cleaned_data['id']
             team = form.cleaned_data['team']
@@ -114,11 +122,11 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     get_player_fixture(game, id)
                     ctx = {'event': 'success',
                            'info': f'Data for player {id} has been updated',
-                           'form': GetDataForm()}
+                           'form': GetPlayerDataForm()}
                     return render(request, "get_player_data.html", ctx)
                 except Exception as e:
                     ctx = {'event': 'error', 'error': format(e),
-                           'form': GetDataForm()}
+                           'form': GetPlayerDataForm()}
                     return render(request, "get_player_data.html", ctx)
             elif team:
                 players = Player.objects.filter(team=team)
@@ -131,12 +139,12 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         get_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'event': 'error', 'error': format(e),
-                               'form': GetDataForm()}
+                               'form': GetPlayerDataForm()}
                         return render(request, "get_player_data.html", ctx)
 
                 ctx = {'event': 'success',
                        'info': f'Data for players in {team} has been updated',
-                       'form': GetDataForm()}
+                       'form': GetPlayerDataForm()}
                 return render(request, "get_player_data.html", ctx)
             elif all:
                 players = Player.objects.all()
@@ -150,15 +158,15 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     except Exception as e:
                         ctx = {'event': 'error',
                                'error': format(e),
-                               'form': GetDataForm()}
+                               'form': GetPlayerDataForm()}
                         return render(request, "get_player_data.html", ctx)
 
                 ctx = {'event': 'success',
                        'info': f'Data for players has been updated',
-                       'form': GetDataForm()}
+                       'form': GetPlayerDataForm()}
                 return render(request, "get_player_data.html", ctx)
             else:
-                ctx = {'form': GetDataForm()}
+                ctx = {'form': GetPlayerDataForm()}
                 return render(request, 'get_player_data.html', ctx)
 
 
