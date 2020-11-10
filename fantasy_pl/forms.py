@@ -5,11 +5,6 @@ from fantasy_pl.models import Player, Team, Position
 from django.forms import ModelChoiceField
 
 
-class LoginForm(forms.Form):
-    username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-
 class GetDataForm(forms.Form):
     id = forms.IntegerField(label='Get by ID', required=False,
                             widget=forms.NumberInput(
