@@ -365,7 +365,7 @@ def data_to_event(event, e, total_players):
 
 
 def data_to_player_data(hist, h):
-    hist.round = Fixtures.objects.get(id=h['fixture']).event
+    hist.event = Fixtures.objects.get(id=h['fixture']).event
     hist.position = hist.player.position_id
     hist.opponent_team = Team.objects.get(id=h['opponent_team'])
     hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
@@ -398,7 +398,7 @@ def data_to_player_data(hist, h):
 
 
 def data_to_player_fixture(hist, g):
-    hist.round = Fixtures.objects.get(id=g['id']).event
+    hist.event = Fixtures.objects.get(id=g['id']).event
     hist.team_h = Team.objects.get(id=g['team_h'])
     hist.team_h_score = g['team_h_score']
     hist.team_a = Team.objects.get(id=g['team_a'])
@@ -444,8 +444,8 @@ def data_to_user(usr, user_fpl):
     usr.summary_event_rank = user_fpl['summary_event_rank']
     usr.current_event = user_fpl['current_event']
     usr.name = user_fpl['name']
-    usr.last_deadline_bank = user_fpl['last_deadline_bank']
-    usr.last_deadline_value = user_fpl['last_deadline_value']
+    usr.last_deadline_bank = user_fpl['last_deadline_bank'] / 10
+    usr.last_deadline_value = user_fpl['last_deadline_value'] / 10
     usr.last_deadline_total_transfers = user_fpl['last_deadline_total_transfers']
 
 

@@ -66,7 +66,7 @@ class IndexView(LoginRequiredMixin, View):
             gw = Fixtures.objects.filter(finished=True).last().event
         except:
             gw=1
-        phistory_raw = PlayerHistory.objects.filter(round=gw)\
+        phistory_raw = PlayerHistory.objects.filter(event=gw)\
                                             .filter(minutes__gt=0)
 
         ### Player availability
@@ -138,11 +138,11 @@ class PlayerView(View):
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player) \
             .filter(finished=True) \
-            .order_by('-round')
+            .order_by('-event')
         games = PlayerHistory.objects.filter(player=player) \
             .filter(finished=False) \
-            .order_by('round')
-        chart = hist.order_by('round')
+            .order_by('event')
+        chart = hist.order_by('event')
         team = Team.objects.get(name=player.team)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
@@ -162,7 +162,7 @@ class FixtureView(View):
 
     def get(self, request):
         fixture = Fixtures.objects.all().order_by('event', 'kickoff_time')
-        curr_event = Fixtures.objects.filter(finished=True).last().event
+        curr_event = Fixtures.objects.filter(finished=True).last().event.id
         paginator = Paginator(fixture, 10)
         page = request.GET.get('page', curr_event)
         fixture = paginator.get_page(page)

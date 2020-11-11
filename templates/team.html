@@ -139,7 +139,7 @@
                                                         <tbody>
                                                             {% for f in fixtures %}
                                                                 <tr class="unread center" align="center">
-                                                                    <td>{{f.round}}</td>
+                                                                    <td>{{ f.event.id }}</td>
                                                                     <td>
                                                                         <a class="golink" href="{% url 'fpl:team' f.team_h.id %}">
                                                                             {% if f.is_home %}
@@ -206,7 +206,7 @@
                                                         <tbody>
                                                             {% for p in played %}
                                                                 <tr class="unread center" align="center">
-                                                                    <td>{{p.round}}</td>
+                                                                    <td>{{ p.event.id }}</td>
                                                                     <td>
                                                                         <a class="golink" href="{% url 'fpl:team' p.team_h.id %}">
                                                                             {% if p.is_home %}

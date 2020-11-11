@@ -141,7 +141,7 @@
                                                         <tbody>
                                                             {% for g in games %}
                                                                 <tr class="unread">
-                                                                    <td class="center" align="center">{{g.round}}</td>
+                                                                    <td class="center" align="center">{{ g.event.id }}</td>
                                                                     <td align="center">
                                                                         <a class="golink" href="{% url 'fpl:team' g.team_h.id %}">
                                                                             {% if g.is_home %}
@@ -211,7 +211,7 @@
                                                         <tbody>
                                                             {% for h in hist %}
                                                                 <tr class="unread">
-                                                                    <td class="center" align="center">{{h.round}}</td>
+                                                                    <td class="center" align="center">{{ h.event.id }}</td>
                                                                     <td align="center">
                                                                         <a class="golink" href="{% url 'fpl:team' h.opponent_team.id %}">
                                                                             <h6 class=" text-dark mb-1"> {{ h.opponent_team.short_name }}

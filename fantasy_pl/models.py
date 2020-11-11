@@ -23,6 +23,7 @@ class UserFpl(models.Model):
     last_deadline_value = models.FloatField(null=True)
     last_deadline_total_transfers = models.IntegerField(null=True)
 
+
 class Team(models.Model):
     id = models.SmallIntegerField(primary_key=True)
     pulse_id = models.SmallIntegerField(null=True)
@@ -130,7 +131,7 @@ class Player(models.Model):
 
     def next_game(self):
         games = PlayerHistory.objects.filter(player_id=self.id)
-        next_game = games.filter(finished=True).order_by('round').first()
+        next_game = games.filter(finished=True).order_by('event').first()
         try:
             if next_game.is_home == True:
                 return f'H - {next_game.team_a.short_name}'
@@ -138,6 +139,7 @@ class Player(models.Model):
                 return f'A - {next_game.team_h.short_name}'
         except AttributeError:
             return '-'
+
 
 class UserTeam(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
@@ -166,9 +168,41 @@ class UserTeam(models.Model):
     novelty = models.FloatField(default=0)
 
 
+class Event(models.Model):
+    id = models.IntegerField(primary_key=True)
+    name = models.CharField(max_length=16)
+    deadline_time = models.DateTimeField()
+    average_entry_score = models.IntegerField()
+    finished = models.BooleanField()
+    data_checked = models.BooleanField()
+    highest_score = models.IntegerField(null=True)
+    is_previous = models.BooleanField()
+    is_current = models.BooleanField()
+    is_next = models.BooleanField()
+    most_selected = models.ForeignKey(Player, null=True,
+                                      on_delete=models.SET_NULL,
+                                      related_name='most_selected')
+    most_transferred_in = models.ForeignKey(Player, null=True,
+                                            on_delete=models.SET_NULL,
+                                            related_name='most_transferred_ind')
+    top_element = models.ForeignKey(Player, null=True,
+                                    on_delete=models.SET_NULL,
+                                    related_name='top_element')
+    top_element_points = models.IntegerField(null=True)
+    transfers_made = models.IntegerField(null=True)
+    most_captained = models.ForeignKey(Player, null=True,
+                                       on_delete=models.SET_NULL,
+                                       related_name='most_captained')
+    most_vice_captained = models.ForeignKey(Player, null=True,
+                                            on_delete=models.SET_NULL,
+                                            related_name='most_vice_captained')
+    total_players = models.IntegerField()
+
+
 class Fixtures(models.Model):
     id = models.IntegerField(primary_key=True)
-    event = models.IntegerField(null=True)
+    event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL,
+                              related_name='f_event')
     finished = models.BooleanField()
     kickoff_time = models.DateTimeField(null=True)
     team_h = models.ForeignKey(Team, null=True, on_delete=models.CASCADE,
@@ -188,7 +222,8 @@ class PlayerHistory(models.Model):
     player = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL)
     position = models.SmallIntegerField(null=True)
     fixture = models.ForeignKey(Fixtures, null=True, on_delete=models.SET_NULL)
-    round = models.SmallIntegerField()
+    event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL,
+                              related_name='ph_event')
     kickoff_time = models.DateTimeField(null=True)
     difficulty = models.SmallIntegerField(null=True)
     team_h = models.ForeignKey(Team, null=True,
@@ -237,34 +272,3 @@ class PlayerHistory(models.Model):
 
     def diff_rest(self):
         return 5 - self.difficulty
-
-
-class Event(models.Model):
-    id = models.IntegerField(primary_key=True)
-    name = models.CharField(max_length=16)
-    deadline_time = models.DateTimeField()
-    average_entry_score = models.IntegerField()
-    finished = models.BooleanField()
-    data_checked = models.BooleanField()
-    highest_score = models.IntegerField(null=True)
-    is_previous = models.BooleanField()
-    is_current = models.BooleanField()
-    is_next = models.BooleanField()
-    most_selected = models.ForeignKey(Player, null=True,
-                                      on_delete=models.SET_NULL,
-                                      related_name='most_selected')
-    most_transferred_in = models.ForeignKey(Player, null=True,
-                                            on_delete=models.SET_NULL,
-                                            related_name='most_transferred_ind')
-    top_element = models.ForeignKey(Player, null=True,
-                                    on_delete=models.SET_NULL,
-                                    related_name='top_element')
-    top_element_points = models.IntegerField(null=True)
-    transfers_made = models.IntegerField(null=True)
-    most_captained = models.ForeignKey(Player, null=True,
-                                       on_delete=models.SET_NULL,
-                                       related_name='most_captained')
-    most_vice_captained = models.ForeignKey(Player, null=True,
-                                            on_delete=models.SET_NULL,
-                                            related_name='most_vice_captained')
-    total_players = models.IntegerField()
