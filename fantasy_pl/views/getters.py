@@ -193,7 +193,7 @@ def update_fixture(fixtures):
 def update_events(events, total_players):
     for e in events:
         event = Event.objects.get(id=e['id'])
-        # data_to_event(event, e, total_players)
+        data_to_event(event, e, total_players)
         event.save()
 
 

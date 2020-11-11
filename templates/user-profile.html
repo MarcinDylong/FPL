@@ -1,4 +1,5 @@
 {% extends "layouts/base.html" %}
+{% load custom_filters %}
 
 {% block title %} - UserTeam {% endblock %}
 
@@ -20,7 +21,11 @@
                                 </div>
                                 <div class="col-md-11">
                                     <div class="page-header-title">
+                                        {% if profile.player_first_name %}
+                                        <h1 class="m-b-10">{{ profile.player_first_name }} {{ profile.player_last_name }}</h1>
+                                        {% else %}
                                         <h1 class="m-b-10">Profile</h1>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>
@@ -67,11 +72,11 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="fas fa-users text-c-purple f-50"></i>
+                                                    <i class="fas fa-id-badge text-c-purple f-50"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ novelty }}</h3>
-                                                    <span class="text-dark d-block text-uppercase">Novelty of team</span>
+                                                    <h3 class="f-w-300">{{ profile.fpl }}</h3>
+                                                    <span class="text-dark d-block text-uppercase">FPL ID</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -82,11 +87,11 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="far fa-futbol f-50 text-c-green"></i>
+                                                    <i class="fas fa-shield-alt f-50 text-c-green"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ ppg }}</h3>
-                                                    <span class="d-block text-uppercase">Overall points pg</span>
+                                                    <h3 class="f-w-300">{{ profile.name }}</h3>
+                                                    <span class="d-block text-uppercase">Team name</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -97,17 +102,11 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="fas fa-money-bill-alt f-50 text-c-blue"></i>
+                                                    <i class="fa fa-flag f-50 text-c-blue"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ overall_cost }}</h3>
-                                                    <span class="d-block text-uppercase">
-                                                    {% if overpaid %}
-                                                    Your team might be overpaid!
-                                                    {% else %}
-                                                    Cost
-                                                    {% endif %}
-                                                    </span>
+                                                    <h3 class="f-w-300">{{ profile.player_region_iso_code_long }}</h3>
+                                                    <span class="d-block text-uppercase">Country</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -116,6 +115,117 @@
                                 <!-- [ Basif info ] end -->
                             </div>
                             <!-- [ Basic Info Content ] end -->
+                            <!-- [ Basic Info Content 2 ] start -->
+                            <div class="row">
+                                <!-- [ Basic info ] start -->
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-dollar-sign text-c-purple f-50"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.last_deadline_value }}</h3>
+                                                    <span class="text-dark d-block text-uppercase">Total team value</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-wallet f-50 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.last_deadline_bank }}</h3>
+                                                    <span class="d-block text-uppercase">Bank</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-chart-bar f-50 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.summary_overall_points }}</h3>
+                                                    <span class="d-block text-uppercase">Total season points</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Basif info ] end -->
+                            </div>
+                            <!-- [ Basic Info Content 2] end -->
+                            <!-- [ Basic Info Content 3 ] start -->
+                            <div class="row">
+                                <!-- [ Basic info ] start -->
+                                <div class="col-md-6 col-xl-4">
+                                    <div class="card daily-sales">
+                                        <div class="card-block">
+                                            <h6 class="mb-4">Overall Rank</h6>
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-9">
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_overall_rank }}</h3>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <p class="m-b-0">{{ profile.summary_overall_rank|give_percent_rev:event.total_players }}%</p>
+                                                </div>
+                                            </div>
+                                            <div class="progress m-t-30" style="height: 7px;">
+                                                <div class="progress-bar progress-c-theme2" role="progressbar" style="width: {{ profile.summary_overall_rank|give_percent_rev:event.total_players }}%;" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-4">
+                                    <div class="card daily-sales">
+                                        <div class="card-block">
+                                            <h6 class="mb-4">Game week Points</h6>
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-9">
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_event_points }} (avg. {{ event.average_entry_score }})</h3>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <p class="m-b-0">{{ profile.summary_event_points|give_percent:event.highest_score }}%</p>
+                                                </div>
+                                            </div>
+                                            <div class="progress m-t-30" style="height: 7px;">
+                                                <div class="progress-bar progress-c-theme" role="progressbar" style="width: {{ profile.summary_event_points|give_percent:event.highest_score }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-xl-4">
+                                    <div class="card daily-sales">
+                                        <div class="card-block">
+                                            <h6 class="mb-4">Game week Rank</h6>
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-9">
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_event_rank }}</h3>
+                                                </div>
+                                                <div class="col-3 text-right">
+                                                    <p class="m-b-0">{{ profile.summary_event_rank|give_percent_rev:event.total_players }}%</p>
+                                                </div>
+                                            </div>
+                                            <div class="progress m-t-30" style="height: 7px;">
+                                                <div class="progress-bar progress-c-blue" role="progressbar" style="width: {{ profile.summary_event_rank|give_percent_rev:event.total_players }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Basif info ] end -->
+                            </div>
+                            <!-- [ Basic Info Content 3] end -->
                             <!-- [ Team Form and List ] start -->
                             <div class="row">
                                 <!--[ UserTeam Form ] start-->
