@@ -6,7 +6,7 @@ import urllib.request
 import requests
 
 from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
-    UserTeam, UserFpl
+    UserTeam, UserFpl, Event
 
 
 def get_data():
@@ -146,6 +146,13 @@ def populate_fixture(fixtures):
         fix.save()
 
 
+def populate_events(events, total_players):
+    for e in events:
+        event = Event()
+        event.id = e['id']
+        data_to_event(event, e, total_players)
+        event.save()
+
 def update_teams(teams):
     perf = league_table_scraper()
     for t in teams:
@@ -181,6 +188,13 @@ def update_fixture(fixtures):
                 fix.id = f['id']
                 data_to_fixture(fix, f)
                 fix.save()
+
+
+def update_events(events, total_players):
+    for e in events:
+        event = Event.objects.get(id=e['id'])
+        # data_to_event(event, e, total_players)
+        event.save()
 
 
 def update_userteam(user, player_list):
@@ -324,6 +338,30 @@ def data_to_fixture(fix, f):
         fix.team_a_score = str(f['team_a_score'])
     fix.team_h_difficulty = f['team_h_difficulty']
     fix.team_a_difficulty = f['team_a_difficulty']
+
+
+def data_to_event(event, e, total_players):
+    event.name = e['name']
+    event.deadline_time = e['deadline_time']
+    event.average_entry_score = e['average_entry_score']
+    event.finished = e['finished']
+    event.data_checked = e['data_checked']
+    event.highest_score = e['highest_score']
+    event.is_previous = e['is_previous']
+    event.is_current = e['is_current']
+    event.is_next = e['is_next']
+    event.transfers_made = e['transfers_made']
+    try:
+        event.top_element_points = e['top_element_info']['points']
+    except:
+        event.top_element_points = 0
+    if e['finished'] == True:
+        event.top_element = Player.objects.get(id=e['top_element'])
+        event.most_selected = Player.objects.get(id=e['most_selected'])
+        event.most_transferred_in = Player.objects.get(id=e['most_transferred_in'])
+        event.most_captained = Player.objects.get(id=e['most_captained'])
+        event.most_vice_captained = Player.objects.get(id=e['most_vice_captained'])
+    event.total_players = total_players
 
 
 def data_to_player_data(hist, h):

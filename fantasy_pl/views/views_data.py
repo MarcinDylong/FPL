@@ -10,7 +10,8 @@ from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
-    get_fpl_userteam, update_userteam, get_data, get_fpl_user, update_user
+    get_fpl_userteam, update_userteam, get_data, get_fpl_user, update_user, \
+    populate_events, update_events
 
 
 def DownloadUserteamView(request):
@@ -65,12 +66,15 @@ def PopulateTables():
     teams = data['teams']
     positions = data['element_types']
     players = data['elements']
+    events = data['events']
+    total_players = data['total_players']
     try:
         populate_teams(teams)
         populate_positions(positions)
         populate_players(players)
+        populate_events(events, total_players)
         ctx = {'event': 'success',
-               'info': 'Tables Team, Position & Player has been populated.'}
+               'info': 'Tables Team, Position, Player & Event has been populated.'}
         return ctx
     except Exception as e:
         ctx = {'event': 'error', 'error': format(e)}
@@ -81,11 +85,14 @@ def UpdateTables():
     data = get_data()  ## Read data from Fantasy Premier League API
     teams = data['teams']
     players = data['elements']
+    events = data['events']
+    total_players = data['total_players']
     try:
         update_teams(teams)
         update_players(players)
+        update_events(events, total_players)
         ctx = {'event': 'success',
-               'info': 'Tables Team & Player in database has been updated.'}
+               'info': 'Tables Team, Player & Event in database has been updated.'}
         return ctx
     except Exception as e:
         ctx = {'event': 'error', 'error': format(e)}

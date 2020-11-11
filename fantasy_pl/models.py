@@ -246,7 +246,7 @@ class Event(models.Model):
     average_entry_score = models.IntegerField()
     finished = models.BooleanField()
     data_checked = models.BooleanField()
-    highest_score = models.IntegerField()
+    highest_score = models.IntegerField(null=True)
     is_previous = models.BooleanField()
     is_current = models.BooleanField()
     is_next = models.BooleanField()
@@ -259,8 +259,8 @@ class Event(models.Model):
     top_element = models.ForeignKey(Player, null=True,
                                     on_delete=models.SET_NULL,
                                     related_name='top_element')
-    top_element_points = models.IntegerField()
-    transfers_made = models.IntegerField()
+    top_element_points = models.IntegerField(null=True)
+    transfers_made = models.IntegerField(null=True)
     most_captained = models.ForeignKey(Player, null=True,
                                        on_delete=models.SET_NULL,
                                        related_name='most_captained')
