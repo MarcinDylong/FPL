@@ -352,7 +352,7 @@ class UserProfile(View):
         profile = UserFpl.objects.get(user=user)
         user_team = UserTeam.objects.get(user=user)
         event = Event.objects.get(id=profile.current_event)
-        # user_hist = UserFplHistory.objects.get(userfpl=profile) ## For later development
+        user_hist = UserFplHistory.objects.get(userfpl=profile)
         user_season = UserFplSeason.objects.filter(userfpl=profile)
         form = GetUserteamForm()
         if profile.fpl != None:

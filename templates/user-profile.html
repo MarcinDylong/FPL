@@ -24,7 +24,7 @@
                                 <div class="col-md-11">
                                     <div class="page-header-title">
                                         {% if profile.player_first_name %}
-                                        <h1 class="m-b-10">{{ profile.player_first_name }} {{ profile.player_last_name }}</h1>
+                                        <h1 class="m-b-10">{{ profile }}</h1>
                                         {% else %}
                                         <h1 class="m-b-10">Profile</h1>
                                         {% endif %}
@@ -168,6 +168,57 @@
                                 <!-- [ Basif info ] end -->
                             </div>
                             <!-- [ Basic Info Content 2] end -->
+                            <!-- [ Wild card info ] start -->
+                            <div class="row">
+                                <!-- [ Basic info ] start -->
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-dollar-sign text-c-purple f-50"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.last_deadline_value }}</h3>
+                                                    <span class="text-dark d-block text-uppercase">Total team value</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="fas fa-wallet f-50 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.last_deadline_bank }}</h3>
+                                                    <span class="d-block text-uppercase">Bank</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xl-4 col-md-6">
+                                    <div class="card">
+                                        <div class="card-block border-bottom">
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-auto">
+                                                    <i class="far fa-chart-bar f-50 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">{{ profile.summary_overall_points }}</h3>
+                                                    <span class="d-block text-uppercase">Total season points</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- [ Basif info ] end -->
+                            </div>
+                            <!-- [ Wild cards info] end -->
                             <!-- [ Basic Info Content 3 ] start -->
                             <div class="row">
                                 <!-- [ Basic info ] start -->
@@ -177,7 +228,10 @@
                                             <h6 class="mb-4">Overall Rank</h6>
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-9">
-                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_overall_rank }}</h3>
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                                        <i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
+                                                        {{ profile.summary_overall_rank }}
+                                                    </h3>
                                                 </div>
                                                 <div class="col-3 text-right">
                                                     <p class="m-b-0">{{ profile.summary_overall_rank|give_percent_rev:event.total_players }}%</p>
@@ -342,6 +396,7 @@ new Morris.Line({
         ],
         smooth: false,
         parseTime: false,
+        numLines: 7,
         xkey: 'Fixture',
         ykeys: ['Cost','Points','Bank','Bench'],
         ymax: 150,

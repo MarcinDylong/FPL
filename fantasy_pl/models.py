@@ -24,6 +24,9 @@ class UserFpl(models.Model):
     last_deadline_value = models.FloatField(null=True)
     last_deadline_total_transfers = models.IntegerField(null=True)
 
+    def __str__(self):
+        return f'{self.player_first_name} {self.player_last_name}'
+
 
 class Team(models.Model):
     id = models.SmallIntegerField(primary_key=True)
@@ -172,8 +175,11 @@ class Event(models.Model):
                                             related_name='most_vice_captained')
     total_players = models.IntegerField()
 
+    class Meta:
+        unique_together=('id',)
+
     def __str__(self):
-        return f'{self.id}'
+        return f'{self.name}'
 
 class UserFplHistory(models.Model):
     userfpl = models.OneToOneField(UserFpl, on_delete=models.CASCADE)
@@ -182,6 +188,9 @@ class UserFplHistory(models.Model):
 
     class Meta:
         unique_together = ('userfpl',)
+
+    def __str__(self):
+        return f'{self.userfpl} history'
 
 
 class UserFplSeason(models.Model):
@@ -202,6 +211,9 @@ class UserFplSeason(models.Model):
 
     class Meta:
         unique_together=('userfpl', 'event',)
+
+    def __str__(self):
+        return f'Season data for {self.userfpl}'
 
 class UserTeam(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
