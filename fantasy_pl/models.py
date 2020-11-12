@@ -172,6 +172,8 @@ class Event(models.Model):
                                             related_name='most_vice_captained')
     total_players = models.IntegerField()
 
+    def __str__(self):
+        return f'{self.id}'
 
 class UserFplHistory(models.Model):
     userfpl = models.OneToOneField(UserFpl, on_delete=models.CASCADE)

@@ -4,7 +4,9 @@
 {% block title %} - UserTeam {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+    <link rel="stylesheet" href="/static/assets/plugins/chart-morris/css/morris.css">
+{% endblock stylesheets %}
 
 {% block content %}
 
@@ -228,33 +230,8 @@
                             <!-- [ Basic Info Content 3] end -->
                             <!-- [ Team Form and List ] start -->
                             <div class="row">
-                                <!--[ UserTeam Form ] start-->
-                                <div class="col-xl-3">
-                                    <div class="card Recent-Users">
-                                        <div class="card-header">
-                                            <h5 class="text-dark" align="left">Update your team manually</h5>
-                                        </div>
-                                        <div class="card-body text-left">
-                                            <div class="form-group">
-                                                <form role="form" method="post" action="#">
-                                                    {% csrf_token %}
-                                                    {% if form.non_field_errors %}
-                                                        <button type="button" class="btn btn-danger">
-                                                            {{ form.non_field_errors.as_text }}
-                                                        </button>
-                                                    {% endif %}
-                                                    {{ form }}
-                                                    <button type='submit' class="btn btn-primary">
-                                                        Get
-                                                    </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--[ UserTeam Form ] end-->
                                 <!--[ UserTeam Stat ] start-->
-                                <div class="col-xl-9">
+                                <div class="col-xl-12">
                                     <div class="card Recent-Users">
                                         <div class="card-header">
                                             <h5>Your Team players stats</h5>
@@ -301,30 +278,34 @@
                                 <!--[ UserTeam Stat ] end-->
                             </div>
                             <!-- [ Team Form and List ] end -->
-                            <!-- [ Team Charts ] end -->
+                            <!-- [ Cost & Point Charts ] end -->
                             <div class="row">
-                                <div class="col-xl-6">
+                                <div class="col-xl-12">
                                     <div class="card">
                                         <div class="card-header">
-                                            <h5>PPG to Cost:</h5>
+                                            <h5>Points and cost:</h5>
                                         </div>
                                         <div class="card-block">
-                                            <div id="ppg2cost" style="height: 400px; position: relative;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Cost:</h5>
-                                        </div>
-                                        <div class="card-block">
-                                            <div id="cost" style="height: 400px; position: relative;"></div>
+                                            <div id="pointCost" style="height: 300px;  position: relative;"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <!-- [ Team Charts ] end -->
+                            <!-- [ Cost & Points Charts ] end -->
+                            <!-- [ Rank Charts ] end -->
+                            <div class="row">
+                                <div class="col-xl-12">
+                                    <div class="card">
+                                        <div class="card-header">
+                                            <h5>Rank:</h5>
+                                        </div>
+                                        <div class="card-block">
+                                            <div id="rank" style="height: 400px; position: relative;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- [ Rank Charts ] end -->
                         </div>
                     </div>
                 </div>
@@ -346,27 +327,61 @@ $(document).ready(function() {
     });
 });
 
-new Morris.Bar({
-      element: 'ppg2cost',
-      data: [
-                {% for u in uteam %}
-                    { Player: '{{ u.ppg_chart_str }}', Ratio: '{{ u.ratio }}' }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-                  ],
-      xkey: 'Player',
-      ykeys: ['Ratio'],
-      xLabelAngle: 45,
-      parseTime: false,
-      labels: ['Value']
-});
+new Morris.Line({
+        element: 'pointCost',
+        data: [
+            {% for s in season %}
+                {
+                    Fixture: '{{ s.event }}',
+                    Cost: '{{ s.value }}',
+                    Points: '{{ s.points }}',
+                    Bank: '{{ s.bank }}',
+                    Bench: '{{ s.points_on_bench }}'
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        smooth: false,
+        parseTime: false,
+        xkey: 'Fixture',
+        ykeys: ['Cost','Points','Bank','Bench'],
+        ymax: 150,
+        labels: ['Cost','Points','Bank','Bench']
+    });
 
-   new Morris.Donut({
-      element: 'cost',
-      data: [
-                {% for u in uteam %}
-                    { label: '{{ u }}', value: '{{ u.now_cost }}' }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-                  ],
-});
+new Morris.Line({
+        element: 'rank',
+        data: [
+            {% for s in season %}
+                {
+                    Fixture: '{{ s.event }}',
+                    RankGW: '{{ s.rank }}',
+                    Rank: '{{ s.overall_rank }}',
+                }{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        ],
+        parseTime: false,
+        smooth: false,
+        {#yLabelFormat: function (y) {return customLabel(y)},#}
+        xkey: 'Fixture',
+        numLines: 8,
+        ykeys: ['RankGW','Rank'],
+        ymax: 0,
+        ymin: 7000000,
+        {#ymax: 1,#}
+        {#ymin: {{ event.total_players }},#}
+        labels: ['RankGW','Rank']
+    });
+
+{#function customLabel(y) {#}
+{#    if (y === 1) {#}
+{#        var label = '1'#}
+{#        return label#}
+{#    }#}
+{#    if (y%1000000 === 0) {#}
+{#        var label = y.toString()[0] + ' mln'#}
+{#        return label#}
+{#    }#}
+{#}#}
+
 </script>
 {% endblock javascripts %}

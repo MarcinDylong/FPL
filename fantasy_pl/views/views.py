@@ -8,7 +8,7 @@ from django.views import View
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm,\
      GetUserteamForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position,\
-     UserTeam, Event, UserFpl
+     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason
 
 
 class IndexView(LoginRequiredMixin, View):
@@ -352,6 +352,8 @@ class UserProfile(View):
         profile = UserFpl.objects.get(user=user)
         user_team = UserTeam.objects.get(user=user)
         event = Event.objects.get(id=profile.current_event)
+        # user_hist = UserFplHistory.objects.get(userfpl=profile) ## For later development
+        user_season = UserFplSeason.objects.filter(userfpl=profile)
         form = GetUserteamForm()
         if profile.fpl != None:
             form.fields['fpl_id'].initial = profile.fpl
@@ -359,4 +361,5 @@ class UserProfile(View):
         ctx['profile'] = profile
         ctx['user_team'] = user_team
         ctx['event'] = event
+        ctx['season'] = user_season
         return render(request, 'user-profile.html', ctx)
