@@ -6,7 +6,7 @@ import urllib.request
 import requests
 
 from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
-    UserTeam, UserFpl, Event
+    UserTeam, UserFpl, Event, UserFplHistory, UserFplSeason
 
 
 def get_data():
@@ -54,6 +54,17 @@ def get_fixtures_for_season():
 
 def get_fpl_user(player_id: int):
     base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/'
+    response = requests.get(base_url)
+
+    if response.status_code != 200:
+        raise Exception('Response was code ' + str(response.status_code))
+    responseStr = response.text
+    data = json.loads(responseStr)
+    return data
+
+
+def get_fpl_user_history_and_season(player_id: int):
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/history/'
     response = requests.get(base_url)
 
     if response.status_code != 200:
@@ -219,6 +230,36 @@ def update_user(user, user_fpl):
         usr.user = user
         data_to_user(usr, user_fpl)
         usr.save()
+
+
+def update_user_history(user, user_fpl_history):
+    user_fpl = UserFpl.objects.get(user=user)
+    chips = user_fpl_history['chips']
+    past = user_fpl_history['past']
+    obj, created = UserFplHistory.objects.update_or_create(
+        userfpl=user_fpl,
+        chips=chips,
+        past=past
+    )
+
+
+def update_user_season(user, user_fpl_season):
+    user_fpl = UserFpl.objects.get(user=user)
+    for season in user_fpl_season:
+        obj, created = UserFplSeason.objects.update_or_create(
+            userfpl=user_fpl,
+            event=Event.objects.get(id=season['event']),
+            points=season['points'],
+            total_points=season['total_points'],
+            rank=season['rank'],
+            rank_sort=season['rank_sort'],
+            overall_rank=season['overall_rank'],
+            bank=season['bank']/10,
+            value=season['value']/10,
+            event_transfers=season['event_transfers'],
+            event_transfers_cost=season['event_transfers_cost'],
+            points_on_bench=season['points_on_bench']
+        )
 
 
 def get_player_data(history):

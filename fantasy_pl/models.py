@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from jsonfield import JSONField
 
 
 class UserFpl(models.Model):
@@ -141,33 +142,6 @@ class Player(models.Model):
             return '-'
 
 
-class UserTeam(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
-    gkp = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkp')
-    def1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def1')
-    def2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def2')
-    def3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def3')
-    def4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def4')
-    mdf1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf1')
-    mdf2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf2')
-    mdf3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf3')
-    mdf4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf4')
-    fwd1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd1')
-    fwd2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd2')
-    gkpb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkpb')
-    defb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='defb')
-    mdfb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mfdb')
-    fwdb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwdb')
-    overall_cost = models.FloatField(default=0)
-    ppg = models.FloatField(default=0)
-    influence = models.FloatField(default=0)
-    creativity = models.FloatField(default=0)
-    threat = models.FloatField(default=0)
-    total_points = models.SmallIntegerField(default=0)
-    dt_apps = models.FloatField(default=0)
-    novelty = models.FloatField(default=0)
-
-
 class Event(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=16)
@@ -197,6 +171,66 @@ class Event(models.Model):
                                             on_delete=models.SET_NULL,
                                             related_name='most_vice_captained')
     total_players = models.IntegerField()
+
+
+class UserFplHistory(models.Model):
+    userfpl = models.OneToOneField(UserFpl, on_delete=models.CASCADE)
+    past = JSONField()
+    chips = JSONField()
+
+    class Meta:
+        unique_together = ('userfpl',)
+
+
+class UserFplSeason(models.Model):
+    userfpl = models.ForeignKey(UserFpl, on_delete=models.CASCADE,
+                                related_name='user_history')
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True,
+                              related_name='user_event')
+    points = models.IntegerField(null=True)
+    total_points = models.IntegerField(null=True)
+    rank = models.IntegerField(null=True)
+    rank_sort = models.IntegerField(null=True)
+    overall_rank = models.IntegerField(null=True)
+    bank = models.FloatField(null=True)
+    value = models.FloatField(null=True)
+    event_transfers = models.IntegerField(null=True)
+    event_transfers_cost = models.IntegerField(null=True)
+    points_on_bench = models.IntegerField(null=True)
+
+    class Meta:
+        unique_together=('userfpl', 'event',)
+
+class UserTeam(models.Model):
+    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    # event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL)
+    gkp = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkp')
+    def1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def1')
+    def2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def2')
+    def3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def3')
+    def4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='def4')
+    mdf1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf1')
+    mdf2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf2')
+    mdf3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf3')
+    mdf4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mdf4')
+    fwd1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd1')
+    fwd2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwd2')
+    gkpb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkpb')
+    defb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='defb')
+    mdfb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='mfdb')
+    fwdb = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='fwdb')
+    overall_cost = models.FloatField(default=0)
+    ppg = models.FloatField(default=0)
+    influence = models.FloatField(default=0)
+    creativity = models.FloatField(default=0)
+    threat = models.FloatField(default=0)
+    total_points = models.SmallIntegerField(default=0)
+    dt_apps = models.FloatField(default=0)
+    novelty = models.FloatField(default=0)
+
+    # class Meta:
+    #     unique_together = ('user','event',)
+
 
 
 class Fixtures(models.Model):

@@ -11,7 +11,8 @@ from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     update_teams, get_player_data, get_player_fixture, download_json, \
     get_fixtures_for_season, populate_fixture, update_fixture, \
     get_fpl_userteam, update_userteam, get_data, get_fpl_user, update_user, \
-    populate_events, update_events
+    populate_events, update_events, update_user_history, \
+    get_fpl_user_history_and_season, update_user_season
 
 
 def DownloadUserteamView(request):
@@ -40,12 +41,16 @@ def DownloadUserView(request):
         player_id = form.cleaned_data['fpl_id']
         try:
             user_fpl = get_fpl_user(player_id)
+            user_fpl_history = get_fpl_user_history_and_season(player_id)
         except Exception as e:
             messages.error(request, f"Failure updating your profile: "
                                     f"{format(e)}")
             return redirect('/user-profile/')
         user = request.user
         update_user(user, user_fpl)
+        update_user_history(user, user_fpl_history)
+        user_fpl_season = user_fpl_history['current']
+        update_user_season(user, user_fpl_season)
         messages.success(request, "Your Profile was succesfully updated.")
         return redirect('/user-profile/')
 
