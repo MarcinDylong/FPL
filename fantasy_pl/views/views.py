@@ -347,19 +347,21 @@ class UserTeamView(View):
 class UserProfile(View):
 
     def get(self, request):
-        ctx = {}
         user = request.user
         profile = UserFpl.objects.get(user=user)
         user_team = UserTeam.objects.get(user=user)
         event = Event.objects.get(id=profile.current_event)
         user_hist = UserFplHistory.objects.get(userfpl=profile)
         user_season = UserFplSeason.objects.filter(userfpl=profile)
+        prev_gw = user_season.get(event_id=(profile.current_event - 1))
         form = GetUserteamForm()
         if profile.fpl != None:
             form.fields['fpl_id'].initial = profile.fpl
-        ctx['form'] = form
-        ctx['profile'] = profile
-        ctx['user_team'] = user_team
-        ctx['event'] = event
-        ctx['season'] = user_season
+        ctx = {'form': form,
+               'profile': profile,
+               'user_team': user_team,
+               'event': event,
+               'season': user_season,
+               'prev': prev_gw
+               }
         return render(request, 'user-profile.html', ctx)

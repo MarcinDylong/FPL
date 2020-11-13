@@ -229,7 +229,13 @@
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-9">
                                                     <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                                        {% if profile.summary_overall_rank < prev.overall_rank %}
                                                         <i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
+                                                        {% elif profile.summary_overall_rank == prev.overall_rank %}
+                                                        <i class="feather icon-minus text-muted f-30 m-r-10"></i>
+                                                        {% else %}
+                                                        <i class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
+                                                        {% endif %}
                                                         {{ profile.summary_overall_rank }}
                                                     </h3>
                                                 </div>
@@ -249,7 +255,16 @@
                                             <h6 class="mb-4">Game week Points</h6>
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-9">
-                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_event_points }} (avg. {{ event.average_entry_score }})</h3>
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                                        {% if profile.summary_event_points > prev.points %}
+                                                        <i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
+                                                        {% elif profile.summary_event_points == prev.points %}
+                                                        <i class="feather icon-minus text-muted f-30 m-r-10"></i>
+                                                        {% else %}
+                                                        <i class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
+                                                        {% endif %}
+                                                        {{ profile.summary_event_points }} (avg. {{ event.average_entry_score }})
+                                                    </h3>
                                                 </div>
                                                 <div class="col-3 text-right">
                                                     <p class="m-b-0">{{ profile.summary_event_points|give_percent:event.highest_score }}%</p>
@@ -267,7 +282,16 @@
                                             <h6 class="mb-4">Game week Rank</h6>
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-9">
-                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0"><i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>{{ profile.summary_event_rank }}</h3>
+                                                    <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                                        {% if profile.summary_event_rank < prev.rank %}
+                                                        <i class="feather icon-arrow-up text-c-green f-30 m-r-10"></i>
+                                                        {% elif profile.summary_event_rank == prev.rank %}
+                                                        <i class="feather icon-minus text-muted f-30 m-r-10"></i>
+                                                        {% else %}
+                                                        <i class="feather icon-arrow-down text-c-red f-30 m-r-10"></i>
+                                                        {% endif %}
+                                                        {{ profile.summary_event_rank }}
+                                                    </h3>
                                                 </div>
                                                 <div class="col-3 text-right">
                                                     <p class="m-b-0">{{ profile.summary_event_rank|give_percent_rev:event.total_players }}%</p>

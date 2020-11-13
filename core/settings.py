@@ -92,11 +92,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'db',
+        'HOST': 'localhost',
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'coderslab',
         'PORT': 5432,
         'OPTIONS': {
             'client_encoding': 'UTF8'},
