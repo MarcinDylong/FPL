@@ -5,7 +5,7 @@ from django.contrib import messages
 
 from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
     GetUserteamForm, GetDataForm
-from fantasy_pl.models import Player, Fixtures
+from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     populate_teams, populate_players, update_players, populate_positions, \
     update_teams, get_player_data, get_player_fixture, download_json, \
@@ -20,8 +20,8 @@ def DownloadUserteamView(request):
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
         try:
-            last_game = Fixtures.objects.filter(finished=True).last()
-            gw = last_game.event
+            last_event = Event.objects.filter(finished=True).last()
+            gw = last_event.id
             team = get_fpl_userteam(player_id, gw)
             player = team['picks']
             player_list = [p['element'] for p in player]

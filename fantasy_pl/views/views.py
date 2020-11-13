@@ -5,17 +5,16 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
 
-from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm,\
-     GetUserteamForm
-from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position,\
-     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason
+from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
+    GetUserteamForm
+from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
+    UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason
 
 
 class IndexView(LoginRequiredMixin, View):
     login_url = '/login'
 
-
-    def season_best_eleven(self, players_raw ,parameter:str):
+    def season_best_eleven(self, players_raw, parameter: str):
         """
         :param players_raw: Queries from Database
         :param parameter:  Choose parameter by which you want determine best11
@@ -36,8 +35,7 @@ class IndexView(LoginRequiredMixin, View):
 
         return ball
 
-
-    def gw_best_eleven(self, phistory_raw ,parameter:str):
+    def gw_best_eleven(self, phistory_raw, parameter: str):
         """
         :param phistory_raw: Queries from Database
         :param parameter:  Choose parameter by which you want determine best11
@@ -65,14 +63,14 @@ class IndexView(LoginRequiredMixin, View):
         try:
             gw = Fixtures.objects.filter(finished=True).last().event
         except:
-            gw=1
-        phistory_raw = PlayerHistory.objects.filter(event=gw)\
-                                            .filter(minutes__gt=0)
+            gw = 1
+        phistory_raw = PlayerHistory.objects.filter(event=gw) \
+            .filter(minutes__gt=0)
 
         ### Player availability
-        avl = players_raw.filter(chance_of_playing_this_round__lt=100)\
-                         .filter(~Q(news__contains='Joined'))\
-                         .order_by('chance_of_playing_this_round')
+        avl = players_raw.filter(chance_of_playing_this_round__lt=100) \
+            .filter(~Q(news__contains='Joined')) \
+            .order_by('chance_of_playing_this_round')
         ctx['avl'] = avl
         ### Transfers In of current GW
         tri = players_raw.order_by('-transfers_in_event')[:5]
@@ -82,7 +80,8 @@ class IndexView(LoginRequiredMixin, View):
         ctx['tro'] = tro
         try:
             ctx['ball'] = self.season_best_eleven(players_raw, '-total_points')
-            ctx['popular'] = self.season_best_eleven(players_raw, '-selected_by_percent')
+            ctx['popular'] = self.season_best_eleven(players_raw,
+                                                     '-selected_by_percent')
             ctx['gwbest'] = self.gw_best_eleven(phistory_raw, '-total_points')
             ctx['gwbonus'] = self.gw_best_eleven(phistory_raw, '-bonus')
         except:
@@ -292,7 +291,7 @@ class UserTeamView(View):
         if form.is_valid():
             try:
                 userTeam = UserTeam.objects.get(user=request.user)
-                userTeam.gkp  = form.cleaned_data['gkp']
+                userTeam.gkp = form.cleaned_data['gkp']
                 userTeam.gkpb = form.cleaned_data['gkpb']
                 userTeam.def1 = form.cleaned_data['def1']
                 userTeam.def2 = form.cleaned_data['def2']
@@ -348,20 +347,31 @@ class UserProfile(View):
 
     def get(self, request):
         user = request.user
-        profile = UserFpl.objects.get(user=user)
-        user_team = UserTeam.objects.get(user=user)
-        event = Event.objects.get(id=profile.current_event)
-        user_hist = UserFplHistory.objects.get(userfpl=profile)
-        user_season = UserFplSeason.objects.filter(userfpl=profile)
-        prev_gw = user_season.get(event_id=(profile.current_event - 1))
+        ctx = {}
         form = GetUserteamForm()
-        if profile.fpl != None:
-            form.fields['fpl_id'].initial = profile.fpl
-        ctx = {'form': form,
-               'profile': profile,
-               'user_team': user_team,
-               'event': event,
-               'season': user_season,
-               'prev': prev_gw
-               }
+        try:
+            ## Profile
+            profile = UserFpl.objects.get(user=user)
+            if profile.fpl:
+                form.fields['fpl_id'].initial = profile.fpl
+            ctx['profile'] = profile
+            ## User team
+            # user_team = UserTeam.objects.get(user=user)
+            # ctx['user_team'] = user_team
+            ## Event
+            event = Event.objects.get(id=profile.current_event)
+            ctx['event'] = event
+            ## User history
+            user_hist = UserFplHistory.objects.get(userfpl=profile)
+            for h in user_hist.chips:
+                ctx[h['name']] = h['event']
+            ## User season
+            user_season = UserFplSeason.objects.filter(userfpl=profile)
+            ctx['season'] = user_season
+            ## Previous game week
+            prev_gw = user_season.get(event_id=(profile.current_event - 1))
+            ctx['prev'] = prev_gw
+        except:
+            pass
+        ctx['form'] = form
         return render(request, 'user-profile.html', ctx)

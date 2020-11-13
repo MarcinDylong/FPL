@@ -66,6 +66,7 @@
                                 </div>
                             </div>
                             <!-- [ Download User Team ] end -->
+                            {% if profile.fpl %}
                             <!-- [ Basic Info Content ] start -->
                             <div class="row">
                                 <!-- [ Basic info ] start -->
@@ -176,11 +177,22 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="fas fa-dollar-sign text-c-purple f-50"></i>
+                                                    {% if freehit %}
+                                                    <i class="far fa-star f-50 text-c-purple"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ profile.last_deadline_value }}</h3>
-                                                    <span class="text-dark d-block text-uppercase">Total team value</span>
+                                                    <h3 class="f-w-300">
+                                                        Used on GW {{ freehit }}
+                                                    </h3>
+                                                    {% else %}
+                                                    <i class="fas fa-star f-50 text-c-purple"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">
+                                                        Available
+                                                    </h3>
+                                                    {% endif %}
+                                                    <span class="text-dark d-block text-uppercase">Free Hit</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -191,11 +203,22 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="fas fa-wallet f-50 text-c-green"></i>
+                                                    {% if 3xc %}
+                                                    <i class="far fa-star f-50 text-c-green"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ profile.last_deadline_bank }}</h3>
-                                                    <span class="d-block text-uppercase">Bank</span>
+                                                    <h3 class="f-w-300">
+                                                        Used on GW {{ 3xc.event }}
+                                                    </h3>
+                                                    {% else %}
+                                                    <i class="fas fa-star f-50 text-c-green"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300">
+                                                        Available
+                                                    </h3>
+                                                    {% endif %}
+                                                    <span class="d-block text-uppercase">Triple captain</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -206,11 +229,20 @@
                                         <div class="card-block border-bottom">
                                             <div class="row d-flex align-items-center">
                                                 <div class="col-auto">
-                                                    <i class="far fa-chart-bar f-50 text-c-blue"></i>
+                                                    {% if bboost %}
+                                                    <i class="far fa-star f-50 text-c-blue"></i>
                                                 </div>
                                                 <div class="col">
-                                                    <h3 class="f-w-300">{{ profile.summary_overall_points }}</h3>
-                                                    <span class="d-block text-uppercase">Total season points</span>
+                                                    <h3 class="f-w-300">
+                                                        Used on GW {{ bboost.event }}
+                                                    </h3>
+                                                    {% else %}
+                                                    <i class="fas fa-star f-50 text-c-blue"></i>
+                                                </div>
+                                                <div class="col">
+                                                    <h3 class="f-w-300"> Available </h3>
+                                                    {% endif %}
+                                                    <span class="d-block text-uppercase">Bench boost</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -384,6 +416,7 @@
                                 </div>
                             </div>
                             <!-- [ Rank Charts ] end -->
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -440,27 +473,13 @@ new Morris.Line({
         ],
         parseTime: false,
         smooth: false,
-        {#yLabelFormat: function (y) {return customLabel(y)},#}
         xkey: 'Fixture',
-        numLines: 8,
+        numLines: 9,
         ykeys: ['RankGW','Rank'],
         ymax: 0,
-        ymin: 7000000,
-        {#ymax: 1,#}
-        {#ymin: {{ event.total_players }},#}
+        ymin: 8000000,
         labels: ['RankGW','Rank']
     });
-
-{#function customLabel(y) {#}
-{#    if (y === 1) {#}
-{#        var label = '1'#}
-{#        return label#}
-{#    }#}
-{#    if (y%1000000 === 0) {#}
-{#        var label = y.toString()[0] + ' mln'#}
-{#        return label#}
-{#    }#}
-{#}#}
 
 </script>
 {% endblock javascripts %}
