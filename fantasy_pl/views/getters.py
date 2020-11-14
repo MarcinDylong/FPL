@@ -64,7 +64,8 @@ def get_fpl_user(player_id: int):
 
 
 def get_fpl_user_history_and_season(player_id: int):
-    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/history/'
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id} \
+                /history/'
     response = requests.get(base_url)
 
     if response.status_code != 200:
@@ -170,8 +171,10 @@ def update_players(players):
             first_name = p['first_name'],
             second_name = p['second_name'],
             defaults={
-                'chance_of_playing_next_round': p['chance_of_playing_next_round'],
-                'chance_of_playing_this_round': p['chance_of_playing_this_round'],
+                'chance_of_playing_next_round':
+                    p['chance_of_playing_next_round'],
+                'chance_of_playing_this_round':
+                    p['chance_of_playing_this_round'],
                 'cost_change_event': p['cost_change_event'],
                 'cost_change_event_fall': p['cost_change_event_fall'],
                 'cost_change_start': p['cost_change_start'],
@@ -222,8 +225,10 @@ def update_players(players):
                 'threat_rank_type': p['threat_rank_type'],
                 'ict_index_rank': p['ict_index_rank'],
                 'ict_index_rank_type': p['ict_index_rank_type'],
-                'corners_and_indirect_freekicks_order': p['corners_and_indirect_freekicks_order'],
-                'corners_and_indirect_freekicks_text': p['corners_and_indirect_freekicks_text'],
+                'corners_and_indirect_freekicks_order':
+                    p['corners_and_indirect_freekicks_order'],
+                'corners_and_indirect_freekicks_text':
+                    p['corners_and_indirect_freekicks_text'],
                 'direct_freekicks_order': p['direct_freekicks_order'],
                 'direct_freekicks_text': p['direct_freekicks_text'],
                 'penalties_order': p['penalties_order'],
@@ -234,22 +239,24 @@ def update_players(players):
 
 def update_fixture(fixtures):
     for f in fixtures:
-        fix_dict = {
-            id: f['id'],
-            event: f['event'],
-            finished: f['finished'],
-            kickoff_time: f['kickoff_time'],
-            team_h: Team.objects.get(id=f['team_h']),
-            team_a: Team.objects.get(id=f['team_a']),
-            team_h_difficulty: f['team_h_difficulty'],
-            team_a_difficulty: f['team_a_difficulty']
+        defaults = {
+            'finished': f['finished'],
+            'kickoff_time': f['kickoff_time'],
+            'team_h': Team.objects.get(id=f['team_h']),
+            'team_a': Team.objects.get(id=f['team_a']),
+            'team_h_difficulty': f['team_h_difficulty'],
+            'team_a_difficulty': f['team_a_difficulty'],
+            'team_h_score': str(f['team_h_score']) if f['finished'] == True \
+                                                   else '-',
+            'team_a_score': str(f['team_a_score']) if f['finished'] == True \
+                                                   else '-'
         }
 
-        if f['finished'] == True:
-                fix_dict[team_h_score] = str(f['team_h_score']),
-                fix_dict[team_a_score] = str(f['team_a_score'])
-
-        fix, created = Fixtures.objects.update_or_create(**fix_dict)
+        fix, created = Fixtures.objects.update_or_create(
+            id=f['id'],
+            event=Event.objects.get(id=f['event'] if f['event'] != None else 1),
+            defaults=defaults
+        )
 
 
 def update_events(events, total_players):

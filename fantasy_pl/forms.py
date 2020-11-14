@@ -19,7 +19,7 @@ class GetPlayerDataForm(forms.Form):
                                  attrs={'class': 'form-control'}))
 
 
-CHOICES_FIX = [(0, 'Download Fixtures'), (1, 'Update Fixtures')]
+CHOICES_FIX = [(0, 'Update Fixtures')]
 
 
 class GetFixtureForm(forms.Form):

@@ -76,7 +76,7 @@ def PopulateTables():
         update_teams(teams)
         populate_positions(positions)
         update_players(players)
-        populate_events(events, total_players)
+        update_events(events, total_players)
         ctx = {'event': 'success',
                'info': 'Tables Team, Position, Player & Event has been populated.'}
         return ctx
@@ -212,22 +212,12 @@ class GetFixtureView(PermissionRequiredMixin, View):
             if choice == 0:
                 try:
                     fixture = get_fixtures_for_season()
-                    populate_fixture(fixture)
-                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
-                           'form': GetFixtureForm()}
-                    return render(request, 'get_fixture.html', ctx)
-                except Exception as e:
-                    ctx = {'event': 'error', 'error': format(e),
-                           'form': GetFixtureForm()}
-                    return render(request, "page-event.html", ctx)
-            else:
-                try:
-                    fixture = get_fixtures_for_season()
                     update_fixture(fixture)
-                    ctx = {'event': 'success', 'info': 'Fixture updated',
-                           'form': GetFixtureForm()}
+                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
+                            'form': GetFixtureForm()}
                     return render(request, 'get_fixture.html', ctx)
                 except Exception as e:
                     ctx = {'event': 'error', 'error': format(e),
                            'form': GetFixtureForm()}
                     return render(request, "page-event.html", ctx)
+                    
