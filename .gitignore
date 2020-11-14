@@ -18,6 +18,7 @@ fpl_venv
 # other
 .DS_Store
 .idea/
+.vscode
 
 # javascript
 package-lock.json

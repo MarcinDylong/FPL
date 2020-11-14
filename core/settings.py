@@ -26,7 +26,7 @@ SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=True)
-DEBUG = False
+DEBUG = True
 # DEBUG = int(os.environ.get("DEBUG", default=0))
 
 # load production server from .env

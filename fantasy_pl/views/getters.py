@@ -122,14 +122,36 @@ def read_json():
         return data
 
 
-# Team updates and populates
-def populate_teams(teams):
+def update_teams(teams):
+    '''
+        Create or update instances of Team
+    '''
     perf = league_table_scraper()
     for t in teams:
-        team = Team()
-        team.id = int(t['id'])
-        data_to_team(team, t, perf)
-        team.save()
+        t_perf = perf[t['pulse_id']]
+        team, created = Team.objects.update_or_create(
+            id = t['id'],
+            pulse_id = t['pulse_id'],
+            position = t_perf[0],
+            played = t_perf[1],
+            win = t_perf[2],
+            draw = t_perf[3],
+            loss = t_perf[4],
+            gf = t_perf[5],
+            ga = t_perf[6],
+            gd = t_perf[7],
+            points = t_perf[8],
+            form = t['form'],
+            name = t['name'],
+            short_name = t['short_name'],
+            strength = t['strength'],
+            strength_overall_home = t['strength_overall_home'],
+            strength_overall_away = t['strength_overall_away'],
+            strength_attack_home = t['strength_attack_home'],
+            strength_attack_away = t['strength_attack_away'],
+            strength_defence_home = t['strength_defence_home'],
+            strength_defence_away = t['strength_defence_away']
+        )
 
 
 def populate_positions(positions):
@@ -141,95 +163,169 @@ def populate_positions(positions):
         pos.save()
 
 
-def populate_players(players):
-    for p in players:
-        player = Player()
-        player.id = p['id']
-        data_to_player(player, p)
-        player.save()
-
-
-def populate_fixture(fixtures):
-    for f in fixtures:
-        fix = Fixtures()
-        fix.id = f['id']
-        data_to_fixture(fix, f)
-        fix.save()
-
-
-def populate_events(events, total_players):
-    for e in events:
-        event = Event()
-        event.id = e['id']
-        data_to_event(event, e, total_players)
-        event.save()
-
-def update_teams(teams):
-    perf = league_table_scraper()
-    for t in teams:
-        team = Team.objects.get(id=t['id'])
-        data_to_team(team, t, perf)
-        team.save()
-
-
 def update_players(players):
     for p in players:
-        try:
-            player = Player.objects.get(id=p['id'])
-            data_to_player(player, p)
-            player.save()
-        except:
-            player = Player()
-            player.id = p['id']
-            data_to_player(player, p)
-            player.save()
+        player, created = Player.objects.update_or_create(
+            id = p['id'],
+            first_name = p['first_name'],
+            second_name = p['second_name'],
+            defaults={
+                'chance_of_playing_next_round': p['chance_of_playing_next_round'],
+                'chance_of_playing_this_round': p['chance_of_playing_this_round'],
+                'cost_change_event': p['cost_change_event'],
+                'cost_change_event_fall': p['cost_change_event_fall'],
+                'cost_change_start': p['cost_change_start'],
+                'cost_change_start_fall': p['cost_change_start_fall'],
+                'dreamteam_count': p['dreamteam_count'],
+                'position': Position.objects.get(id=p['element_type']),
+                'ep_next': float(p['ep_next']),
+                'ep_this': float(p['ep_this']),
+                'event_points': p['event_points'],
+                'form': p['form'],
+                'in_dreamteam': p['in_dreamteam'],
+                'news': p['news'],
+                'news_added': p['news_added'],
+                'now_cost': p['now_cost'] / 10,
+                'points_per_game': p['points_per_game'],
+                'selected_by_percent': p['selected_by_percent'],
+                'transfers_in': p['transfers_in'],
+                'transfers_in_event': p['transfers_in_event'],
+                'transfers_out': p['transfers_out'],
+                'transfers_out_event': p['transfers_out_event'],
+                'special': p['special'],
+                'team': Team.objects.get(id=p['team']),
+                'total_points': p['total_points'],
+                'value_form': float(p['value_form']),
+                'value_season': float(p['value_season']),
+                'minutes': p['minutes'],
+                'goals_scored': p['goals_scored'],
+                'assists': p['assists'],
+                'clean_sheets': p['clean_sheets'],
+                'goals_conceded': p['goals_conceded'],
+                'own_goals': p['own_goals'],
+                'penalties_saved': p['penalties_saved'],
+                'penalties_missed': p['penalties_missed'],
+                'yellow_cards': p['yellow_cards'],
+                'red_cards': p['red_cards'],
+                'saves': p['saves'],
+                'bonus': p['bonus'],
+                'bps': p['bps'] / 10,
+                'influence': float(p['influence']),
+                'creativity': float(p['creativity']),
+                'threat': float(p['threat']),
+                'ict_index': float(p['ict_index']),
+                'influence_rank': p['influence_rank'],
+                'influence_rank_type': p['influence_rank_type'],
+                'creativity_rank': p['creativity_rank'],
+                'creativity_rank_type': p['creativity_rank_type'],
+                'threat_rank': p['threat_rank'],
+                'threat_rank_type': p['threat_rank_type'],
+                'ict_index_rank': p['ict_index_rank'],
+                'ict_index_rank_type': p['ict_index_rank_type'],
+                'corners_and_indirect_freekicks_order': p['corners_and_indirect_freekicks_order'],
+                'corners_and_indirect_freekicks_text': p['corners_and_indirect_freekicks_text'],
+                'direct_freekicks_order': p['direct_freekicks_order'],
+                'direct_freekicks_text': p['direct_freekicks_text'],
+                'penalties_order': p['penalties_order'],
+                'penalties_text': p['penalties_text']    
+            }         
+        )
 
 
 def update_fixture(fixtures):
     for f in fixtures:
-        if f['finished'] == False:
-            pass
-        else:
-            try:
-                fix = Fixtures.objects.get(id=f['id'])
-                data_to_fixture(fix, f)
-                fix.save()
-            except:
-                fix = Fixtures()
-                fix.id = f['id']
-                data_to_fixture(fix, f)
-                fix.save()
+        fix_dict = {
+            id: f['id'],
+            event: f['event'],
+            finished: f['finished'],
+            kickoff_time: f['kickoff_time'],
+            team_h: Team.objects.get(id=f['team_h']),
+            team_a: Team.objects.get(id=f['team_a']),
+            team_h_difficulty: f['team_h_difficulty'],
+            team_a_difficulty: f['team_a_difficulty']
+        }
+
+        if f['finished'] == True:
+                fix_dict[team_h_score] = str(f['team_h_score']),
+                fix_dict[team_a_score] = str(f['team_a_score'])
+
+        fix, created = Fixtures.objects.update_or_create(**fix_dict)
 
 
 def update_events(events, total_players):
     for e in events:
-        event = Event.objects.get(id=e['id'])
-        data_to_event(event, e, total_players)
-        event.save()
+        defaults={
+                'deadline_time': e['deadline_time'],
+                'average_entry_score': e['average_entry_score'],
+                'finished': e['finished'],
+                'data_checked': e['data_checked'],
+                'highest_score': e['highest_score'],
+                'is_previous': e['is_previous'],
+                'is_current': e['is_current'],
+                'is_next': e['is_next'],
+                'transfers_made': e['transfers_made'],
+                'total_players': total_players,
+                'top_element': Player.objects.get(id=e['top_element']) if e['finished'] == True else None,
+                'most_selected': Player.objects.get(id=e['most_selected']) if e['finished'] == True else None,
+                'most_transferred_in': Player.objects.get(id=e['most_transferred_in']) if e['finished'] == True else None,
+                'most_captained': Player.objects.get(id=e['most_captained']) if e['finished'] == True else None,
+                'most_vice_captained': Player.objects.get(id=e['most_vice_captained']) if e['finished'] == True else None,
+                }
+        try:
+            defaults['top_element_points'] = e['top_element_info']['points']
+        except:
+            defaults['top_element_points'] = 0
+
+        event, created = Event.objects.update_or_create(
+            id=e['id'],
+            name=e['name'],
+            defaults = defaults
+        )
 
 
 def update_userteam(user, player_list):
-    try:
-        usrtm = UserTeam.objects.get(user=user)
-        data_to_userteam(usrtm, player_list)
-        usrtm.save()
-    except:
-        usrtm = UserTeam()
-        usrtm.user = user
-        data_to_userteam(usrtm, player_list)
-        usrtm.save()
+    ust = UserTeam.objects.update_or_create(
+        user = user,
+        gkp = Player.objects.get(id=player_list[0]),
+        def1 = Player.objects.get(id=player_list[1]),
+        def2 = Player.objects.get(id=player_list[2]),
+        def3 = Player.objects.get(id=player_list[3]),
+        def4 = Player.objects.get(id=player_list[4]),
+        mdf1 = Player.objects.get(id=player_list[5]),
+        mdf2 = Player.objects.get(id=player_list[6]),
+        mdf3 = Player.objects.get(id=player_list[7]),
+        mdf4 = Player.objects.get(id=player_list[8]),
+        fwd1 = Player.objects.get(id=player_list[9]),
+        fwd2 = Player.objects.get(id=player_list[10]),
+        gkpb = Player.objects.get(id=player_list[11]),
+        defb = Player.objects.get(id=player_list[12]),
+        mdfb = Player.objects.get(id=player_list[13]),
+        fwdb = Player.objects.get(id=player_list[14])
+    )
 
 
 def update_user(user, user_fpl):
-    try:
-        usr = UserFpl.objects.get(user=user)
-        data_to_user(usr, user_fpl)
-        usr.save()
-    except:
-        usr = UserFpl()
-        usr.user = user
-        data_to_user(usr, user_fpl)
-        usr.save()
+    usr, created = UserFpl.objects.update_or_create(
+        user=user,
+        fpl = user_fpl['id'],
+        joined_time = user_fpl['joined_time'],
+        started_event = user_fpl['started_event'],
+        favourite_team = user_fpl['favourite_team'],
+        player_first_name = user_fpl['player_first_name'],
+        player_last_name = user_fpl['player_last_name'],
+        player_region_name = user_fpl['player_region_name'],
+        player_region_iso_code_short = user_fpl['player_region_iso_code_short'],
+        player_region_iso_code_long = user_fpl['player_region_iso_code_long'],
+        summary_overall_points = user_fpl['summary_overall_points'],
+        summary_overall_rank = user_fpl['summary_overall_rank'],
+        summary_event_points = user_fpl['summary_event_points'],
+        summary_event_rank = user_fpl['summary_event_rank'],
+        current_event = user_fpl['current_event'],
+        name = user_fpl['name'],
+        last_deadline_bank = user_fpl['last_deadline_bank'] / 10,
+        last_deadline_value = user_fpl['last_deadline_value'] / 10,
+        last_deadline_total_transfers = user_fpl['last_deadline_total_transfers']       
+    )
 
 
 def update_user_history(user, user_fpl_history):
@@ -264,230 +360,58 @@ def update_user_season(user, user_fpl_season):
 
 def get_player_data(history):
     for h in history:
-        try:
-            hist = PlayerHistory.objects.filter(player=Player.objects.get(id=h['element']))\
-                                .filter(fixture=Fixtures.objects.get(id=h['fixture'])).first()
-            data_to_player_data(hist, h)
-            hist.save()
-        except:
-            hist = PlayerHistory()
-            hist.player = Player.objects.get(id=h['element'])
-            hist.fixture = Fixtures.objects.get(id=h['fixture'])
-            data_to_player_data(hist, h)
-            hist.save()
-
+        hist, created = PlayerHistory.objects.update_or_create(
+            player = Player.objects.get(id=h['element']),
+            fixture=Fixtures.objects.get(id=h['fixture']),
+            event = Fixtures.objects.get(id=h['fixture']).event,
+            position = hist.player.position_id,
+            opponent_team = Team.objects.get(id=h['opponent_team']),
+            team_h = Fixtures.objects.get(id=h['fixture']).team_h,
+            team_a = Fixtures.objects.get(id=h['fixture']).team_a,
+            total_points = h['total_points'],
+            is_home = h['was_home'],
+            kickoff_time = h['kickoff_time'],
+            team_h_score = h['team_h_score'],
+            team_a_score = h['team_a_score'],
+            finished = True,
+            minutes = h['minutes'],
+            goals_scored = h['goals_scored'],
+            assists = h['assists'],
+            clean_sheets = h['clean_sheets'],
+            goals_conceded = h['goals_conceded'],
+            own_goals = h['own_goals'],
+            penalties_saved = h['penalties_saved'],
+            penalties_missed = h['penalties_missed'],
+            yellow_cards = h['yellow_cards'],
+            red_cards = h['red_cards'],
+            saves = h['saves'],
+            bonus = h['bonus'],
+            bps = h['bps'],
+            influence = float(h['influence']),
+            creativity = float(h['creativity']),
+            threat = float(h['threat']),
+            ict_index = float(h['ict_index']),
+            value = h['value'] / 10,
+            selected = h['selected']
+        )
+    
 
 def get_player_fixture(game, id):
     for g in game:
-        try:
-            hist = PlayerHistory.objects.filter(player=Player.objects.get(id=id))\
-                                    .filter(fixture=Fixtures.objects.get(id=g['id'])).first()
-            data_to_player_fixture(hist, g)
-            hist.save()
-        except:
-            hist = PlayerHistory()
-            hist.player = Player.objects.get(id=id)
-            hist.fixture = Fixtures.objects.get(id=g['id'])
-            data_to_player_fixture(hist, g)
-            hist.save()
-
-
-
-### Functions for data assignment
-def data_to_team(team, t, perf):
-    team.pulse_id = t['pulse_id']
-    t_perf = perf[team.pulse_id]
-    team.position = t_perf[0]
-    team.played = t_perf[1]
-    team.win = t_perf[2]
-    team.draw = t_perf[3]
-    team.loss = t_perf[4]
-    team.gf = t_perf[5]
-    team.ga = t_perf[6]
-    team.gd = t_perf[7]
-    team.points = t_perf[8]
-    team.form = t['form']
-    team.name = t['name']
-    team.short_name = t['short_name']
-    team.strength = t['strength']
-    team.strength_overall_home = t['strength_overall_home']
-    team.strength_overall_away = t['strength_overall_away']
-    team.strength_attack_home = t['strength_attack_home']
-    team.strength_attack_away = t['strength_attack_away']
-    team.strength_defence_home = t['strength_defence_home']
-    team.strength_defence_away = t['strength_defence_away']
-
-
-def data_to_player(player, p):
-    player.chance_of_playing_next_round = p['chance_of_playing_next_round']
-    player.chance_of_playing_this_round = p['chance_of_playing_this_round']
-    player.code = p['code']
-    player.cost_change_event = p['cost_change_event']
-    player.cost_change_event_fall = p['cost_change_event_fall']
-    player.cost_change_start = p['cost_change_start']
-    player.cost_change_start_fall = p['cost_change_start_fall']
-    player.dreamteam_count = p['dreamteam_count']
-    player.position = Position.objects.get(id=p['element_type'])
-    player.ep_next = float(p['ep_next'])
-    player.ep_this = float(p['ep_this'])
-    player.event_points = p['event_points']
-    player.first_name = p['first_name']
-    player.form = p['form']
-    player.in_dreamteam = p['in_dreamteam']
-    player.news = p['news']
-    player.news_added = p['news_added']
-    player.now_cost = p['now_cost'] / 10
-    player.points_per_game = p['points_per_game']
-    player.second_name = p['second_name']
-    player.selected_by_percent = p['selected_by_percent']
-    player.transfers_in = p['transfers_in']
-    player.transfers_in_event = p['transfers_in_event']
-    player.transfers_out = p['transfers_out']
-    player.transfers_out_event = p['transfers_out_event']
-    player.special = p['special']
-    player.team = Team.objects.get(id=p['team'])
-    player.total_points = p['total_points']
-    player.value_form = float(p['value_form'])
-    player.value_season = float(p['value_season'])
-    player.minutes = p['minutes']
-    player.goals_scored = p['goals_scored']
-    player.assists = p['assists']
-    player.clean_sheets = p['clean_sheets']
-    player.goals_conceded = p['goals_conceded']
-    player.own_goals = p['own_goals']
-    player.penalties_saved = p['penalties_saved']
-    player.penalties_missed = p['penalties_missed']
-    player.yellow_cards = p['yellow_cards']
-    player.red_cards = p['red_cards']
-    player.saves = p['saves']
-    player.bonus = p['bonus']
-    player.bps = p['bps'] / 10
-    player.influence = float(p['influence'])
-    player.creativity = float(p['creativity'])
-    player.threat = float(p['threat'])
-    player.ict_index = float(p['ict_index'])
-
-
-def data_to_fixture(fix, f):
-    fix.event = f['event']
-    fix.finished = f['finished']
-    fix.kickoff_time = f['kickoff_time']
-    fix.team_h = Team.objects.get(id=f['team_h'])
-    fix.team_a = Team.objects.get(id=f['team_a'])
-    if f['finished'] == True:
-        fix.team_h_score = str(f['team_h_score'])
-        fix.team_a_score = str(f['team_a_score'])
-    fix.team_h_difficulty = f['team_h_difficulty']
-    fix.team_a_difficulty = f['team_a_difficulty']
-
-
-def data_to_event(event, e, total_players):
-    event.name = e['name']
-    event.deadline_time = e['deadline_time']
-    event.average_entry_score = e['average_entry_score']
-    event.finished = e['finished']
-    event.data_checked = e['data_checked']
-    event.highest_score = e['highest_score']
-    event.is_previous = e['is_previous']
-    event.is_current = e['is_current']
-    event.is_next = e['is_next']
-    event.transfers_made = e['transfers_made']
-    try:
-        event.top_element_points = e['top_element_info']['points']
-    except:
-        event.top_element_points = 0
-    if e['finished'] == True:
-        event.top_element = Player.objects.get(id=e['top_element'])
-        event.most_selected = Player.objects.get(id=e['most_selected'])
-        event.most_transferred_in = Player.objects.get(id=e['most_transferred_in'])
-        event.most_captained = Player.objects.get(id=e['most_captained'])
-        event.most_vice_captained = Player.objects.get(id=e['most_vice_captained'])
-    event.total_players = total_players
-
-
-def data_to_player_data(hist, h):
-    hist.event = Fixtures.objects.get(id=h['fixture']).event
-    hist.position = hist.player.position_id
-    hist.opponent_team = Team.objects.get(id=h['opponent_team'])
-    hist.team_h = Fixtures.objects.get(id=h['fixture']).team_h
-    hist.team_a = Fixtures.objects.get(id=h['fixture']).team_a
-    hist.total_points = h['total_points']
-    hist.is_home = h['was_home']
-    hist.kickoff_time = h['kickoff_time']
-    hist.team_h_score = h['team_h_score']
-    hist.team_a_score = h['team_a_score']
-    hist.finished = True
-    hist.minutes = h['minutes']
-    hist.goals_scored = h['goals_scored']
-    hist.assists = h['assists']
-    hist.clean_sheets = h['clean_sheets']
-    hist.goals_conceded = h['goals_conceded']
-    hist.own_goals = h['own_goals']
-    hist.penalties_saved = h['penalties_saved']
-    hist.penalties_missed = h['penalties_missed']
-    hist.yellow_cards = h['yellow_cards']
-    hist.red_cards = h['red_cards']
-    hist.saves = h['saves']
-    hist.bonus = h['bonus']
-    hist.bps = h['bps']
-    hist.influence = float(h['influence'])
-    hist.creativity = float(h['creativity'])
-    hist.threat = float(h['threat'])
-    hist.ict_index = float(h['ict_index'])
-    hist.value = h['value'] / 10
-    hist.selected = h['selected']
-
-
-def data_to_player_fixture(hist, g):
-    hist.event = Fixtures.objects.get(id=g['id']).event
-    hist.team_h = Team.objects.get(id=g['team_h'])
-    hist.team_h_score = g['team_h_score']
-    hist.team_a = Team.objects.get(id=g['team_a'])
-    hist.team_a_score = g['team_a_score']
-    hist.finished = g['finished']
-    hist.minutes = g['minutes']
-    hist.kickoff_time = g['kickoff_time']
-    hist.is_home = g['is_home']
-    hist.difficulty = g['difficulty']
-
-
-def data_to_userteam(usrtm, player_list):
-    usrtm.gkp = Player.objects.get(id=player_list[0])
-    usrtm.def1 = Player.objects.get(id=player_list[1])
-    usrtm.def2 = Player.objects.get(id=player_list[2])
-    usrtm.def3 = Player.objects.get(id=player_list[3])
-    usrtm.def4 = Player.objects.get(id=player_list[4])
-    usrtm.mdf1 = Player.objects.get(id=player_list[5])
-    usrtm.mdf2 = Player.objects.get(id=player_list[6])
-    usrtm.mdf3 = Player.objects.get(id=player_list[7])
-    usrtm.mdf4 = Player.objects.get(id=player_list[8])
-    usrtm.fwd1 = Player.objects.get(id=player_list[9])
-    usrtm.fwd2 = Player.objects.get(id=player_list[10])
-    usrtm.gkpb = Player.objects.get(id=player_list[11])
-    usrtm.defb = Player.objects.get(id=player_list[12])
-    usrtm.mdfb = Player.objects.get(id=player_list[13])
-    usrtm.fwdb = Player.objects.get(id=player_list[14])
-
-
-def data_to_user(usr, user_fpl):
-    usr.fpl = user_fpl['id']
-    usr.joined_time = user_fpl['joined_time']
-    usr.started_event = user_fpl['started_event']
-    usr.favourite_team = user_fpl['favourite_team']
-    usr.player_first_name = user_fpl['player_first_name']
-    usr.player_last_name = user_fpl['player_last_name']
-    usr.player_region_name = user_fpl['player_region_name']
-    usr.player_region_iso_code_short = user_fpl['player_region_iso_code_short']
-    usr.player_region_iso_code_long = user_fpl['player_region_iso_code_long']
-    usr.summary_overall_points = user_fpl['summary_overall_points']
-    usr.summary_overall_rank = user_fpl['summary_overall_rank']
-    usr.summary_event_points = user_fpl['summary_event_points']
-    usr.summary_event_rank = user_fpl['summary_event_rank']
-    usr.current_event = user_fpl['current_event']
-    usr.name = user_fpl['name']
-    usr.last_deadline_bank = user_fpl['last_deadline_bank'] / 10
-    usr.last_deadline_value = user_fpl['last_deadline_value'] / 10
-    usr.last_deadline_total_transfers = user_fpl['last_deadline_total_transfers']
+        gam, created = PlayerHistory.objects.update_or_create(
+            player = Player.objects.get(id=id),
+            fixture=Fixtures.objects.get(id=g['id']),
+            event = Fixtures.objects.get(id=g['id']).event,
+            team_h = Team.objects.get(id=g['team_h']),
+            team_h_score = g['team_h_score'],
+            team_a = Team.objects.get(id=g['team_a']),
+            team_a_score = g['team_a_score'],
+            finished = g['finished'],
+            minutes = g['minutes'],
+            kickoff_time = g['kickoff_time'],
+            is_home = g['is_home'],
+            difficulty = g['difficulty']
+        )
 
 
 if __name__ == "__main__":

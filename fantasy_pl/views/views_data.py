@@ -7,12 +7,11 @@ from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
     GetUserteamForm, GetDataForm
 from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
-    populate_teams, populate_players, update_players, populate_positions, \
-    update_teams, get_player_data, get_player_fixture, download_json, \
-    get_fixtures_for_season, populate_fixture, update_fixture, \
-    get_fpl_userteam, update_userteam, get_data, get_fpl_user, update_user, \
-    populate_events, update_events, update_user_history, \
-    get_fpl_user_history_and_season, update_user_season
+    update_teams, update_players, populate_positions, get_player_data, \
+    get_player_fixture, download_json, get_fixtures_for_season, \
+    update_fixture, get_fpl_userteam, update_userteam, \
+    get_data, get_fpl_user, update_user, update_events, \
+    update_user_history, get_fpl_user_history_and_season, update_user_season
 
 
 def DownloadUserteamView(request):
@@ -67,16 +66,16 @@ def DownloadDataJSON():
 
 def PopulateTables():
     # data = read_json()  ## Read data from JSON file on disk
-    data = get_data() ## Read data from Fantasy Premier League API
+    data = get_data()  # Read data from Fantasy Premier League API
     teams = data['teams']
     positions = data['element_types']
     players = data['elements']
     events = data['events']
     total_players = data['total_players']
     try:
-        populate_teams(teams)
+        update_teams(teams)
         populate_positions(positions)
-        populate_players(players)
+        update_players(players)
         populate_events(events, total_players)
         ctx = {'event': 'success',
                'info': 'Tables Team, Position, Player & Event has been populated.'}
@@ -87,7 +86,7 @@ def PopulateTables():
 
 def UpdateTables():
     # data = read_json()  ## Read data from JSON file on disk
-    data = get_data()  ## Read data from Fantasy Premier League API
+    data = get_data()  # Read data from Fantasy Premier League API
     teams = data['teams']
     players = data['elements']
     events = data['events']
@@ -97,7 +96,7 @@ def UpdateTables():
         update_players(players)
         update_events(events, total_players)
         ctx = {'event': 'success',
-               'info': 'Tables Team, Player & Event in database has been updated.'}
+            'info': 'Tables Team, Player & Event in database has been updated.'}
         return ctx
     except Exception as e:
         ctx = {'event': 'error', 'error': format(e)}

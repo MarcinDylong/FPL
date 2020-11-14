@@ -27,6 +27,9 @@ class UserFpl(models.Model):
     def __str__(self):
         return f'{self.player_first_name} {self.player_last_name}'
 
+    class Meta:
+        unique_together = ('user', 'fpl',)
+
 
 class Team(models.Model):
     id = models.SmallIntegerField(primary_key=True)
@@ -53,6 +56,9 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ('pulse_id','name',)
 
 
 class Position(models.Model):
@@ -115,6 +121,20 @@ class Player(models.Model):
     creativity = models.FloatField(null=True)
     threat = models.FloatField(null=True)
     ict_index = models.FloatField(null=True)
+    influence_rank = models.IntegerField(null=True)
+    influence_rank_type = models.IntegerField(null=True)
+    creativity_rank = models.IntegerField(null=True)
+    creativity_rank_type = models.IntegerField(null=True)
+    threat_rank = models.IntegerField(null=True)
+    threat_rank_type = models.IntegerField(null=True)
+    ict_index_rank = models.IntegerField(null=True)
+    ict_index_rank_type = models.IntegerField(null=True)
+    corners_and_indirect_freekicks_order = models.IntegerField(null=True)
+    corners_and_indirect_freekicks_text = models.CharField(max_length=128, null=True)
+    direct_freekicks_order = models.IntegerField(null=True)
+    direct_freekicks_text = models.CharField(max_length=128, null=True)
+    penalties_order = models.IntegerField(null=True)
+    penalties_text = models.CharField(max_length=128, null=True)
 
     objects = models.Manager()
 
@@ -143,6 +163,8 @@ class Player(models.Model):
                 return f'A - {next_game.team_h.short_name}'
         except AttributeError:
             return '-'
+    class Meta:
+        unique_together = ('id','first_name','second_name',)
 
 
 class Event(models.Model):
@@ -176,7 +198,7 @@ class Event(models.Model):
     total_players = models.IntegerField()
 
     class Meta:
-        unique_together=('id',)
+        unique_together=('id', 'name',)
 
     def __str__(self):
         return f'{self.name}'
@@ -264,6 +286,9 @@ class Fixtures(models.Model):
 
     def __str__(self):
         return f'{self.team_h} - {self.team_a}, {self.kickoff_time}'
+
+    class Meta:
+        unique_together = ('id', 'event',)
 
 
 class PlayerHistory(models.Model):
