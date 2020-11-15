@@ -16,7 +16,7 @@ def get_userTeam_players_id(request):
                 player_id_list.append(v)
             else:
                 pass
-    except ObjectDoesNotExist:
+    except (ObjectDoesNotExist,IndexError):
         pass
     return player_id_list
 

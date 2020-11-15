@@ -64,8 +64,7 @@ def get_fpl_user(player_id: int):
 
 
 def get_fpl_user_history_and_season(player_id: int):
-    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id} \
-                /history/'
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/history/'
     response = requests.get(base_url)
 
     if response.status_code != 200:

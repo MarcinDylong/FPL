@@ -1,224 +1,219 @@
-{% extends "layouts/base.html" %}
-
-{% block title %} - UserTeam {% endblock %}
+{% extends "layouts/base.html" %} {% block title %} - UserTeam {% endblock %}
 
 <!-- Specific CSS goes HERE -->
-{% block stylesheets %}{% endblock stylesheets %}
-
-{% block content %}
-
-            <div class="pcoded-content">
-                <div class="pcoded-inner-content">
-                    <!-- [ Header ] start -->
-                    <div class="page-header">
-                        <div class="page-block">
-                            <div class="row align-items-center">
-                                <div class="col-md-1">
-                                    <div class="page-header-title">
-                                        <i class="fas fa-star text-muted f-50"></i>
-                                    </div>
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ Header ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-1">
+                        <div class="page-header-title">
+                            <i class="fas fa-star text-muted f-50"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="page-header-title">
+                            <h1 class="m-b-10">Your team</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Header ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Download User Team ] start -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Download/Update Your Team</h5>
+                                {% if messages %} {% for message in messages %}
+                                <div class="text-dark">
+                                    Info: {{ message }}
                                 </div>
-                                <div class="col-md-11">
-                                    <div class="page-header-title">
-                                        <h1 class="m-b-10">Your team</h1>
+                                {% endfor %} {% endif %}
+                                <hr>
+                                <div class="input-group-sm mb-3">
+                                    <form method="POST" action="{% url 'fpl:download_userteam' %}">
+                                        <div class="nav-item input-group mb-3" style="background-color: transparent">
+                                            {% csrf_token %} {{ form_gut }}
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-primary" type="submit">Go</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Download User Team ] end -->
+                {% if uteam %}
+                <!-- [ Basic Info Content ] start -->
+                <div class="row">
+                    <!-- [ Basic info ] start -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-users text-c-purple f-50"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ novelty }}</h3>
+                                        <span class="text-dark d-block text-uppercase">Novelty of team</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!-- [ Header ] end -->
-                    <div class="main-body">
-                        <div class="page-wrapper">
-                            <!-- [ Download User Team ] start -->
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Download/Update Your Team</h5>
-                                            {% if messages %}
-                                                {% for message in messages %}
-                                                <div class="text-dark">
-                                                    Info: {{ message }}
-                                                </div>
-                                                {% endfor %}
-                                            {% endif %}
-                                            <hr>
-                                            <div class="input-group-sm mb-3">
-                                                <form method="POST" action="{% url 'fpl:download_userteam' %}">
-                                                    <div class="nav-item input-group mb-3" style="background-color: transparent">
-                                                        {% csrf_token %}
-                                                        {{ form_gut }}
-                                                        <div class="input-group-prepend">
-                                                            <button class="btn btn-primary" type="submit">Go</button>
-                                                        </div>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="far fa-futbol f-50 text-c-green"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ ppg }}</h3>
+                                        <span class="d-block text-uppercase">Overall points pg</span>
                                     </div>
                                 </div>
                             </div>
-                            <!-- [ Download User Team ] end -->
-                            <!-- [ Basic Info Content ] start -->
-                            <div class="row">
-                                <!-- [ Basic info ] start -->
-                                <div class="col-xl-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-block border-bottom">
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-auto">
-                                                    <i class="fas fa-users text-c-purple f-50"></i>
-                                                </div>
-                                                <div class="col">
-                                                    <h3 class="f-w-300">{{ novelty }}</h3>
-                                                    <span class="text-dark d-block text-uppercase">Novelty of team</span>
-                                                </div>
-                                            </div>
-                                        </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-money-bill-alt f-50 text-c-blue"></i>
                                     </div>
-                                </div>
-                                <div class="col-xl-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-block border-bottom">
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-auto">
-                                                    <i class="far fa-futbol f-50 text-c-green"></i>
-                                                </div>
-                                                <div class="col">
-                                                    <h3 class="f-w-300">{{ ppg }}</h3>
-                                                    <span class="d-block text-uppercase">Overall points pg</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-4 col-md-6">
-                                    <div class="card">
-                                        <div class="card-block border-bottom">
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-auto">
-                                                    <i class="fas fa-money-bill-alt f-50 text-c-blue"></i>
-                                                </div>
-                                                <div class="col">
-                                                    <h3 class="f-w-300">{{ overall_cost }}</h3>
-                                                    <span class="d-block text-uppercase">
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ overall_cost }}</h3>
+                                        <span class="d-block text-uppercase">
                                                     {% if overpaid %}
                                                     Your team might be overpaid!
                                                     {% else %}
                                                     Cost
                                                     {% endif %}
                                                     </span>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
-                                <!-- [ Basif info ] end -->
                             </div>
-                            <!-- [ Basic Info Content ] end -->
-                            <!-- [ Team Form and List ] start -->
-                            <div class="row">
-                                <!--[ UserTeam Form ] start-->
-                                <div class="col-xl-3">
-                                    <div class="card Recent-Users">
-                                        <div class="card-header">
-                                            <h5 class="text-dark" align="left">Update your team manually</h5>
-                                        </div>
-                                        <div class="card-body text-left">
-                                            <div class="form-group">
-                                                <form role="form" method="post" action="#">
-                                                    {% csrf_token %}
-                                                    {% if form.non_field_errors %}
-                                                        <button type="button" class="btn btn-danger">
+                        </div>
+                    </div>
+                    <!-- [ Basif info ] end -->
+                </div>
+                <!-- [ Basic Info Content ] end -->
+                {% endif %}
+                <!-- [ Team Form and List ] start -->
+                <div class="row">
+                    <!--[ UserTeam Form ] start-->
+                    <div class="col-xl-3">
+                        <div class="card Recent-Users">
+                            <div class="card-header">
+                                <h5 class="text-dark" align="left">Update your team manually</h5>
+                            </div>
+                            <div class="card-body text-left">
+                                <div class="form-group">
+                                    <form role="form" method="post" action="#">
+                                        {% csrf_token %} {% if form.non_field_errors %}
+                                        <button type="button" class="btn btn-danger">
                                                             {{ form.non_field_errors.as_text }}
-                                                        </button>
-                                                    {% endif %}
-                                                    {{ form }}
-                                                    <button type='submit' class="btn btn-primary">
+                                                        </button> {% endif %} {{ form }}
+                                        <button type='submit' class="btn btn-primary">
                                                         Get
                                                     </button>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--[ UserTeam Form ] end-->
-                                <!--[ UserTeam Stat ] start-->
-                                <div class="col-xl-9">
-                                    <div class="card Recent-Users">
-                                        <div class="card-header">
-                                            <h5>Your Team players stats</h5>
-                                        </div>
-                                        <div class="card-block px-0 py-3">
-                                            <div class="table-responsive">
-                                                <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
-                                                    <thead>
-                                                        <tr class="center" align="center">
-                                                            <th>id</th>
-                                                            <th>Position</th>
-                                                            <th>Player</th>
-                                                            <th>Team</th>
-                                                            <th>Next Game</th>
-                                                            <th>PPG</th>
-                                                            <th>Total Points</th>
-                                                            <th>Cost</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        {% for u in uteam %}
-                                                            <tr class="unread center" align="center">
-                                                                <td>{{ u.id }}</td>
-                                                                <td>{{ u.position.name_short }}</td>
-                                                                <td>
-                                                                    <a class='golink' href="{% url 'fantasy_pl:player' u.id %}">
-                                                                        <h6 class="mb-1">{{ u.second_name }}</h6>
-                                                                        <p class="text-muted m-0">{{ u.first_name }}</p>
-                                                                    </a>
-                                                                </td>
-                                                                <td>{{ u.team.short_name }}</td>
-                                                                <td>{{ u.next_game }}</td>
-                                                                <td>{{ u.points_per_game }}</td>
-                                                                <td>{{ u.total_points }}</td>
-                                                                <td>{{ u.now_cost }}</td>
-                                                            </tr>
-                                                        {% endfor %}
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--[ UserTeam Stat ] end-->
-                            </div>
-                            <!-- [ Team Form and List ] end -->
-                            <!-- [ Team Charts ] end -->
-                            <div class="row">
-                                <div class="col-xl-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>PPG to Cost:</h5>
-                                        </div>
-                                        <div class="card-block">
-                                            <div id="ppg2cost" style="height: 400px; position: relative;"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-xl-6">
-                                    <div class="card">
-                                        <div class="card-header">
-                                            <h5>Cost:</h5>
-                                        </div>
-                                        <div class="card-block">
-                                            <div id="cost" style="height: 400px; position: relative;"></div>
-                                        </div>
-                                    </div>
+                                    </form>
                                 </div>
                             </div>
-                            <!-- [ Team Charts ] end -->
+                        </div>
+                    </div>
+                    <!--[ UserTeam Form ] end-->
+                    {% if uteam %}
+                    <!--[ UserTeam Stat ] start-->
+                    <div class="col-xl-9">
+                        <div class="card Recent-Users">
+                            <div class="card-header">
+                                <h5>Your Team players stats</h5>
+                            </div>
+                            <div class="card-block px-0 py-3">
+                                <div class="table-responsive">
+                                    <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>id</th>
+                                                <th>Position</th>
+                                                <th>Player</th>
+                                                <th>Team</th>
+                                                <th>Next Game</th>
+                                                <th>PPG</th>
+                                                <th>Total Points</th>
+                                                <th>Cost</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for u in uteam %}
+                                            <tr class="unread center" align="center">
+                                                <td>{{ u.id }}</td>
+                                                <td>{{ u.position.name_short }}</td>
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' u.id %}">
+                                                        <h6 class="mb-1">{{ u.second_name }}</h6>
+                                                        <p class="text-muted m-0">{{ u.first_name }}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ u.team.short_name }}</td>
+                                                <td>{{ u.next_game }}</td>
+                                                <td>{{ u.points_per_game }}</td>
+                                                <td>{{ u.total_points }}</td>
+                                                <td>{{ u.now_cost }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--[ UserTeam Stat ] end-->
+                    {% endif %}
+                </div>
+                <!-- [ Team Form and List ] end -->
+                {% if uteam %}
+                <!-- [ Team Charts ] end -->
+                <div class="row">
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>PPG to Cost:</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="ppg2cost" style="height: 400px; position: relative;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Cost:</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="cost" style="height: 400px; position: relative;"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <!-- [ Team Charts ] end -->
+                {% endif %}
             </div>
+        </div>
+    </div>
+</div>
 
 
 {% endblock content %}
@@ -229,34 +224,40 @@
 <script>
 $(document).ready(function() {
     $('#players').DataTable({
-            responsive: true,
-            info: false,
-            paging: false,
-            searching: false
+        responsive: true,
+        info: false,
+        paging: false,
+        searching: false
     });
 });
 
 new Morris.Bar({
-      element: 'ppg2cost',
-      data: [
-                {% for u in uteam %}
-                    { Player: '{{ u.ppg_chart_str }}', Ratio: '{{ u.ratio }}' }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-                  ],
-      xkey: 'Player',
-      ykeys: ['Ratio'],
-      xLabelAngle: 45,
-      parseTime: false,
-      labels: ['Value']
-});
+        element: 'ppg2cost',
+        data: [
+            {% for u in uteam %} 
+                {
+                    Player: '{{ u.ppg_chart_str }}',
+                    Ratio: '{{ u.ratio }}'
+                }{% if not forloop.last %}, {% endif %} 
+            {% endfor %}
+        ],
+        xkey: 'Player',
+        ykeys: ['Ratio'],
+        xLabelAngle: 45,
+        parseTime: false,
+        labels: ['Value']
+    });
 
-   new Morris.Donut({
-      element: 'cost',
-      data: [
-                {% for u in uteam %}
-                    { label: '{{ u }}', value: '{{ u.now_cost }}' }{% if not forloop.last %},{% endif %}
-                {% endfor %}
-                  ],
-});
+new Morris.Donut({
+        element: 'cost',
+        data: [
+            {% for u in uteam %} 
+                {
+                    label: '{{ u }}',
+                    value: '{{ u.now_cost }}'
+                }{% if not forloop.last %}, {% endif %} 
+            {% endfor %}
+        ],
+    });
 </script>
 {% endblock javascripts %}
