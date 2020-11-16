@@ -221,9 +221,9 @@ class PlayersSearchView(View):
 class UserTeamView(View):
 
     def team_overall(self, uteam, ctx):
-        luteam = [uteam.gkp, uteam.gkpb, uteam.def1, uteam.def2, uteam.def3,
-                  uteam.def4, uteam.defb, uteam.mdf1, uteam.mdf2, uteam.mdf3,
-                  uteam.mdf4, uteam.mdfb, uteam.fwd1, uteam.fwd2, uteam.fwdb]
+        luteam = [uteam.gkp1, uteam.gkp2, uteam.def1, uteam.def2, uteam.def3,
+                  uteam.def4, uteam.def5, uteam.mid1, uteam.mid2, uteam.mid3,
+                  uteam.mid4, uteam.mid5, uteam.fwd1, uteam.fwd2, uteam.fwd3]
         ctx['uteam'] = luteam
 
         overall_cost = sum([u.now_cost for u in luteam])
@@ -264,83 +264,84 @@ class UserTeamView(View):
         ctx['segment'] = 'user-team'
 
         if UserTeam.objects.filter(user=request.user).exists():
-            uteam = UserTeam.objects.get(user=request.user)
-            form.fields['gkp'].initial = uteam.gkp_id
-            form.fields['gkpb'].initial = uteam.gkpb_id
+            uteam = UserTeam.objects.filter(user=request.user) \
+                                    .order_by('event').last()
+            form.fields['gkp1'].initial = uteam.gkp1_id
+            form.fields['gkp2'].initial = uteam.gkp2_id
             form.fields['def1'].initial = uteam.def1_id
             form.fields['def2'].initial = uteam.def2_id
             form.fields['def3'].initial = uteam.def3_id
             form.fields['def4'].initial = uteam.def4_id
-            form.fields['defb'].initial = uteam.defb_id
-            form.fields['mdf1'].initial = uteam.mdf1_id
-            form.fields['mdf2'].initial = uteam.mdf2_id
-            form.fields['mdf3'].initial = uteam.mdf3_id
-            form.fields['mdf4'].initial = uteam.mdf4_id
-            form.fields['mdfb'].initial = uteam.mdfb_id
+            form.fields['def5'].initial = uteam.def5_id
+            form.fields['mid1'].initial = uteam.mid1_id
+            form.fields['mid2'].initial = uteam.mid2_id
+            form.fields['mid3'].initial = uteam.mid3_id
+            form.fields['mid4'].initial = uteam.mid4_id
+            form.fields['mid5'].initial = uteam.mid5_id
             form.fields['fwd1'].initial = uteam.fwd1_id
             form.fields['fwd2'].initial = uteam.fwd2_id
-            form.fields['fwdb'].initial = uteam.fwdb_id
+            form.fields['fwd3'].initial = uteam.fwd3_id
             self.team_overall(uteam, ctx)
 
         return render(request, 'user-team.html', ctx)
 
-    def post(self, request):
-        form = UserTeamForm(request.POST)
-        ctx = {}
-        ctx['segment'] = 'user-team'
-        if form.is_valid():
-            try:
-                userTeam = UserTeam.objects.get(user=request.user)
-                userTeam.gkp = form.cleaned_data['gkp']
-                userTeam.gkpb = form.cleaned_data['gkpb']
-                userTeam.def1 = form.cleaned_data['def1']
-                userTeam.def2 = form.cleaned_data['def2']
-                userTeam.def3 = form.cleaned_data['def3']
-                userTeam.def4 = form.cleaned_data['def4']
-                userTeam.defb = form.cleaned_data['defb']
-                userTeam.mdf1 = form.cleaned_data['mdf1']
-                userTeam.mdf2 = form.cleaned_data['mdf2']
-                userTeam.mdf3 = form.cleaned_data['mdf3']
-                userTeam.mdf4 = form.cleaned_data['mdf4']
-                userTeam.mdfb = form.cleaned_data['mdfb']
-                userTeam.fwd1 = form.cleaned_data['fwd1']
-                userTeam.fwd2 = form.cleaned_data['fwd2']
-                userTeam.fwdb = form.cleaned_data['fwdb']
-                userTeam.save()
-                ctx['success'] = 'Team updated'
-            except ObjectDoesNotExist:
-                userTeam = UserTeam()
-                userTeam.user = request.user
-                userTeam.gkp = form.cleaned_data['gkp']
-                userTeam.gkpb = form.cleaned_data['gkpb']
-                userTeam.def1 = form.cleaned_data['def1']
-                userTeam.def2 = form.cleaned_data['def2']
-                userTeam.def3 = form.cleaned_data['def3']
-                userTeam.def4 = form.cleaned_data['def4']
-                userTeam.defb = form.cleaned_data['defb']
-                userTeam.mdf1 = form.cleaned_data['mdf1']
-                userTeam.mdf2 = form.cleaned_data['mdf2']
-                userTeam.mdf3 = form.cleaned_data['mdf3']
-                userTeam.mdf4 = form.cleaned_data['mdf4']
-                userTeam.mdfb = form.cleaned_data['mdfb']
-                userTeam.fwd1 = form.cleaned_data['fwd1']
-                userTeam.fwd2 = form.cleaned_data['fwd2']
-                userTeam.fwdb = form.cleaned_data['fwdb']
-                userTeam.save()
-                ctx['success'] = 'Team created'
+    # def post(self, request):
+    #     form = UserTeamForm(request.POST)
+    #     ctx = {}
+    #     ctx['segment'] = 'user-team'
+    #     if form.is_valid():
+    #         try:
+    #             userTeam = UserTeam.objects.get(user=request.user)
+    #             userTeam.gkp = form.cleaned_data['gkp']
+    #             userTeam.gkpb = form.cleaned_data['gkpb']
+    #             userTeam.def1 = form.cleaned_data['def1']
+    #             userTeam.def2 = form.cleaned_data['def2']
+    #             userTeam.def3 = form.cleaned_data['def3']
+    #             userTeam.def4 = form.cleaned_data['def4']
+    #             userTeam.defb = form.cleaned_data['defb']
+    #             userTeam.mdf1 = form.cleaned_data['mdf1']
+    #             userTeam.mdf2 = form.cleaned_data['mdf2']
+    #             userTeam.mdf3 = form.cleaned_data['mdf3']
+    #             userTeam.mdf4 = form.cleaned_data['mdf4']
+    #             userTeam.mdfb = form.cleaned_data['mdfb']
+    #             userTeam.fwd1 = form.cleaned_data['fwd1']
+    #             userTeam.fwd2 = form.cleaned_data['fwd2']
+    #             userTeam.fwdb = form.cleaned_data['fwdb']
+    #             userTeam.save()
+    #             ctx['success'] = 'Team updated'
+    #         except ObjectDoesNotExist:
+    #             userTeam = UserTeam()
+    #             userTeam.user = request.user
+    #             userTeam.gkp = form.cleaned_data['gkp']
+    #             userTeam.gkpb = form.cleaned_data['gkpb']
+    #             userTeam.def1 = form.cleaned_data['def1']
+    #             userTeam.def2 = form.cleaned_data['def2']
+    #             userTeam.def3 = form.cleaned_data['def3']
+    #             userTeam.def4 = form.cleaned_data['def4']
+    #             userTeam.defb = form.cleaned_data['defb']
+    #             userTeam.mdf1 = form.cleaned_data['mdf1']
+    #             userTeam.mdf2 = form.cleaned_data['mdf2']
+    #             userTeam.mdf3 = form.cleaned_data['mdf3']
+    #             userTeam.mdf4 = form.cleaned_data['mdf4']
+    #             userTeam.mdfb = form.cleaned_data['mdfb']
+    #             userTeam.fwd1 = form.cleaned_data['fwd1']
+    #             userTeam.fwd2 = form.cleaned_data['fwd2']
+    #             userTeam.fwdb = form.cleaned_data['fwdb']
+    #             userTeam.save()
+    #             ctx['success'] = 'Team created'
 
-            uteam = UserTeam.objects.get(user=request.user)
-            self.team_overall(uteam, ctx)
-            ctx['form'] = form
-            ctx['form_gut'] = GetUserteamForm()
-            return render(request, 'user-team.html', ctx)
-        else:
-            uteam = UserTeam.objects.get(user=request.user)
-            self.team_overall(uteam, ctx)
-            ctx['failure'] = True
-            ctx['form'] = form
-            ctx['form_gut'] = GetUserteamForm()
-            return render(request, 'user-team.html', ctx)
+    #         uteam = UserTeam.objects.get(user=request.user)
+    #         self.team_overall(uteam, ctx)
+    #         ctx['form'] = form
+    #         ctx['form_gut'] = GetUserteamForm()
+    #         return render(request, 'user-team.html', ctx)
+    #     else:
+    #         uteam = UserTeam.objects.get(user=request.user)
+    #         self.team_overall(uteam, ctx)
+    #         ctx['failure'] = True
+    #         ctx['form'] = form
+    #         ctx['form_gut'] = GetUserteamForm()
+    #         return render(request, 'user-team.html', ctx)
 
 
 class UserProfile(View):

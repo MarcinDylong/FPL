@@ -75,8 +75,7 @@ def get_fpl_user_history_and_season(player_id: int):
 
 
 def get_fpl_userteam(player_id: int, gw: int):
-    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/' \
-               f'event/{gw}/picks/'
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/event/{gw}/picks/'
     response = requests.get(base_url)
 
     if response.status_code != 200:
@@ -127,28 +126,32 @@ def update_teams(teams):
     perf = league_table_scraper()
     for t in teams:
         t_perf = perf[t['pulse_id']]
+        defaults = {
+            'position': t_perf[0],
+            'played': t_perf[1],
+            'win': t_perf[2],
+            'draw': t_perf[3],
+            'loss': t_perf[4],
+            'gf': t_perf[5],
+            'ga': t_perf[6],
+            'gd': t_perf[7],
+            'points': t_perf[8],
+            'form': t['form'],
+            'short_name': t['short_name'],
+            'strength': t['strength'],
+            'strength_overall_home': t['strength_overall_home'],
+            'strength_overall_away': t['strength_overall_away'],
+            'strength_attack_home': t['strength_attack_home'],
+            'strength_attack_away': t['strength_attack_away'],
+            'strength_defence_home': t['strength_defence_home'],
+            'strength_defence_away': t['strength_defence_away']
+        }
+
         team, created = Team.objects.update_or_create(
             id = t['id'],
-            pulse_id = t['pulse_id'],
-            position = t_perf[0],
-            played = t_perf[1],
-            win = t_perf[2],
-            draw = t_perf[3],
-            loss = t_perf[4],
-            gf = t_perf[5],
-            ga = t_perf[6],
-            gd = t_perf[7],
-            points = t_perf[8],
-            form = t['form'],
-            name = t['name'],
-            short_name = t['short_name'],
-            strength = t['strength'],
-            strength_overall_home = t['strength_overall_home'],
-            strength_overall_away = t['strength_overall_away'],
-            strength_attack_home = t['strength_attack_home'],
-            strength_attack_away = t['strength_attack_away'],
-            strength_defence_home = t['strength_defence_home'],
-            strength_defence_away = t['strength_defence_away']
+            pulse_id=t['pulse_id'],
+            name=t['name'],
+            defaults=defaults
         )
 
 
@@ -163,74 +166,74 @@ def populate_positions(positions):
 
 def update_players(players):
     for p in players:
+        defaults={
+            'chance_of_playing_next_round': p['chance_of_playing_next_round'],
+            'chance_of_playing_this_round': p['chance_of_playing_this_round'],
+            'cost_change_event': p['cost_change_event'],
+            'cost_change_event_fall': p['cost_change_event_fall'],
+            'cost_change_start': p['cost_change_start'],
+            'cost_change_start_fall': p['cost_change_start_fall'],
+            'dreamteam_count': p['dreamteam_count'],
+            'position': Position.objects.get(id=p['element_type']),
+            'ep_next': float(p['ep_next']),
+            'ep_this': float(p['ep_this']),
+            'event_points': p['event_points'],
+            'form': p['form'],
+            'in_dreamteam': p['in_dreamteam'],
+            'news': p['news'],
+            'news_added': p['news_added'],
+            'now_cost': p['now_cost'] / 10,
+            'points_per_game': p['points_per_game'],
+            'selected_by_percent': p['selected_by_percent'],
+            'transfers_in': p['transfers_in'],
+            'transfers_in_event': p['transfers_in_event'],
+            'transfers_out': p['transfers_out'],
+            'transfers_out_event': p['transfers_out_event'],
+            'special': p['special'],
+            'team': Team.objects.get(id=p['team']),
+            'total_points': p['total_points'],
+            'value_form': float(p['value_form']),
+            'value_season': float(p['value_season']),
+            'minutes': p['minutes'],
+            'goals_scored': p['goals_scored'],
+            'assists': p['assists'],
+            'clean_sheets': p['clean_sheets'],
+            'goals_conceded': p['goals_conceded'],
+            'own_goals': p['own_goals'],
+            'penalties_saved': p['penalties_saved'],
+            'penalties_missed': p['penalties_missed'],
+            'yellow_cards': p['yellow_cards'],
+            'red_cards': p['red_cards'],
+            'saves': p['saves'],
+            'bonus': p['bonus'],
+            'bps': p['bps'] / 10,
+            'influence': float(p['influence']),
+            'creativity': float(p['creativity']),
+            'threat': float(p['threat']),
+            'ict_index': float(p['ict_index']),
+            'influence_rank': p['influence_rank'],
+            'influence_rank_type': p['influence_rank_type'],
+            'creativity_rank': p['creativity_rank'],
+            'creativity_rank_type': p['creativity_rank_type'],
+            'threat_rank': p['threat_rank'],
+            'threat_rank_type': p['threat_rank_type'],
+            'ict_index_rank': p['ict_index_rank'],
+            'ict_index_rank_type': p['ict_index_rank_type'],
+            'corners_and_indirect_freekicks_order':
+                p['corners_and_indirect_freekicks_order'],
+            'corners_and_indirect_freekicks_text':
+                p['corners_and_indirect_freekicks_text'],
+            'direct_freekicks_order': p['direct_freekicks_order'],
+            'direct_freekicks_text': p['direct_freekicks_text'],
+            'penalties_order': p['penalties_order'],
+            'penalties_text': p['penalties_text']    
+        }
+
         player, created = Player.objects.update_or_create(
             id = p['id'],
             first_name = p['first_name'],
             second_name = p['second_name'],
-            defaults={
-                'chance_of_playing_next_round':
-                    p['chance_of_playing_next_round'],
-                'chance_of_playing_this_round':
-                    p['chance_of_playing_this_round'],
-                'cost_change_event': p['cost_change_event'],
-                'cost_change_event_fall': p['cost_change_event_fall'],
-                'cost_change_start': p['cost_change_start'],
-                'cost_change_start_fall': p['cost_change_start_fall'],
-                'dreamteam_count': p['dreamteam_count'],
-                'position': Position.objects.get(id=p['element_type']),
-                'ep_next': float(p['ep_next']),
-                'ep_this': float(p['ep_this']),
-                'event_points': p['event_points'],
-                'form': p['form'],
-                'in_dreamteam': p['in_dreamteam'],
-                'news': p['news'],
-                'news_added': p['news_added'],
-                'now_cost': p['now_cost'] / 10,
-                'points_per_game': p['points_per_game'],
-                'selected_by_percent': p['selected_by_percent'],
-                'transfers_in': p['transfers_in'],
-                'transfers_in_event': p['transfers_in_event'],
-                'transfers_out': p['transfers_out'],
-                'transfers_out_event': p['transfers_out_event'],
-                'special': p['special'],
-                'team': Team.objects.get(id=p['team']),
-                'total_points': p['total_points'],
-                'value_form': float(p['value_form']),
-                'value_season': float(p['value_season']),
-                'minutes': p['minutes'],
-                'goals_scored': p['goals_scored'],
-                'assists': p['assists'],
-                'clean_sheets': p['clean_sheets'],
-                'goals_conceded': p['goals_conceded'],
-                'own_goals': p['own_goals'],
-                'penalties_saved': p['penalties_saved'],
-                'penalties_missed': p['penalties_missed'],
-                'yellow_cards': p['yellow_cards'],
-                'red_cards': p['red_cards'],
-                'saves': p['saves'],
-                'bonus': p['bonus'],
-                'bps': p['bps'] / 10,
-                'influence': float(p['influence']),
-                'creativity': float(p['creativity']),
-                'threat': float(p['threat']),
-                'ict_index': float(p['ict_index']),
-                'influence_rank': p['influence_rank'],
-                'influence_rank_type': p['influence_rank_type'],
-                'creativity_rank': p['creativity_rank'],
-                'creativity_rank_type': p['creativity_rank_type'],
-                'threat_rank': p['threat_rank'],
-                'threat_rank_type': p['threat_rank_type'],
-                'ict_index_rank': p['ict_index_rank'],
-                'ict_index_rank_type': p['ict_index_rank_type'],
-                'corners_and_indirect_freekicks_order':
-                    p['corners_and_indirect_freekicks_order'],
-                'corners_and_indirect_freekicks_text':
-                    p['corners_and_indirect_freekicks_text'],
-                'direct_freekicks_order': p['direct_freekicks_order'],
-                'direct_freekicks_text': p['direct_freekicks_text'],
-                'penalties_order': p['penalties_order'],
-                'penalties_text': p['penalties_text']    
-            }         
+            defaults=defaults
         )
 
 
@@ -294,48 +297,64 @@ def update_events(events, total_players):
         )
 
 
-def update_userteam(user, player_list):
+def update_userteam(user, players, event):
+    """Create or update userteam for given GW and user based on data from
+    FPL API
+
+    Args:
+        user ([model_instance]): currently logged in User
+        players ([dict]): dictionary created from FPL API
+        event ([model_instance]): instance of GW from Event model
+    """    
+    defaults = {}
+    pos_d = {'gkp':1, 'def':1, 'mid':1 ,'fwd':1}
+    for p in players:
+        element = Player.objects.get(id=p['element'])
+        pos = element.position.name_short.lower()
+        num = pos_d[pos]
+        key = f'{pos}{num}'
+        elem = {
+            f'{key}': element,
+            f'{key}_pos': p['position'],
+            f'{key}_mult': p['multiplier'],
+            f'{key}_cpt': p['is_captain'],
+            f'{key}_vcpt': p['is_vice_captain']
+        }
+        defaults.update(elem)
+        pos_d[pos] += 1
+
     ust = UserTeam.objects.update_or_create(
-        user = user,
-        gkp = Player.objects.get(id=player_list[0]),
-        def1 = Player.objects.get(id=player_list[1]),
-        def2 = Player.objects.get(id=player_list[2]),
-        def3 = Player.objects.get(id=player_list[3]),
-        def4 = Player.objects.get(id=player_list[4]),
-        mdf1 = Player.objects.get(id=player_list[5]),
-        mdf2 = Player.objects.get(id=player_list[6]),
-        mdf3 = Player.objects.get(id=player_list[7]),
-        mdf4 = Player.objects.get(id=player_list[8]),
-        fwd1 = Player.objects.get(id=player_list[9]),
-        fwd2 = Player.objects.get(id=player_list[10]),
-        gkpb = Player.objects.get(id=player_list[11]),
-        defb = Player.objects.get(id=player_list[12]),
-        mdfb = Player.objects.get(id=player_list[13]),
-        fwdb = Player.objects.get(id=player_list[14])
+        user=user,
+        event = event,
+        defaults=defaults
     )
 
 
 def update_user(user, user_fpl):
+    defaults = {
+        'joined_time': user_fpl['joined_time'],
+        'started_event': user_fpl['started_event'],
+        'favourite_team': user_fpl['favourite_team'],
+        'player_first_name': user_fpl['player_first_name'],
+        'player_last_name': user_fpl['player_last_name'],
+        'player_region_name': user_fpl['player_region_name'],
+        'player_region_iso_code_short': user_fpl['player_region_iso_code_short'],
+        'player_region_iso_code_long': user_fpl['player_region_iso_code_long'],
+        'summary_overall_points': user_fpl['summary_overall_points'],
+        'summary_overall_rank': user_fpl['summary_overall_rank'],
+        'summary_event_points': user_fpl['summary_event_points'],
+        'summary_event_rank': user_fpl['summary_event_rank'],
+        'current_event': user_fpl['current_event'],
+        'name': user_fpl['name'],
+        'last_deadline_bank': user_fpl['last_deadline_bank'] / 10,
+        'last_deadline_value': user_fpl['last_deadline_value'] / 10,
+        'last_deadline_total_transfers': user_fpl['last_deadline_total_transfers'] 
+    }
+
     usr, created = UserFpl.objects.update_or_create(
         user=user,
-        fpl = user_fpl['id'],
-        joined_time = user_fpl['joined_time'],
-        started_event = user_fpl['started_event'],
-        favourite_team = user_fpl['favourite_team'],
-        player_first_name = user_fpl['player_first_name'],
-        player_last_name = user_fpl['player_last_name'],
-        player_region_name = user_fpl['player_region_name'],
-        player_region_iso_code_short = user_fpl['player_region_iso_code_short'],
-        player_region_iso_code_long = user_fpl['player_region_iso_code_long'],
-        summary_overall_points = user_fpl['summary_overall_points'],
-        summary_overall_rank = user_fpl['summary_overall_rank'],
-        summary_event_points = user_fpl['summary_event_points'],
-        summary_event_rank = user_fpl['summary_event_rank'],
-        current_event = user_fpl['current_event'],
-        name = user_fpl['name'],
-        last_deadline_bank = user_fpl['last_deadline_bank'] / 10,
-        last_deadline_value = user_fpl['last_deadline_value'] / 10,
-        last_deadline_total_transfers = user_fpl['last_deadline_total_transfers']       
+        fpl=user_fpl['id'],
+        defaults=defaults      
     )
 
 
@@ -345,27 +364,32 @@ def update_user_history(user, user_fpl_history):
     past = user_fpl_history['past']
     obj, created = UserFplHistory.objects.update_or_create(
         userfpl=user_fpl,
-        chips=chips,
-        past=past
+        defaults={
+            'chips': chips,
+            'past': past
+        }
     )
 
 
 def update_user_season(user, user_fpl_season):
     user_fpl = UserFpl.objects.get(user=user)
     for season in user_fpl_season:
+        defaults = {
+            'points': season['points'],
+            'total_points': season['total_points'],
+            'rank': season['rank'],
+            'rank_sort': season['rank_sort'],
+            'overall_rank': season['overall_rank'],
+            'bank': season['bank']/10,
+            'value': season['value']/10,
+            'event_transfers': season['event_transfers'],
+            'event_transfers_cost': season['event_transfers_cost'],
+            'points_on_bench': season['points_on_bench']
+        }
         obj, created = UserFplSeason.objects.update_or_create(
             userfpl=user_fpl,
             event=Event.objects.get(id=season['event']),
-            points=season['points'],
-            total_points=season['total_points'],
-            rank=season['rank'],
-            rank_sort=season['rank_sort'],
-            overall_rank=season['overall_rank'],
-            bank=season['bank']/10,
-            value=season['value']/10,
-            event_transfers=season['event_transfers'],
-            event_transfers_cost=season['event_transfers_cost'],
-            points_on_bench=season['points_on_bench']
+            defaults = defaults
         )
 
 

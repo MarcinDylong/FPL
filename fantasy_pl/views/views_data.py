@@ -18,19 +18,20 @@ def DownloadUserteamView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
-        try:
-            last_event = Event.objects.filter(finished=True).last()
-            gw = last_event.id
-            team = get_fpl_userteam(player_id, gw)
-            player = team['picks']
-            player_list = [p['element'] for p in player]
-        except Exception as e:
-            messages.error(request, f"Failure downloading your team: "
-                                    f"{format(e)}")
-            return redirect('/user-team/')
-        user = request.user
-        update_userteam(user, player_list)
-        messages.success(request, "Your team was succesfully downloaded.")
+        last_event = Event.objects.filter(finished=True).last()
+        gw = last_event.id
+        for i in range(1,gw+1):
+            try:
+                team = get_fpl_userteam(player_id, i)
+                players = team['picks']
+                user = request.user
+                event = Event.objects.get(id=i)
+                update_userteam(user, players, event)
+
+            except Exception as e:
+                messages.error(request, f"Failure downloading your team "
+                                        f"for gw {i}: {format(e)}")
+
         return redirect('/user-team/')
 
 

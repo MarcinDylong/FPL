@@ -89,12 +89,12 @@ class PlayerChoiceField(ModelChoiceField):
 
 
 class UserTeamForm(forms.Form):
-    gkp = PlayerChoiceField(label='Goalkeeper',
+    gkp1 = PlayerChoiceField(label='Goalkeeper',
                             queryset=Player.objects.filter(
                                 position=1).order_by('-now_cost'),
                             widget=forms.Select(
                                 attrs={'class': 'form-control', }))
-    gkpb = PlayerChoiceField(label='Bench goalkepper',
+    gkp2 = PlayerChoiceField(label='Bench goalkepper',
                              queryset=Player.objects.filter(
                                  position=1).order_by('-now_cost'),
                              widget=forms.Select(
@@ -119,32 +119,32 @@ class UserTeamForm(forms.Form):
                                  position=2).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    defb = PlayerChoiceField(label='Bench defender',
+    def5 = PlayerChoiceField(label='Bench defender',
                              queryset=Player.objects.filter(
                                  position=2).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mdf1 = PlayerChoiceField(label='Middlefielder 1',
+    mid1 = PlayerChoiceField(label='Middlefielder 1',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mdf2 = PlayerChoiceField(label='Middlefielder 2',
+    mid2 = PlayerChoiceField(label='Middlefielder 2',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mdf3 = PlayerChoiceField(label='Middlefielder 3',
+    mid3 = PlayerChoiceField(label='Middlefielder 3',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mdf4 = PlayerChoiceField(label='Middlefielder 4',
+    mid4 = PlayerChoiceField(label='Middlefielder 4',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mdfb = PlayerChoiceField(label='Bench middlefielder',
+    mid5 = PlayerChoiceField(label='Bench middlefielder',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
@@ -159,7 +159,7 @@ class UserTeamForm(forms.Form):
                                  position=4).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    fwdb = PlayerChoiceField(label='Bench forward',
+    fwd3 = PlayerChoiceField(label='Bench forward',
                              queryset=Player.objects.filter(
                                  position=4).order_by('-now_cost'),
                              widget=forms.Select(

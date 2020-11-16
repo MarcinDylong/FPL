@@ -146,6 +146,7 @@
                                     <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
                                         <thead>
                                             <tr class="center" align="center">
+                                                <th>sort</th>
                                                 <th>id</th>
                                                 <th>Position</th>
                                                 <th>Player</th>
@@ -159,6 +160,7 @@
                                         <tbody>
                                             {% for u in uteam %}
                                             <tr class="unread center" align="center">
+                                                <td>{{ u.position.id }}</td>
                                                 <td>{{ u.id }}</td>
                                                 <td>{{ u.position.name_short }}</td>
                                                 <td>
@@ -227,7 +229,13 @@ $(document).ready(function() {
         responsive: true,
         info: false,
         paging: false,
-        searching: false
+        searching: false,
+        order: [[0,'asc']],
+        columnDefs: [
+        {
+            targets: [0],
+            visible: false
+        }]
     });
 });
 
