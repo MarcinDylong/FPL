@@ -40,12 +40,3 @@ urlpatterns = [
     path('api/userteam/<int:pk>', ApiUserTeamView.as_view(),
          name='api_userteam'),
 ]
-
-# from .views.views_userteam import UserTeamView
-
-# urlpatterns = [
-#
-#     path('download_userteam/', DownloadUserteamView, name="download_userteam"),
-#     ## API
-
-# ]

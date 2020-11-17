@@ -155,7 +155,7 @@ class Player(models.Model):
 
     def next_game(self):
         games = PlayerHistory.objects.filter(player_id=self.id)
-        next_game = games.filter(finished=True).order_by('event').first()
+        next_game = games.filter(finished=False).filter(kickoff_time__isnull=False).order_by('event').first()
         try:
             if next_game.is_home == True:
                 return f'H - {next_game.team_a.short_name}'
@@ -163,6 +163,7 @@ class Player(models.Model):
                 return f'A - {next_game.team_h.short_name}'
         except AttributeError:
             return '-'
+
     class Meta:
         unique_together = ('id','first_name','second_name',)
 
@@ -236,6 +237,90 @@ class UserFplSeason(models.Model):
 
     def __str__(self):
         return f'Season data for {self.userfpl}'
+
+
+
+class UserFplPicks(models.Model):
+    user = models.OneToOneField(UserFplSeason, on_delete=models.CASCADE)
+    pck1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick1')
+    pck1_pos = models.IntegerField()
+    pck1_mult = models.IntegerField()
+    pck1_cpt = models.BooleanField()
+    pck1_vcpt = models.BooleanField()
+    pck2 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick2')
+    pck2_pos = models.IntegerField()
+    pck2_mult = models.IntegerField()
+    pck2_cpt = models.BooleanField()
+    pck2_vcpt = models.BooleanField()
+    pck3 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick3')
+    pck3_pos = models.IntegerField()
+    pck3_mult = models.IntegerField()
+    pck3_cpt = models.BooleanField()
+    pck3_vcpt = models.BooleanField()
+    pck4 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick4')
+    pck4_pos = models.IntegerField()
+    pck4_mult = models.IntegerField()
+    pck4_cpt = models.BooleanField()
+    pck4_vcpt = models.BooleanField()
+    pck5 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick5')
+    pck5_pos = models.IntegerField()
+    pck5_mult = models.IntegerField()
+    pck5_cpt = models.BooleanField()
+    pck5_vcpt = models.BooleanField()
+    pck6 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick6')
+    pck6_pos = models.IntegerField()
+    pck6_mult = models.IntegerField()
+    pck6_cpt = models.BooleanField()
+    pck6_vcpt = models.BooleanField()
+    pck7 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick7')
+    pck7_pos = models.IntegerField()
+    pck7_mult = models.IntegerField()
+    pck7_cpt = models.BooleanField()
+    pck7_vcpt = models.BooleanField()
+    pck8 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick8')
+    pck8_pos = models.IntegerField()
+    pck8_mult = models.IntegerField()
+    pck8_cpt = models.BooleanField()
+    pck8_vcpt = models.BooleanField()
+    pck9 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick9')
+    pck9_pos = models.IntegerField()
+    pck9_mult = models.IntegerField()
+    pck9_cpt = models.BooleanField()
+    pck9_vcpt = models.BooleanField()
+    pck10 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick10')
+    pck10_pos = models.IntegerField()
+    pck10_mult = models.IntegerField()
+    pck10_cpt = models.BooleanField()
+    pck10_vcpt = models.BooleanField()
+    pck11 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick11')
+    pck11_pos = models.IntegerField()
+    pck11_mult = models.IntegerField()
+    pck11_cpt = models.BooleanField()
+    pck11_vcpt = models.BooleanField()
+    pck12 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick12')
+    pck12_pos = models.IntegerField()
+    pck12_mult = models.IntegerField()
+    pck12_cpt = models.BooleanField()
+    pck12_vcpt = models.BooleanField()
+    pck13 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick13')
+    pck13_pos = models.IntegerField()
+    pck13_mult = models.IntegerField()
+    pck13_cpt = models.BooleanField()
+    pck13_vcpt = models.BooleanField()
+    pck14 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick14')
+    pck14_pos = models.IntegerField()
+    pck14_mult = models.IntegerField()
+    pck14_cpt = models.BooleanField()
+    pck14_vcpt = models.BooleanField()
+    pck15 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='pick15')
+    pck15_pos = models.IntegerField()
+    pck15_mult = models.IntegerField()
+    pck15_cpt = models.BooleanField()
+    pck15_vcpt = models.BooleanField()
+
+    class Meta:
+        unique_together = ('user',)
+
 
 class UserTeam(models.Model):
     user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)

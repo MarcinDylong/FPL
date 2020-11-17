@@ -8,7 +8,9 @@ def get_userTeam_players_id(request):
     player_id_list = []
     try:
         current_user = User.objects.get(username=request.user.username)
-        uteam = UserTeam.objects.filter(user=current_user).values()[0]
+        uteams = UserTeam.objects.filter(user=current_user)
+        ct = len(uteams) - 1
+        uteam = uteams.values()[ct]
         for k, v in uteam.items():
             if k == 'user_id':
                 continue
@@ -16,7 +18,7 @@ def get_userTeam_players_id(request):
                 player_id_list.append(v)
             else:
                 pass
-    except (ObjectDoesNotExist,IndexError):
+    except:
         pass
     return player_id_list
 

@@ -7,14 +7,24 @@ from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
     GetUserteamForm, GetDataForm
 from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
-    update_teams, update_players, populate_positions, get_player_data, \
-    get_player_fixture, download_json, get_fixtures_for_season, \
-    update_fixture, get_fpl_userteam, update_userteam, \
-    get_data, get_fpl_user, update_user, update_events, \
-    update_user_history, get_fpl_user_history_and_season, update_user_season
+    download_json, get_fixtures_for_season, get_fpl_userteam, get_data, \
+    get_fpl_user, get_fpl_user_history_and_season, get_fpl_user_picks, \
+    DownloadDataJSON 
+from fantasy_pl.views.data_updates import update_teams, update_players, \
+    populate_positions, update_player_data, update_player_fixture, \
+    update_fixture, update_userteam, update_user, update_events, \
+    update_user_history, update_user_season, update_user_picks
 
+'''
+    Views for downloading data from Fantasy Premier League API;
 
-def DownloadUserteamView(request):
+    Views below depend on two types of functions imported from different files:
+    - getters: functions which send request to FPL API and return data in form 
+               of dictionaries or lists of dictionaries
+    - data_updates: functions which process data from getters and save them in 
+                    database
+'''
+def DownloadUserteamView(request): ## Do zmiany!!
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
@@ -39,30 +49,26 @@ def DownloadUserView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
+        last_event = Event.objects.filter(finished=True).last()
+        gw = last_event.id
+        ## Retrieve data from API
         try:
             user_fpl = get_fpl_user(player_id)
             user_fpl_history = get_fpl_user_history_and_season(player_id)
+            # get_fpl_user_picks(player_id, gw) used inside update_user_picks()
         except Exception as e:
             messages.error(request, f"Failure updating your profile: "
                                     f"{format(e)}")
             return redirect('/user-profile/')
+        ## Update data
         user = request.user
         update_user(user, user_fpl)
         update_user_history(user, user_fpl_history)
         user_fpl_season = user_fpl_history['current']
         update_user_season(user, user_fpl_season)
+        update_user_picks(user)
         messages.success(request, "Your Profile was succesfully updated.")
         return redirect('/user-profile/')
-
-
-def DownloadDataJSON():
-    try:
-        download_json()
-        ctx = {'event': 'success', 'info': 'Data has been downloaded to JSON'}
-        return ctx
-    except Exception as e:
-        ctx = {'event': 'error', 'error': format(e)}
-        return ctx
 
 
 def PopulateTables():
@@ -145,9 +151,9 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                 try:
                     data = get_individual_player_data(id)
                     history = data['history']
-                    get_player_data(history)
+                    update_player_data(history)
                     game = data['fixtures']
-                    get_player_fixture(game, id)
+                    update_player_fixture(game, id)
                     ctx = {'event': 'success',
                            'info': f'Data for player {id} has been updated',
                            'form': GetPlayerDataForm()}
@@ -162,9 +168,9 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     try:
                         data = get_individual_player_data(p.id)
                         history = data['history']
-                        get_player_data(history)
+                        update_player_data(history)
                         game = data['fixtures']
-                        get_player_fixture(game, p.id)
+                        update_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'event': 'error', 'error': format(e),
                                'form': GetPlayerDataForm()}
@@ -180,9 +186,9 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     try:
                         data = get_individual_player_data(p.id)
                         history = data['history']
-                        get_player_data(history)
+                        update_player_data(history)
                         game = data['fixtures']
-                        get_player_fixture(game, p.id)
+                        update_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'event': 'error',
                                'error': format(e),
