@@ -335,8 +335,8 @@
                 <!-- [ Basic Info Content 3] end -->
                 <!-- [ Team Form and List ] start -->
                 <div class="row">
-                    <!-- {{ picks }} -->
                     <!--[ UserTeam Stat ] start-->
+                    <!-- {{ picks }} -->
                     <div class="col-xl-12">
                         <div class="card Recent-Users">
                             <div class="card-header">
@@ -347,38 +347,40 @@
                                     <table class="table table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
                                         <thead>
                                             <tr class="center" align="center">
-                                                <th>Sort</th>
+                                                <th>#</th>
                                                 <th>Role</th>
                                                 <th>Position</th>
                                                 <th>Player</th>
                                                 <th>Team</th>
-                                                <th>Last Game</th>
+                                                <th>Game</th>
                                                 <th>Points (Bonus)</th>
                                                 <th>Total Points</th>
                                                 <th>Cost</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for k, t in team.items %}
+                                        {% for key1, gameweek in picks.items %}
+                                            {% for key2,t in gameweek.items %}
                                                 <tr class="unread center" align="center">
                                                     <td>{{ t.pos }}</td>
                                                     <td>
                                                         {{ t.pos|team_role:t.mult }}
                                                     </td>
-                                                    <td>{{ t.id.position.name_short }}</td>
+                                                    <td>{{ t.player.position.name_short }}</td>
                                                     <td>
-                                                       <a class='golink' href="{% url 'fantasy_pl:player' t.id.id %}">
-                                                            <h6 class="mb-1">{{ t.id.second_name }}</h6>
-                                                            <p class="text-muted m-0">{{ t.id.first_name }}</p>
+                                                       <a class='golink' href="{% url 'fantasy_pl:player' t.player.id %}">
+                                                            <h6 class="mb-1">{{ t.player.second_name }}</h6>
+                                                            <p class="text-muted m-0">{{ t.player.first_name }}</p>
                                                         </a>
                                                     </td>
-                                                    <td>{{ t.id.team.short_name }}</td>
-                                                    <td>{{ t.id.last_game }}</td>
-                                                    <td>{{ t.id.last_game_stats.total_points }}({{ t.id.last_game_stats.bonus  }})</td>
-                                                    <td>{{ t.id.last_game_stats.total_points|team_total_points:t.mult }}</td>
-                                                    <td>{{ t.id.now_cost }}</td>
+                                                    <td>{{ t.player.team.short_name }}</td>
+                                                    <td>{{ t.last_game }} - GW: {{t.last_game_stats.event_id}}</td>
+                                                    <td>{{ t.last_game_stats.total_points }}({{ t.last_game_stats.bonus }})</td>
+                                                    <td>{{ t.last_game_stats.total_points|multiply:t.mult }}</td>
+                                                    <td>{{ t.last_game_stats.value }}</td>
                                                 </tr>
                                             {% endfor %}
+                                        {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
@@ -431,11 +433,12 @@
 <script>
 $(document).ready(function() {
     $('#players').DataTable({
+        pageLength: 15,
+        bLengthChange: false,
         responsive: true,
         info: false,
-        paging: false,
-        searching: false
-    });
+        filter: false
+        });
 });
 
 new Morris.Line({
@@ -445,17 +448,18 @@ new Morris.Line({
                 {
                     Fixture: '{{ s.event }}',
                     Points: '{{ s.points }}',
-                    Average: '{{ s.event.average_entry_score }}'
+                    Average: '{{ s.event.average_entry_score }}',
+                    Highest: '{{ s.event.highest_score }}'
                 }{% if not forloop.last %}, {% endif %} 
             {% endfor %}
         ],
         smooth: false,
         parseTime: false,
-        numLines: 7,
+        numLines: 8,
         xkey: 'Fixture',
-        ykeys: ['Points', 'Average'],
-        ymax: 150,
-        labels: ['Points', 'Average']
+        ykeys: ['Points', 'Average','Highest'],
+        ymax: 175,
+        labels: ['Points', 'Average','Highest']
     });
 
 new Morris.Line({

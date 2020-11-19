@@ -164,23 +164,23 @@ class Player(models.Model):
         except AttributeError:
             return '-'
 
-    def last_game(self):
-        games = PlayerHistory.objects.filter(player_id=self.id)
-        last_game = games.filter(finished=True).filter(kickoff_time__isnull=False).order_by('event').last()
+    def last_game(self, gw:int):
         try:
+            games = PlayerHistory.objects.filter(player_id=self.id)
+            last_game = games.get(event_id=gw)
             if last_game.is_home == True:
                 return f'H - {last_game.team_a.short_name}'
             else:
                 return f'A - {last_game.team_h.short_name}'
-        except AttributeError:
+        except:
             return '-'
 
-    def last_game_stats(self):
-        games = PlayerHistory.objects.filter(player_id=self.id)
-        last_game = games.filter(finished=True).filter(kickoff_time__isnull=False).order_by('event').last()
+    def last_game_stats(self, gw:int): 
         try:
+            games = PlayerHistory.objects.filter(player_id=self.id)
+            last_game = games.get(event_id=gw)
             return last_game
-        except AttributeError:
+        except :
             return '-'
 
     class Meta:

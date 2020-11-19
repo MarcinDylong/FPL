@@ -32,6 +32,14 @@
                     </a>
                 </li>
                 <li data-username="userteam"
+                    class="nav-item {% if 'user-profile' in segment %} active {% endif %}">
+                    <a href="{% url 'fpl:user-profile' %}" class="nav-link ">
+                        <span class="pcoded-micon">
+                        <i class="fas fa-user"></i></span>
+                        <span class="pcoded-mtext">User Profile</span>
+                    </a>
+                </li>
+                <li data-username="userteam"
                     class="nav-item {% if 'user-team' in segment %} active {% endif %}">
                     <a href="{% url 'fpl:user-team' %}" class="nav-link ">
                         <span class="pcoded-micon">
@@ -120,11 +128,6 @@
                         <i class="feather icon-lock"></i></span>
                         <span class="pcoded-mtext">User Managment</span></a>
                     <ul class="pcoded-submenu">
-                        <li class="">
-                            <a href={% url 'fpl:user-profile' %} class="">
-                                User Profile
-                            </a>
-                        </li>
                         <li class="">
                             <a href={% url 'auth:password_reset' %} class="">
                                 Reset Pass

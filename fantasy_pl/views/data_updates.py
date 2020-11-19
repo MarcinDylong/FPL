@@ -445,21 +445,3 @@ def update_player_fixture(game: dict, id: int):
             fixture=Fixtures.objects.get(id=g['id']),
             defaults=defaults
         )
-
-
-def dict_picks(picks):
-    picks = picks.__dict__
-    del picks['_state']
-    del picks['id']
-    del picks['user_id']
-
-    team = {}
-    for k, v in picks.items():
-        k = k.split('_')
-        if k[1] == 'id':
-            team[f'{k[0]}'] = {f'{k[1]}': Player.objects.get(id=v)}
-        else:
-            team[f'{k[0]}'][f'{k[1]}'] = v 
-
-    return team
-            

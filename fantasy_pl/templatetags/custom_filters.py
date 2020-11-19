@@ -33,6 +33,9 @@ def team_role(value, arg):
         return value
 
 
-@register.filter(name='team_total_points')
-def team_total_points(value, arg):
-    return arg*value
+@register.filter(name='multiply')
+def multiply(value, arg):
+    try:
+        return arg * value
+    except TypeError:
+        return 0

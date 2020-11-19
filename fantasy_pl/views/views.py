@@ -9,7 +9,6 @@ from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
     GetUserteamForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
-from fantasy_pl.views.data_updates import dict_picks
 
 
 class IndexView(LoginRequiredMixin, View):
@@ -348,7 +347,69 @@ class UserTeamView(View):
 class UserProfile(View):
     """
         Display User profile data
-    """    
+    """  
+
+    def dict_picks(self, user_season):
+        """Creating easy callable in template dictonaries based on UserFplPicks 
+        instances for given User
+
+        Args:
+            userFplSeason (model_instances): Queries of UserFplSeason for given 
+            User
+
+        Returns:
+            dict: Dictonary of dictionaries under keys 1-38 where key is a 
+            number of Gameweek, number of dictionaries may vary depend of User 
+            and already finished gameweeks;
+            Every GameWeek dictionary containts another 15 dictionaries (pck1 - 
+            pck15) which represtens every element picked to the user team on 
+            given GW.
+            Finally pck[x] dictionaries contains key-value pairs:
+            player: Model instance of Player
+            pos: Intiger used for sorting players picks
+            mult: Multiplier for elements on given GW
+            cpt: Bool value which determine whether element was captain on GW
+            vcpt: Bool value which determine whether element was vicecaptain on 
+            GW
+            last_game: Player model functions returing string of game played 
+            on given Gameweek
+            last_game_stats: Player model functions returning PlayerHistory
+            instance for given player on given gameweek
+        """    
+
+        end = len(user_season)
+        picks = {}
+
+        for i in range(end):
+            inst = user_season[i]
+            gw = inst.event.id
+            pick = UserFplPicks.objects.get(user=inst)
+            
+            pick = pick.__dict__
+            del pick['_state']
+            del pick['id']
+            del pick['user_id']
+
+            team = {}
+            for k, v in pick.items():
+                k = k.split('_')
+                if k[1] == 'id':
+                    player = Player.objects.get(id=v)
+                    team[f'{k[0]}'] = {'player': player}
+                    team[f'{k[0]}']['last_game'] = player.last_game(gw)
+                    try:
+                        team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.get(player=player, event_id=gw)
+                    except:
+                        pass
+                elif k[1] == 'pos':
+                    team[f'{k[0]}']['pos'] = v + i*15
+                else:
+                    team[f'{k[0]}'][f'{k[1]}'] = v 
+            picks[gw] = team
+
+        return picks
+
+
     def get(self, request):
         user = request.user
         ctx = {}
@@ -369,15 +430,14 @@ class UserProfile(View):
             ## User season
             user_season = UserFplSeason.objects.filter(userfpl=profile)
             ctx['season'] = user_season
-            # ## User Picks
-            pick = user_season.last().id
-            picks = UserFplPicks.objects.get(user_id=pick)
-            team = dict_picks(picks)
-            ctx['team'] = team
+            ## User Picks
+            picks = self.dict_picks(user_season)
+            ctx['picks'] = picks
             # Previous game week
             prev_gw = user_season.get(event_id=(profile.current_event - 1))
             ctx['prev'] = prev_gw
         except:
             pass
+        ctx['segment'] = 'user-profile'
         ctx['form'] = form
         return render(request, 'user-profile.html', ctx)
