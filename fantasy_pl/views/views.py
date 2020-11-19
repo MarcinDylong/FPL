@@ -9,6 +9,7 @@ from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
     GetUserteamForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
+from fantasy_pl.views.data_updates import dict_picks
 
 
 class IndexView(LoginRequiredMixin, View):
@@ -371,7 +372,8 @@ class UserProfile(View):
             # ## User Picks
             pick = user_season.last().id
             picks = UserFplPicks.objects.get(user_id=pick)
-            ctx['picks'] = picks
+            team = dict_picks(picks)
+            ctx['team'] = team
             # Previous game week
             prev_gw = user_season.get(event_id=(profile.current_event - 1))
             ctx['prev'] = prev_gw

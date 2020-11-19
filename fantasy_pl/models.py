@@ -164,6 +164,25 @@ class Player(models.Model):
         except AttributeError:
             return '-'
 
+    def last_game(self):
+        games = PlayerHistory.objects.filter(player_id=self.id)
+        last_game = games.filter(finished=True).filter(kickoff_time__isnull=False).order_by('event').last()
+        try:
+            if last_game.is_home == True:
+                return f'H - {last_game.team_a.short_name}'
+            else:
+                return f'A - {last_game.team_h.short_name}'
+        except AttributeError:
+            return '-'
+
+    def last_game_stats(self):
+        games = PlayerHistory.objects.filter(player_id=self.id)
+        last_game = games.filter(finished=True).filter(kickoff_time__isnull=False).order_by('event').last()
+        try:
+            return last_game
+        except AttributeError:
+            return '-'
+
     class Meta:
         unique_together = ('id','first_name','second_name',)
 

@@ -1,4 +1,6 @@
-{% extends "layouts/base.html" %} {% load custom_filters %} {% block title %} - UserTeam {% endblock %}
+{% extends "layouts/base.html" %} 
+{% load custom_filters %} 
+{% block title %} - UserTeam {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
@@ -342,245 +344,41 @@
                             </div>
                             <div class="card-block px-0 py-3">
                                 <div class="table-responsive">
-                                    <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
+                                    <table class="table table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
                                         <thead>
                                             <tr class="center" align="center">
-                                                <th>id</th>
+                                                <th>Sort</th>
+                                                <th>Role</th>
                                                 <th>Position</th>
                                                 <th>Player</th>
                                                 <th>Team</th>
-                                                <th>Next Game</th>
-                                                <th>PPG</th>
+                                                <th>Last Game</th>
+                                                <th>Points (Bonus)</th>
                                                 <th>Total Points</th>
                                                 <th>Cost</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck1.id }}</td>
-                                                <td>{{ picks.pck1.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck1.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck1.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck1.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck1.team.short_name }}</td>
-                                                <td>{{ picks.pck1.next_game }}</td>
-                                                <td>{{ picks.pck1.points_per_game }}</td>
-                                                <td>{{ picks.pck1.total_points }}</td>
-                                                <td>{{ picks.pck1.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck2.id }}</td>
-                                                <td>{{ picks.pck2.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck2.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck2.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck2.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck2.team.short_name }}</td>
-                                                <td>{{ picks.pck2.next_game }}</td>
-                                                <td>{{ picks.pck2.points_per_game }}</td>
-                                                <td>{{ picks.pck2.total_points }}</td>
-                                                <td>{{ picks.pck2.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck3.id }}</td>
-                                                <td>{{ picks.pck3.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck3.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck3.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck3.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck3.team.short_name }}</td>
-                                                <td>{{ picks.pck3.next_game }}</td>
-                                                <td>{{ picks.pck3.points_per_game }}</td>
-                                                <td>{{ picks.pck3.total_points }}</td>
-                                                <td>{{ picks.pck3.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck4.id }}</td>
-                                                <td>{{ picks.pck4.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck4.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck4.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck4.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck4.team.short_name }}</td>
-                                                <td>{{ picks.pck4.next_game }}</td>
-                                                <td>{{ picks.pck4.points_per_game }}</td>
-                                                <td>{{ picks.pck4.total_points }}</td>
-                                                <td>{{ picks.pck4.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck5.id }}</td>
-                                                <td>{{ picks.pck5.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck5.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck5.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck5.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck5.team.short_name }}</td>
-                                                <td>{{ picks.pck5.next_game }}</td>
-                                                <td>{{ picks.pck5.points_per_game }}</td>
-                                                <td>{{ picks.pck5.total_points }}</td>
-                                                <td>{{ picks.pck5.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck6.id }}</td>
-                                                <td>{{ picks.pck6.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck6.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck6.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck6.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck6.team.short_name }}</td>
-                                                <td>{{ picks.pck6.next_game }}</td>
-                                                <td>{{ picks.pck6.points_per_game }}</td>
-                                                <td>{{ picks.pck6.total_points }}</td>
-                                                <td>{{ picks.pck6.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck7.id }}</td>
-                                                <td>{{ picks.pck7.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck7.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck7.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck7.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck7.team.short_name }}</td>
-                                                <td>{{ picks.pck7.next_game }}</td>
-                                                <td>{{ picks.pck7.points_per_game }}</td>
-                                                <td>{{ picks.pck7.total_points }}</td>
-                                                <td>{{ picks.pck7.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck8.id }}</td>
-                                                <td>{{ picks.pck8.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck8.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck8.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck8.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck8.team.short_name }}</td>
-                                                <td>{{ picks.pck8.next_game }}</td>
-                                                <td>{{ picks.pck8.points_per_game }}</td>
-                                                <td>{{ picks.pck8.total_points }}</td>
-                                                <td>{{ picks.pck8.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck9.id }}</td>
-                                                <td>{{ picks.pck9.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck9.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck9.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck9.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck9.team.short_name }}</td>
-                                                <td>{{ picks.pck9.next_game }}</td>
-                                                <td>{{ picks.pck9.points_per_game }}</td>
-                                                <td>{{ picks.pck9.total_points }}</td>
-                                                <td>{{ picks.pck9.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck10.id }}</td>
-                                                <td>{{ picks.pck10.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck10.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck10.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck10.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck10.team.short_name }}</td>
-                                                <td>{{ picks.pck10.next_game }}</td>
-                                                <td>{{ picks.pck10.points_per_game }}</td>
-                                                <td>{{ picks.pck10.total_points }}</td>
-                                                <td>{{ picks.pck10.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck11.id }}</td>
-                                                <td>{{ picks.pck11.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck11.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck11.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck11.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck11.team.short_name }}</td>
-                                                <td>{{ picks.pck11.next_game }}</td>
-                                                <td>{{ picks.pck11.points_per_game }}</td>
-                                                <td>{{ picks.pck11.total_points }}</td>
-                                                <td>{{ picks.pck11.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck12.id }}</td>
-                                                <td>{{ picks.pck12.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck12.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck12.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck12.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck12.team.short_name }}</td>
-                                                <td>{{ picks.pck12.next_game }}</td>
-                                                <td>{{ picks.pck12.points_per_game }}</td>
-                                                <td>{{ picks.pck12.total_points }}</td>
-                                                <td>{{ picks.pck12.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck13.id }}</td>
-                                                <td>{{ picks.pck13.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck13.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck13.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck13.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck13.team.short_name }}</td>
-                                                <td>{{ picks.pck13.next_game }}</td>
-                                                <td>{{ picks.pck13.points_per_game }}</td>
-                                                <td>{{ picks.pck13.total_points }}</td>
-                                                <td>{{ picks.pck13.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck14.id }}</td>
-                                                <td>{{ picks.pck14.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck14.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck14.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck14.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck14.team.short_name }}</td>
-                                                <td>{{ picks.pck14.next_game }}</td>
-                                                <td>{{ picks.pck14.points_per_game }}</td>
-                                                <td>{{ picks.pck14.total_points }}</td>
-                                                <td>{{ picks.pck14.now_cost }}</td>
-                                            </tr>
-                                            <tr class="unread center" align="center">
-                                                <td>{{ picks.pck15.id }}</td>
-                                                <td>{{ picks.pck15.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' picks.pck15.id %}">
-                                                        <h6 class="mb-1">{{ picks.pck15.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ picks.pck15.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ picks.pck15.team.short_name }}</td>
-                                                <td>{{ picks.pck15.next_game }}</td>
-                                                <td>{{ picks.pck15.points_per_game }}</td>
-                                                <td>{{ picks.pck15.total_points }}</td>
-                                                <td>{{ picks.pck15.now_cost }}</td>
-                                            </tr>
+                                            {% for k, t in team.items %}
+                                                <tr class="unread center" align="center">
+                                                    <td>{{ t.pos }}</td>
+                                                    <td>
+                                                        {{ t.pos|team_role:t.mult }}
+                                                    </td>
+                                                    <td>{{ t.id.position.name_short }}</td>
+                                                    <td>
+                                                       <a class='golink' href="{% url 'fantasy_pl:player' t.id.id %}">
+                                                            <h6 class="mb-1">{{ t.id.second_name }}</h6>
+                                                            <p class="text-muted m-0">{{ t.id.first_name }}</p>
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ t.id.team.short_name }}</td>
+                                                    <td>{{ t.id.last_game }}</td>
+                                                    <td>{{ t.id.last_game_stats.total_points }}({{ t.id.last_game_stats.bonus  }})</td>
+                                                    <td>{{ t.id.last_game_stats.total_points|team_total_points:t.mult }}</td>
+                                                    <td>{{ t.id.now_cost }}</td>
+                                                </tr>
+                                            {% endfor %}
                                         </tbody>
                                     </table>
                                 </div>
