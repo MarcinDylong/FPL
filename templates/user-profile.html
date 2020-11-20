@@ -356,6 +356,7 @@
                                                 <th>Points (Bonus)</th>
                                                 <th>Total Points</th>
                                                 <th>Cost</th>
+                                                <th>Performance</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -364,7 +365,7 @@
                                                 <tr class="unread center" align="center">
                                                     <td>{{ t.pos }}</td>
                                                     <td>
-                                                        {{ t.pos|team_role:t.mult }}
+                                                        {{ t.pos|team_role:t.mult }} - GW: {{t.last_game_stats.event_id}}
                                                     </td>
                                                     <td>{{ t.player.position.name_short }}</td>
                                                     <td>
@@ -374,10 +375,11 @@
                                                         </a>
                                                     </td>
                                                     <td>{{ t.player.team.short_name }}</td>
-                                                    <td>{{ t.last_game }} - GW: {{t.last_game_stats.event_id}}</td>
+                                                    <td>{{ t.last_game }}</td>
                                                     <td>{{ t.last_game_stats.total_points }}({{ t.last_game_stats.bonus }})</td>
                                                     <td>{{ t.last_game_stats.total_points|multiply:t.mult }}</td>
                                                     <td>{{ t.last_game_stats.value }}</td>
+                                                    <td>{{ t.last_game_stats.total_points|division:t.last_game_stats.value }}</td>
                                                 </tr>
                                             {% endfor %}
                                         {% endfor %}
@@ -434,6 +436,7 @@
 $(document).ready(function() {
     $('#players').DataTable({
         pageLength: 15,
+        pagingType: 'numbers',
         bLengthChange: false,
         responsive: true,
         info: false,
@@ -481,6 +484,30 @@ new Morris.Line({
         ymax: 0,
         ymin: 8000000,
         labels: ['RankGW', 'Rank']
+    });
+
+$(document).ready(function() {
+    // Initialize table on the last page
+    var oTable = $('#players').dataTable();
+    oTable.fnPageChange( 'last' );
+    // Initialize number of buttons from started event for User
+    var buttons = document.querySelectorAll("#players_paginate > ul > li> a");
+    len = buttons.length;
+    var start = {{ profile.started_event }};
+
+    for (var i = 0; i < len; i++) { 
+        buttons[i].innerText = start + i 
+        };
+
+    // Keep numbering every time page is changed
+    $(document).on('click', '.page-item', function() {
+            var buttons = document.querySelectorAll("#players_paginate > ul > li> a");
+            len = buttons.length;
+            var start = {{ profile.started_event }};
+            for (var i = 0; i < len; i++) { 
+                buttons[i].innerText = start + i 
+                }; 
+        })
     });
 </script>
 {% endblock javascripts %}

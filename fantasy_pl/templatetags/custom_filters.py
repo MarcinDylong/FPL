@@ -39,3 +39,11 @@ def multiply(value, arg):
         return arg * value
     except TypeError:
         return 0
+
+
+@register.filter(name='division')
+def division(value, arg):
+    try:
+        return round(value/arg,2 )
+    except (TypeError, ZeroDivisionError):
+        return 0
