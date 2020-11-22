@@ -218,7 +218,7 @@ def update_events(events, total_players):
         )
 
 
-def update_userteam(user, players, event):
+def update_userteam(user, players):
     """Create or update userteam for given GW and user based on data from
     FPL API
 
@@ -237,16 +237,12 @@ def update_userteam(user, players, event):
         elem = {
             f'{key}': element,
             f'{key}_pos': p['position'],
-            f'{key}_mult': p['multiplier'],
-            f'{key}_cpt': p['is_captain'],
-            f'{key}_vcpt': p['is_vice_captain']
         }
         defaults.update(elem)
         pos_d[pos] += 1
 
     ust = UserTeam.objects.update_or_create(
         user=user,
-        event = event,
         defaults=defaults
     )
 

@@ -24,23 +24,20 @@ from fantasy_pl.views.data_updates import update_teams, update_players, \
     - data_updates: functions which process data from getters and save them in 
                     database
 '''
-def DownloadUserteamView(request): ## Do zmiany!!
+def DownloadUserteamView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
         last_event = Event.objects.filter(finished=True).last()
         gw = last_event.id
-        for i in range(1,gw+1):
-            try:
-                team = get_fpl_userteam(player_id, i)
-                players = team['picks']
-                user = request.user
-                event = Event.objects.get(id=i)
-                update_userteam(user, players, event)
-
-            except Exception as e:
-                messages.error(request, f"Failure downloading your team "
-                                        f"for gw {i}: {format(e)}")
+        try:
+            team = get_fpl_userteam(player_id, gw)
+            players = team['picks']
+            user = request.user
+            update_userteam(user, players)
+        except Exception as e:
+            messages.error(request, f"Failure downloading your team "
+                                    f"for gw {gw}: {format(e)}")
 
         return redirect('/user-team/')
 

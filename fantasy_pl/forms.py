@@ -94,7 +94,7 @@ class UserTeamForm(forms.Form):
                                 position=1).order_by('-now_cost'),
                             widget=forms.Select(
                                 attrs={'class': 'form-control', }))
-    gkp2 = PlayerChoiceField(label='Bench goalkepper',
+    gkp2 = PlayerChoiceField(label='Goalkepper 2',
                              queryset=Player.objects.filter(
                                  position=1).order_by('-now_cost'),
                              widget=forms.Select(
@@ -119,7 +119,7 @@ class UserTeamForm(forms.Form):
                                  position=2).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    def5 = PlayerChoiceField(label='Bench defender',
+    def5 = PlayerChoiceField(label='Defender 5',
                              queryset=Player.objects.filter(
                                  position=2).order_by('-now_cost'),
                              widget=forms.Select(
@@ -144,7 +144,7 @@ class UserTeamForm(forms.Form):
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    mid5 = PlayerChoiceField(label='Bench middlefielder',
+    mid5 = PlayerChoiceField(label='Middlefielder 5',
                              queryset=Player.objects.filter(
                                  position=3).order_by('-now_cost'),
                              widget=forms.Select(
@@ -159,7 +159,7 @@ class UserTeamForm(forms.Form):
                                  position=4).order_by('-now_cost'),
                              widget=forms.Select(
                                  attrs={'class': 'form-control'}))
-    fwd3 = PlayerChoiceField(label='Bench forward',
+    fwd3 = PlayerChoiceField(label='Forward 3',
                              queryset=Player.objects.filter(
                                  position=4).order_by('-now_cost'),
                              widget=forms.Select(
@@ -171,52 +171,52 @@ class UserTeamForm(forms.Form):
             for p2 in range(len(player_list)):
                 if p1 != p2:
                     if player_list[p1] == player_list[p2]:
-                        return [True, player_list[p1]]
+                        return [False, player_list[p1]]
         else:
-            return [False]
+            return [True]
 
     def clean(self):
         cleaned_data = super().clean()
         fwd1 = cleaned_data.get('fwd1')
         fwd2 = cleaned_data.get('fwd2')
-        fwdb = cleaned_data.get('fwdb')
-        l_fwd = [fwd1, fwd2, fwdb]
+        fwd3 = cleaned_data.get('fwd3')
+        l_fwd = [fwd1, fwd2, fwd3]
 
         fwd_check = self.check_unique_models(l_fwd)
-        if fwd_check[0] == True:
+        if fwd_check[0] == False:
             raise ValidationError(f'Repeated forward {fwd_check[1]}')
 
-        mdf1 = cleaned_data.get('mdf1')
-        mdf2 = cleaned_data.get('mdf2')
-        mdf3 = cleaned_data.get('mdf3')
-        mdf4 = cleaned_data.get('mdf4')
-        mdfb = cleaned_data.get('mdfb')
-        l_mdf = [mdf1, mdf2, mdf3, mdf4, mdfb]
+        mid1 = cleaned_data.get('mid1')
+        mid2 = cleaned_data.get('mid2')
+        mid3 = cleaned_data.get('mid3')
+        mid4 = cleaned_data.get('mid4')
+        mid5 = cleaned_data.get('mid5')
+        l_mid = [mid1, mid2, mid3, mid4, mid5]
 
-        mdf_check = self.check_unique_models(l_mdf)
-        if mdf_check[0] == True:
-            raise ValidationError(f'Repeated forward {mdf_check[1]}')
+        mid_check = self.check_unique_models(l_mid)
+        if mid_check[0] == False:
+            raise ValidationError(f'Repeated midfielder {mid_check[1]}')
 
         def1 = cleaned_data.get('def1')
         def2 = cleaned_data.get('def2')
         def3 = cleaned_data.get('def3')
         def4 = cleaned_data.get('def4')
-        defb = cleaned_data.get('defb')
-        l_def = [def1, def2, def3, def4, defb]
+        def5 = cleaned_data.get('def5')
+        l_def = [def1, def2, def3, def4, def5]
 
         def_check = self.check_unique_models(l_def)
-        if def_check[0] == True:
-            raise ValidationError(f'Repeated forward {def_check[1]}')
+        if def_check[0] == False:
+            raise ValidationError(f'Repeated defender {def_check[1]}')
 
-        gkp = cleaned_data.get('gkp')
-        gkpb = cleaned_data.get('gkpb')
-        l_gkp = [gkp, gkpb]
+        gkp1 = cleaned_data.get('gkp1')
+        gkp2 = cleaned_data.get('gkp2')
+        l_gkp = [gkp1, gkp2]
 
         gkp_check = self.check_unique_models(l_gkp)
-        if gkp_check[0] == True:
+        if gkp_check[0] == False:
             raise ValidationError(f'Repeated forward {gkp_check[1]}')
 
-        players_list = l_gkp + l_def + l_mdf + l_fwd
+        players_list = l_gkp + l_def + l_mid + l_fwd
         teams = {}
         for p in players_list:
             team = p.team

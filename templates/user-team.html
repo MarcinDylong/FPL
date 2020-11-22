@@ -121,13 +121,11 @@
                             <div class="card-body text-left">
                                 <div class="form-group">
                                     <form role="form" method="post" action="#">
-                                        {% csrf_token %} {% if form.non_field_errors %}
-                                        <button type="button" class="btn btn-danger">
-                                                            {{ form.non_field_errors.as_text }}
-                                                        </button> {% endif %} {{ form }}
+                                        {% csrf_token %}
+                                        {{ form }}
                                         <button type='submit' class="btn btn-primary">
-                                                        Get
-                                                    </button>
+                                            Get
+                                        </button>
                                     </form>
                                 </div>
                             </div>

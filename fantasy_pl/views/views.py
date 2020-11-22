@@ -263,9 +263,12 @@ class UserTeamView(View):
         ctx['form_gut'] = form_gut
         ctx['segment'] = 'user-team'
 
-        if UserTeam.objects.filter(user=request.user).exists():
-            uteam = UserTeam.objects.filter(user=request.user) \
-                                    .order_by('event').last()
+        profile = UserFpl.objects.get(user=request.user)
+        if profile.fpl:
+            form_gut.fields['fpl_id'].initial = profile.fpl
+
+        if UserTeam.objects.get(user=request.user):
+            uteam = UserTeam.objects.get(user=request.user)
             form.fields['gkp1'].initial = uteam.gkp1_id
             form.fields['gkp2'].initial = uteam.gkp2_id
             form.fields['def1'].initial = uteam.def1_id
@@ -400,7 +403,7 @@ class UserProfile(View):
                     try:
                         team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.get(player=player, event_id=gw)
                     except:
-                        team[f'{k[0]}']['last_game_stats'] = None
+                        pass
                 elif k[1] == 'pos':
                     team[f'{k[0]}']['pos'] = v + i*15
                 else:
