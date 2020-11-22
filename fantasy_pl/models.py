@@ -176,12 +176,13 @@ class Player(models.Model):
             return '-'
 
     def last_game_stats(self, gw:int): 
+        games = PlayerHistory.objects.filter(player_id=self.id)
         try:
-            games = PlayerHistory.objects.filter(player_id=self.id)
             last_game = games.get(event_id=gw)
             return last_game
-        except :
-            return '-'
+        except:
+            last_game = games.filter(event_id=gw).last()
+            return last_game
 
     class Meta:
         unique_together = ('id','first_name','second_name',)
@@ -191,10 +192,10 @@ class Event(models.Model):
     id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=16)
     deadline_time = models.DateTimeField()
-    average_entry_score = models.IntegerField()
+    average_entry_score = models.IntegerField(null=True, default=0)
     finished = models.BooleanField()
     data_checked = models.BooleanField()
-    highest_score = models.IntegerField(null=True)
+    highest_score = models.IntegerField(null=True, default=0)
     is_previous = models.BooleanField()
     is_current = models.BooleanField()
     is_next = models.BooleanField()
@@ -240,8 +241,8 @@ class UserFplSeason(models.Model):
                                 related_name='user_history')
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, null=True,
                               related_name='user_event')
-    points = models.IntegerField(null=True)
-    total_points = models.IntegerField(null=True)
+    points = models.IntegerField(null=True, default=0)
+    total_points = models.IntegerField(null=True, default=0)
     rank = models.IntegerField(null=True)
     rank_sort = models.IntegerField(null=True)
     overall_rank = models.IntegerField(null=True)
@@ -342,7 +343,7 @@ class UserFplPicks(models.Model):
 
 
 class UserTeam(models.Model):
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, null=True, on_delete=models.SET_NULL)
     gkp1 = models.ForeignKey(Player, null=True, on_delete=models.SET_NULL, related_name='gkp1')
     gkp1_pos = models.IntegerField()

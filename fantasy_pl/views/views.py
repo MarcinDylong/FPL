@@ -400,7 +400,7 @@ class UserProfile(View):
                     try:
                         team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.get(player=player, event_id=gw)
                     except:
-                        pass
+                        team[f'{k[0]}']['last_game_stats'] = None
                 elif k[1] == 'pos':
                     team[f'{k[0]}']['pos'] = v + i*15
                 else:

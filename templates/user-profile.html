@@ -364,9 +364,11 @@
                                             {% for key2,t in gameweek.items %}
                                                 <tr class="unread center" align="center">
                                                     <td>{{ t.pos }}</td>
+                                                    {% if t.last_game_stats %}
                                                     <td>
                                                         {{ t.pos|team_role:t.mult }} - GW: {{t.last_game_stats.event_id}}
                                                     </td>
+                                                    {% else %} <td>-</td> {% endif %}
                                                     <td>{{ t.player.position.name_short }}</td>
                                                     <td>
                                                        <a class='golink' href="{% url 'fantasy_pl:player' t.player.id %}">
@@ -376,10 +378,14 @@
                                                     </td>
                                                     <td>{{ t.player.team.short_name }}</td>
                                                     <td>{{ t.last_game }}</td>
+                                                    {% if t.last_game_stats %}
                                                     <td>{{ t.last_game_stats.total_points }}({{ t.last_game_stats.bonus }})</td>
                                                     <td>{{ t.last_game_stats.total_points|multiply:t.mult }}</td>
                                                     <td>{{ t.last_game_stats.value }}</td>
                                                     <td>{{ t.last_game_stats.total_points|division:t.last_game_stats.value }}</td>
+                                                    {% else %}
+                                                    <td>0</td><td>0</td><td>0</td><td>0</td>
+                                                    {% endif %}
                                                 </tr>
                                             {% endfor %}
                                         {% endfor %}

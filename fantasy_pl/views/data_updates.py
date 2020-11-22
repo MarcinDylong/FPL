@@ -186,7 +186,8 @@ def update_events(events, total_players):
             'average_entry_score': e['average_entry_score'],
             'finished': e['finished'],
             'data_checked': e['data_checked'],
-            'highest_score': e['highest_score'],
+            'highest_score': e['highest_score']
+                             if type(e['highest_score']) == int else 0,
             'is_previous': e['is_previous'],
             'is_current': e['is_current'],
             'is_next': e['is_next'],
