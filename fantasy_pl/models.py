@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from jsonfield import JSONField
+from django.db.models import Q
 
 
 class UserFpl(models.Model):
@@ -58,7 +59,36 @@ class Team(models.Model):
         return self.name
 
     class Meta:
-        unique_together = ('id','pulse_id','name',)
+        unique_together = ('id', 'pulse_id', 'name',)
+        
+    def last_5_games(self):
+        games = Fixtures.objects.filter(finished=True).order_by('-kickoff_time')
+        last_5 = games.filter(Q(team_h_id=self.id) | Q(team_a_id=self.id))[:5]
+        form = []
+        for l in last_5[::-1]:
+            if l.team_a_score == l.team_h_score:
+                form.append('D')
+            elif l.team_a_score > l.team_h_score:
+                if l.team_a.id == self.id:
+                    form.append('W')
+                else:
+                    form.append('L')
+            else:
+                if l.team_a.id == self.id:
+                    form.append('L')
+                else:
+                    form.append('W')
+        return form
+
+    def next_game(self):
+        games = Fixtures.objects.filter(finished=False).order_by('kickoff_time')
+        next = games.filter(Q(team_h_id=self.id) | Q(team_a_id=self.id)).first()
+        if next.team_h.id == self.id:
+            next_game = f'{next.team_a.short_name} - H'
+        else:
+            next_game = f'{next.team_h.short_name} - A'
+        return next_game
+
 
 
 class Position(models.Model):

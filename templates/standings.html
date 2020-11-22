@@ -44,6 +44,8 @@
                                                 <th>GF</th>
                                                 <th>GA</th>
                                                 <th>GD</th>
+                                                <th>Form</th>
+                                                <th>Next</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -59,6 +61,18 @@
                                                 <td>{{ t.gf }}</td>
                                                 <td>{{ t.ga }}</td>
                                                 <td>{{ t.gd }}</td>
+                                                <td>
+                                                    {% for l in t.last_5_games %}
+                                                        {% if l == 'W' %}
+                                                            <i class="fas fa-circle text-c-green f-10 m-r-15"></i>
+                                                        {% elif l == 'D' %}
+                                                            <i class="fas fa-circle text-c-black f-10 m-r-15"></i>
+                                                        {% else %}
+                                                            <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                </td>
+                                                <td>{{ t.next_game }}</td>
                                             </tr>
                                             {% endfor %}
                                         </tbody>

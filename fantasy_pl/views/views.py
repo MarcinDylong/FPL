@@ -12,14 +12,20 @@ from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
 
 
 class IndexView(LoginRequiredMixin, View):
+    """Dashboard with information about current players performance
+    """    
     login_url = '/login'
 
     def season_best_eleven(self, players_raw, parameter: str):
-        """
-        :param players_raw: Queries from Database
-        :param parameter:  Choose parameter by which you want determine best11
-        :return: Django ORM queryset which best11 by parameter
-        """
+        """Determine best 11 for season by given paramater
+
+        Args:
+            players_raw (ORM querries): Django querry with players data
+            parameter (str): Parameter to determine best eleven by
+
+        Returns:
+            [ORM querries]: Querries of 11 selected players
+        """        
         ### Divide by position
         gkt = players_raw.filter(position=(Position.objects.get(id=1)))
         dft = players_raw.filter(position=(Position.objects.get(id=2)))
@@ -36,11 +42,15 @@ class IndexView(LoginRequiredMixin, View):
         return ball
 
     def gw_best_eleven(self, phistory_raw, parameter: str):
-        """
-        :param phistory_raw: Queries from Database
-        :param parameter:  Choose parameter by which you want determine best11
-        :return: Django ORM queryset which best11 of current GW by parameter
-        """
+        """Determine best 11 for for current GW by given paramater
+
+        Args:
+            phistory_raw (ORM querries): Django querry with players data
+            parameter (str): Parameter to determine best eleven by
+
+        Returns:
+            [ORM querries]: Querries of 11 selected players
+        """  
         ### Divide by position
         gk = phistory_raw.filter(position=1)
         df = phistory_raw.filter(position=2)
@@ -106,6 +116,8 @@ def view_500(request, *args, **kwargs):
 
 
 class TeamView(View):
+    """View with BPL teams informations
+    """    
 
     def get(self, request, id):
         team = Team.objects.get(id=id)
@@ -132,7 +144,8 @@ class TeamView(View):
 
 
 class PlayerView(View):
-
+    """View with BPL players informations
+    """    
     def get(self, request, id):
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player) \
@@ -150,7 +163,8 @@ class PlayerView(View):
 
 
 class StandingsView(View):
-
+    """View with BPL table
+    """    
     def get(self, request):
         table = Team.objects.all().order_by('position')
         ctx = {'table': table, 'title': 'Table', 'segment': 'standings'}
@@ -158,6 +172,8 @@ class StandingsView(View):
 
 
 class FixtureView(View):
+    """View with fixture for BPL Season
+    """    
 
     def get(self, request):
         fixture = Fixtures.objects.all().order_by('event', 'kickoff_time')
