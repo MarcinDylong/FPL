@@ -89,6 +89,27 @@ class Team(models.Model):
             next_game = f'{next.team_h.short_name} - A'
         return next_game
 
+    
+    def next_5_games(self):
+        games = Fixtures.objects.filter(finished=False).order_by('kickoff_time')
+        next_5 = games.filter(Q(team_h_id=self.id) | Q(team_a_id=self.id))[:5]
+        games = {}
+        for n in next_5:
+            if n.team_a_id == self.id:
+                games[n.id] = {'opponent': n.team_h,
+                               'diff': n.team_a_difficulty,
+                               'kickoff': n.kickoff_time,
+                               'where': '(A)'
+                               }
+            else:
+                games[n.id] = {'opponent': n.team_a,
+                               'diff': n.team_h_difficulty,
+                               'kickoff': n.kickoff_time,
+                               'where': '(H)'
+                               }
+        return games
+
+
 
 
 class Position(models.Model):
@@ -254,6 +275,7 @@ class Event(models.Model):
     def __str__(self):
         return f'{self.name}'
 
+
 class UserFplHistory(models.Model):
     userfpl = models.OneToOneField(UserFpl, on_delete=models.CASCADE)
     past = JSONField()
@@ -287,7 +309,6 @@ class UserFplSeason(models.Model):
 
     def __str__(self):
         return f'Season data for {self.userfpl}'
-
 
 
 class UserFplPicks(models.Model):
@@ -415,7 +436,6 @@ class UserTeam(models.Model):
 
     class Meta:
         unique_together = ('user',)
-
 
 
 class Fixtures(models.Model):

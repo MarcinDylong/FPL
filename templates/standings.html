@@ -27,56 +27,110 @@
                 <!-- [ Main Content ] start -->
                 <div class="row">
                     <!-- [ Standing-table ] start -->
-                    <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-block table-border-style">
-                                <div class="table-responsive">
-                                    <table class="table table-hr table-striped table-hover" id="Standings">
-                                        <thead>
-                                            <tr class="center" align="center">
-                                                <th><i class="fas fa-trophy"></i></th>
-                                                <th>Team</th>
-                                                <th>Games</th>
-                                                <th>Win</th>
-                                                <th>Draw</th>
-                                                <th>Loss</th>
-                                                <th>Points</th>
-                                                <th>GF</th>
-                                                <th>GA</th>
-                                                <th>GD</th>
-                                                <th>Form</th>
-                                                <th>Next</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for t in table %}
-                                            <tr class="center" align="center">
-                                                <td>{{t.position}}</td>
-                                                <td><a class="text-dark" href="{% url 'fpl:team' t.id %}">{{t.name}}</a></td>
-                                                <td>{{t.played}}</td>
-                                                <td>{{t.win}}</td>
-                                                <td>{{ t.draw }}</td>
-                                                <td>{{ t.loss }}</td>
-                                                <td><b>{{ t.points }}</b></td>
-                                                <td>{{ t.gf }}</td>
-                                                <td>{{ t.ga }}</td>
-                                                <td>{{ t.gd }}</td>
-                                                <td>
-                                                    {% for l in t.last_5_games %}
-                                                        {% if l == 'W' %}
-                                                            <i class="fas fa-circle text-c-green f-10 m-r-15"></i>
-                                                        {% elif l == 'D' %}
-                                                            <i class="fas fa-circle text-c-black f-10 m-r-15"></i>
-                                                        {% else %}
-                                                            <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
-                                                        {% endif %}
+                    <div class="col-sm-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item">
+                                <a class="nav-link active text-uppercase" id="coming-tab"
+                                   data-toggle="tab" href="#standing" role="tab" aria-controls="standing" aria-selected="true">Standings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-uppercase" id="played-tab"
+                                   data-toggle="tab" href="#coming" role="tab" aria-controls="coming" aria-selected="false">Coming games</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="standing" role="tabpanel" aria-labelledby="standing-tab">
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-hr table-striped table-hover" id="Standings">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th><i class="fas fa-trophy"></i></th>
+                                                    <th>Team</th>
+                                                    <th>Games</th>
+                                                    <th>Win</th>
+                                                    <th>Draw</th>
+                                                    <th>Loss</th>
+                                                    <th>Points</th>
+                                                    <th>GF</th>
+                                                    <th>GA</th>
+                                                    <th>GD</th>
+                                                    <th>Form</th>
+                                                    <th>Next</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in table %}
+                                                <tr class="center" align="center">
+                                                    <td>{{t.position}}</td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' t.id %}">{{t.name}}</a></td>
+                                                    <td>{{t.played}}</td>
+                                                    <td>{{t.win}}</td>
+                                                    <td>{{ t.draw }}</td>
+                                                    <td>{{ t.loss }}</td>
+                                                    <td><b>{{ t.points }}</b></td>
+                                                    <td>{{ t.gf }}</td>
+                                                    <td>{{ t.ga }}</td>
+                                                    <td>{{ t.gd }}</td>
+                                                    <td>
+                                                        {% for l in t.last_5_games %}
+                                                            {% if l == 'W' %}
+                                                                <i class="fas fa-circle text-c-green f-10 m-r-15"></i>
+                                                            {% elif l == 'D' %}
+                                                                <i class="fas fa-circle text-c-black f-10 m-r-15"></i>
+                                                            {% else %}
+                                                                <i class="fas fa-circle text-c-red f-10 m-r-15"></i>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    </td>
+                                                    <td>{{ t.next_game }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>    
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="coming" role="tabpanel" aria-labelledby="coming-tab">
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-hr table-striped table-hover" id="Standings">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th><i class="fas fa-trophy"></i></th>
+                                                    <th>Team</th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in table %}
+                                                <tr class="center" align="center">
+                                                    <td>{{t.position}}</td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' t.id %}">{{t.name}}</a></td>
+                                                    {% for k,v in t.next_5_games.items %}
+                                                    <td class="text-dark">
+                                                        <a class='golink' href="{% url 'fantasy_pl:team' v.opponent.id %}">
+                                                            <h6 class="mb-1">{{ v.opponent }} - {{ v.where }}</h6>
+                                                            <h6 class="mb-1"> 
+                                                                {% with ''|center:v.diff as range %}
+                                                                    {% for _ in range %}
+                                                                        <i class="fas fa-star text-c-black f-10 m-r-10"></i>
+                                                                    {% endfor %}
+                                                                {% endwith %}
+                                                            </h6>
+                                                            <h6 class="text-muted mb-1">{{ v.kickoff }}</h6>
+                                                        </a>
+                                                    </td>
                                                     {% endfor %}
-                                                </td>
-                                                <td>{{ t.next_game }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -103,5 +157,6 @@ $(document).ready(function() {
             order: [[0,'asc']]
     });
 });
+
 </script>
 {% endblock javascripts %}
