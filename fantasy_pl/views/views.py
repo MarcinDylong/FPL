@@ -10,6 +10,7 @@ from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
+from fantasy_pl.views.views_data import DownloadUserView
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -100,18 +101,26 @@ class IndexView(LoginRequiredMixin, View):
 
 
 def view_400(request, *args, **kwargs):
+    """Error 400 handler
+    """    
     return render(request, 'page-400.html')
 
 
 def view_403(request, *args, **kwargs):
+    """Error 403 handler
+    """
     return render(request, 'page-403.html')
 
 
 def view_404(request, *args, **kwargs):
+    """Error 404 handler
+    """
     return render(request, 'page-404.html')
 
 
 def view_500(request, *args, **kwargs):
+    """Error 500 handler
+    """
     return render(request, 'page-500.html')
 
 
@@ -186,7 +195,8 @@ class FixtureView(View):
 
 
 class StatsView(View):
-
+    """Players statistic view
+    """    
     def get(self, request):
         ctx = {'title': 'Stats', 'segment': 'stats'}
         ctx['stats'] = Player.objects.filter(minutes__gt=0)
@@ -194,7 +204,8 @@ class StatsView(View):
 
 
 class PlayersSearchView(View):
-
+    """Player searching View
+    """    
     def get(self, request):
         form = SearchForm(request.GET)
         adv_form = PlayerSearchForm()
@@ -215,13 +226,13 @@ class PlayersSearchView(View):
         adv_form = PlayerSearchForm(request.POST)
         if adv_form.is_valid():
             pos = adv_form.cleaned_data['position']
-            max = adv_form.cleaned_data['max']
+            mx = adv_form.cleaned_data['max']
             q_players = Player.objects.order_by('-now_cost')
 
             if pos is not None:
                 q_players = q_players.filter(position=pos)
             if max is not None:
-                q_players = q_players.filter(now_cost__lte=max)
+                q_players = q_players.filter(now_cost__lte=mx)
 
             ctx = {'players': q_players, 'title': 'Search',
                    'adv_form': adv_form, 'pos': pos,
@@ -235,8 +246,19 @@ class PlayersSearchView(View):
 
 
 class UserTeamView(View):
-
+    """View for planning next gameweek team
+    """    
     def team_overall(self, uteam, ctx):
+        """Determine overall stats for user team and adding it to template 
+        context data
+
+        Args:
+            uteam (model_instance): Instance of model UserTeam
+            ctx (context_data): Template context data
+
+        Returns:
+            ctx: updated context data
+        """        
         luteam = [uteam.gkp1, uteam.gkp2, uteam.def1, uteam.def2, uteam.def3,
                   uteam.def4, uteam.def5, uteam.mid1, uteam.mid2, uteam.mid3,
                   uteam.mid4, uteam.mid5, uteam.fwd1, uteam.fwd2, uteam.fwd3]
@@ -279,28 +301,31 @@ class UserTeamView(View):
         ctx['form_gut'] = form_gut
         ctx['segment'] = 'user-team'
 
-        profile = UserFpl.objects.get(user=request.user)
-        if profile.fpl:
-            form_gut.fields['fpl_id'].initial = profile.fpl
-
-        if UserTeam.objects.get(user=request.user):
-            uteam = UserTeam.objects.get(user=request.user)
-            form.fields['gkp1'].initial = uteam.gkp1_id
-            form.fields['gkp2'].initial = uteam.gkp2_id
-            form.fields['def1'].initial = uteam.def1_id
-            form.fields['def2'].initial = uteam.def2_id
-            form.fields['def3'].initial = uteam.def3_id
-            form.fields['def4'].initial = uteam.def4_id
-            form.fields['def5'].initial = uteam.def5_id
-            form.fields['mid1'].initial = uteam.mid1_id
-            form.fields['mid2'].initial = uteam.mid2_id
-            form.fields['mid3'].initial = uteam.mid3_id
-            form.fields['mid4'].initial = uteam.mid4_id
-            form.fields['mid5'].initial = uteam.mid5_id
-            form.fields['fwd1'].initial = uteam.fwd1_id
-            form.fields['fwd2'].initial = uteam.fwd2_id
-            form.fields['fwd3'].initial = uteam.fwd3_id
-            self.team_overall(uteam, ctx)
+        try:
+            profile = UserFpl.objects.get(user=request.user)
+            if profile.fpl:
+                form_gut.fields['fpl_id'].initial = profile.fpl
+        
+            if UserTeam.objects.get(user=request.user):
+                uteam = UserTeam.objects.get(user=request.user)
+                form.fields['gkp1'].initial = uteam.gkp1_id
+                form.fields['gkp2'].initial = uteam.gkp2_id
+                form.fields['def1'].initial = uteam.def1_id
+                form.fields['def2'].initial = uteam.def2_id
+                form.fields['def3'].initial = uteam.def3_id
+                form.fields['def4'].initial = uteam.def4_id
+                form.fields['def5'].initial = uteam.def5_id
+                form.fields['mid1'].initial = uteam.mid1_id
+                form.fields['mid2'].initial = uteam.mid2_id
+                form.fields['mid3'].initial = uteam.mid3_id
+                form.fields['mid4'].initial = uteam.mid4_id
+                form.fields['mid5'].initial = uteam.mid5_id
+                form.fields['fwd1'].initial = uteam.fwd1_id
+                form.fields['fwd2'].initial = uteam.fwd2_id
+                form.fields['fwd3'].initial = uteam.fwd3_id
+                self.team_overall(uteam, ctx)
+        except:
+            pass
 
         return render(request, 'user-team.html', ctx)
 
@@ -364,8 +389,7 @@ class UserTeamView(View):
 
 
 class UserProfile(View):
-    """
-        Display User profile data
+    """Display User profile data
     """  
 
     def dict_picks(self, user_season):

@@ -52,7 +52,6 @@ def DownloadUserView(request):
         try:
             user_fpl = get_fpl_user(player_id)
             user_fpl_history = get_fpl_user_history_and_season(player_id)
-            # get_fpl_user_picks(player_id, gw) used inside update_user_picks()
         except Exception as e:
             messages.error(request, f"Failure updating your profile: "
                                     f"{format(e)}")
