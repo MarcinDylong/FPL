@@ -502,16 +502,20 @@ $(document).ready(function() {
     var start = {{ profile.started_event }};
 
     for (var i = 0; i < len; i++) { 
-        buttons[i].innerText = start + i 
+        if (buttons[i].innerText != '…') {
+            buttons[i].innerText = Number(buttons[i].innerText) + start - 1    
+            }
         };
 
     // Keep numbering every time page is changed
-    $(document).on('click', '.page-item', function() {
+    $(document).on('click', '[class="paginate_button page-item "]', function() {
             var buttons = document.querySelectorAll("#players_paginate > ul > li> a");
             len = buttons.length;
             var start = {{ profile.started_event }};
             for (var i = 0; i < len; i++) { 
-                buttons[i].innerText = start + i 
+                if (buttons[i].innerText != '…') {
+                    buttons[i].innerText = Number(buttons[i].innerText) + start - 1    
+                    }
                 }; 
         })
     });

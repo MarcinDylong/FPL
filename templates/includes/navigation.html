@@ -82,11 +82,34 @@
                 <li class="nav-item pcoded-menu-caption">
                     <label>Players</label>
                 </li>
-                <li data-username="stats"
-                    class="nav-item {% if 'stats' in segment %} active {% endif %}">
-                    <a href="{% url 'fpl:stats' %}" class="nav-link ">
+                <li data-username="stats" class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="feather icon-bar-chart-2"></i></span>
-                        <span class="pcoded-mtext">Stats</span></a></li>
+                        <span class="pcoded-mtext">Stats</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class="">
+                            <a href={% url 'fpl:stats' %} class="">
+                            General</a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:stats-gkp' %} class="">
+                            Goalkeepers</a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:stats-def' %} class="">
+                            Defenders</a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:stats-mid' %} class="">
+                            Midfielders</a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:stats-fwd' %} class="">
+                            Forwards</a>
+                        </li>
+                    </ul>
+                </li>
                 <li data-username="players_search"
                     class="nav-item {% if 'player-search' in segment %} active {% endif %}">
                     <a href="{% url 'fpl:player-search' %}" class="nav-link ">

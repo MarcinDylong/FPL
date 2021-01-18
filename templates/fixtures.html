@@ -42,14 +42,16 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for f in fixture %}
-                                            <tr class="center" align="center">
-                                                <td>{{f.event.id}}</td>
-                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_h.id %}">{{f.team_h}}</a></td>
-                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_a.id %}">{{f.team_a}}</a></td>
-                                                <td>{{f.team_h_score}} - {{f.team_a_score}}</td>
-                                                <td>{{f.kickoff_time}}</td>
-                                            </tr>
+                                            {% for fix in fixture %}
+                                                {% for f in fix %}
+                                                <tr class="center" align="center">
+                                                    <td>{{f.event.id}}</td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' f.team_h.id %}">{{f.team_h}}</a></td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' f.team_a.id %}">{{f.team_a}}</a></td>
+                                                    <td>{{f.team_h_score}} - {{f.team_a_score}}</td>
+                                                    <td>{{f.kickoff_time}}</td>
+                                                </tr>
+                                                {% endfor %}
                                             {% endfor %}
                                         </tbody>
                                     </table>

@@ -457,7 +457,7 @@ class Fixtures(models.Model):
         return f'{self.team_h} - {self.team_a}, {self.kickoff_time}'
 
     class Meta:
-        unique_together = ('id', 'event',)
+        unique_together = ('id','team_h', 'team_a')
 
 
 class PlayerHistory(models.Model):

@@ -223,4 +223,3 @@ class GetFixtureView(PermissionRequiredMixin, View):
                     ctx = {'event': 'error', 'error': format(e),
                            'form': GetFixtureForm()}
                     return render(request, "page-event.html", ctx)
-                    

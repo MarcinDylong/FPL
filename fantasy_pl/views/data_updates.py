@@ -153,24 +153,27 @@ def update_fixture(fixtures):
         fixtures (dict): Retrieved data from API
     """    
     for f in fixtures:
-        defaults = {
-            'finished': f['finished'],
-            'kickoff_time': f['kickoff_time'],
-            'team_h': Team.objects.get(id=f['team_h']),
-            'team_a': Team.objects.get(id=f['team_a']),
-            'team_h_difficulty': f['team_h_difficulty'],
-            'team_a_difficulty': f['team_a_difficulty'],
-            'team_h_score': str(f['team_h_score']) if f['finished'] == True \
-                                                   else '-',
-            'team_a_score': str(f['team_a_score']) if f['finished'] == True \
-                                                   else '-'
-        }
+        try:
+            updated_values = {
+                'finished': f['finished'],
+                'event': Event.objects.get(id=f['event']),
+                'kickoff_time': f['kickoff_time'],
+                'team_h_difficulty': f['team_h_difficulty'],
+                'team_a_difficulty': f['team_a_difficulty'],
+                'team_h_score': str(f['team_h_score']) if f['finished'] == True \
+                                                    else '-',
+                'team_a_score': str(f['team_a_score']) if f['finished'] == True \
+                                                    else '-'
+            }
 
-        fix, created = Fixtures.objects.update_or_create(
-            id=f['id'],
-            event=Event.objects.get(id=f['event'] if f['event'] != None else 1),
-            defaults=defaults
-        )
+            fix, created = Fixtures.objects.update_or_create(
+                id=f['id'],
+                team_h=Team.objects.get(id=f['team_h']),
+                team_a=Team.objects.get(id=f['team_a']),
+                defaults=updated_values
+            )
+        except:
+            pass
 
 
 def update_events(events, total_players):

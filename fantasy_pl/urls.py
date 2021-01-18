@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views.views import IndexView, TeamView, PlayerView, StandingsView, \
-    FixtureView, StatsView, PlayersSearchView, UserTeamView, UserProfile
+    FixtureView, StatsView, PlayersSearchView, UserTeamView, UserProfile, \
+    BlankView, StatsGkpView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
     ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
 from .views.views_data import GetPlayersHistoryView, GetFixtureView, \
@@ -18,6 +19,10 @@ urlpatterns = [
     path('standings/', StandingsView.as_view(), name='standings'),
     path('fixtures/', FixtureView.as_view(), name='fixtures'),
     path('stats/', StatsView.as_view(), name='stats'),
+    path('stats/gkp', StatsGkpView.as_view(), name='stats-gkp'),
+    path('stats/def', BlankView.as_view(), name='stats-def'),
+    path('stats/mid', BlankView.as_view(), name='stats-mid'),
+    path('stats/fwd', BlankView.as_view(), name='stats-fwd'),
     path('player-search/', PlayersSearchView.as_view(), name='player-search'),
     path('user-team/', UserTeamView.as_view(), name='user-team'),
     path('user-profile/', UserProfile.as_view(), name='user-profile'),

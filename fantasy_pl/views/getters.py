@@ -134,7 +134,6 @@ def get_fpl_user_picks(player_id: int, gw: int):
     return data
 
 
-
 def get_fpl_userteam(player_id: int, gw: int):
     """Retrieve user team for given gameweek
 

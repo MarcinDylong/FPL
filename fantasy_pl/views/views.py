@@ -4,6 +4,15 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
+from django_pandas.io import read_frame
+
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+import json
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
     GetUserteamForm
@@ -140,10 +149,12 @@ class TeamView(View):
         played = played_a | played_h
         fixtures_a = PlayerHistory.objects.filter(team_a=team) \
             .filter(is_home=False).filter(finished=False) \
-            .order_by('kickoff_time').distinct('kickoff_time')
+            .filter(event__isnull=False).order_by('kickoff_time') \
+            .distinct('kickoff_time')
         fixtures_h = PlayerHistory.objects.filter(team_h=team) \
             .filter(is_home=True).filter(finished=False) \
-            .order_by('kickoff_time').distinct('kickoff_time')
+            .filter(event__isnull=False).order_by('kickoff_time') \
+            .distinct('kickoff_time')
         fixtures = fixtures_a | fixtures_h
         photo = "/static/assets/images/logos/" + team.short_name.lower() + ".png "
         cnt = len(players)
@@ -159,11 +170,11 @@ class PlayerView(View):
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player) \
             .filter(finished=True) \
-            .order_by('-event')
+            .order_by('-kickoff_time')
         games = PlayerHistory.objects.filter(player=player) \
-            .filter(finished=False) \
-            .order_by('event')
-        chart = hist.order_by('event')
+            .filter(event__isnull=False).filter(finished=False) \
+            .order_by('kickoff_time')
+        chart = hist.order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
@@ -185,9 +196,12 @@ class FixtureView(View):
     """    
 
     def get(self, request):
-        fixture = Fixtures.objects.all().order_by('event', 'kickoff_time')
+        fix_list = []
+        for i in range(1,39):
+            fix_list.append(Fixtures.objects.filter(event=i).order_by('kickoff_time'))
         curr_event = Fixtures.objects.filter(finished=True).last().event.id
-        paginator = Paginator(fixture, 10)
+        tbd = Fixtures.objects.filter(event__isnull=True)
+        paginator = Paginator(fix_list, 1)
         page = request.GET.get('page', curr_event)
         fixture = paginator.get_page(page)
         ctx = {'fixture': fixture, 'title': 'Fixtures', 'segment': 'fixtures'}
@@ -198,9 +212,26 @@ class StatsView(View):
     """Players statistic view
     """    
     def get(self, request):
-        ctx = {'title': 'Stats', 'segment': 'stats'}
+        ctx = {'title': 'Stats'}
         ctx['stats'] = Player.objects.filter(minutes__gt=0)
         return render(request, 'stats.html', ctx)
+
+
+class StatsGkpView(View):
+    """Players statistic view
+    """    
+    def get(self, request):
+        ctx = {'title': 'Stats - GKP'}
+        players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
+        ## Create DataFrame for Goalkeepers
+        gkp = read_frame(players, fieldnames=['first_name', 'second_name',
+          'team', 'now_cost', 'points_per_game', 'total_points', 'minutes',
+          'clean_sheets', 'goals_conceded', 'saves', 'penalties_saved',
+          'yellow_cards', 'red_cards', 'dreamteam_count', 'form',
+          'selected_by_percent', 'transfers_in', 'transfers_out'])
+        ## 
+
+        return render(request, 'page-blank.html', ctx)
 
 
 class PlayersSearchView(View):
@@ -231,7 +262,7 @@ class PlayersSearchView(View):
 
             if pos is not None:
                 q_players = q_players.filter(position=pos)
-            if max is not None:
+            if mx is not None:
                 q_players = q_players.filter(now_cost__lte=mx)
 
             ctx = {'players': q_players, 'title': 'Search',
@@ -426,7 +457,7 @@ class UserProfile(View):
         for i in range(end):
             inst = user_season[i]
             gw = inst.event.id
-            pick = UserFplPicks.objects.get(user=inst)
+            pick = UserFplPicks.objects.get(user=inst)#.order_by('id')
             
             pick = pick.__dict__
             del pick['_state']
@@ -484,3 +515,11 @@ class UserProfile(View):
         ctx['segment'] = 'user-profile'
         ctx['form'] = form
         return render(request, 'user-profile.html', ctx)
+
+
+## Blank View for development purposes
+class BlankView(View):
+    """Players statistic view
+    """    
+    def get(self, request):
+        return render(request, 'page-blank.html')
