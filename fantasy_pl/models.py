@@ -217,12 +217,15 @@ class Player(models.Model):
 
     def last_game(self, gw:int):
         try:
-            games = PlayerHistory.objects.filter(player_id=self.id)
-            last_game = games.get(event_id=gw)
-            if last_game.is_home == True:
-                return f'H - {last_game.team_a.short_name}'
-            else:
-                return f'A - {last_game.team_h.short_name}'
+            games = PlayerHistory.objects.filter(player_id=self.id) \
+                    .filter(event_id=gw)
+            last_game = []
+            for g in games:
+                if g.is_home == True:
+                    last_game.append(f'H - {g.team_a.short_name}')
+                else:
+                    last_game.append(f'A - {g.team_h.short_name}')
+            return ', '.join(last_game)
         except:
             return '-'
 

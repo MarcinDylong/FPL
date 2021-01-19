@@ -472,7 +472,7 @@ class UserProfile(View):
                     team[f'{k[0]}'] = {'player': player}
                     team[f'{k[0]}']['last_game'] = player.last_game(gw)
                     try:
-                        team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.get(player=player, event_id=gw)
+                        team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.filter(player=player, event_id=gw).last()
                     except:
                         pass
                 elif k[1] == 'pos':
