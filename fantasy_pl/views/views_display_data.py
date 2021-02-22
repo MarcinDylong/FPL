@@ -19,7 +19,7 @@ from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
-from fantasy_pl.views.views_data import DownloadUserView
+from fantasy_pl.views.views_download_data import DownloadUserView
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -200,7 +200,7 @@ class FixtureView(View):
         for i in range(1,39):
             fix_list.append(Fixtures.objects.filter(event=i).order_by('kickoff_time'))
         curr_event = Fixtures.objects.filter(finished=True).last().event.id
-        tbd = Fixtures.objects.filter(event__isnull=True)
+        # tbd = Fixtures.objects.filter(event__isnull=True)
         paginator = Paginator(fix_list, 1)
         page = request.GET.get('page', curr_event)
         fixture = paginator.get_page(page)
@@ -471,10 +471,7 @@ class UserProfile(View):
                     player = Player.objects.get(id=v)
                     team[f'{k[0]}'] = {'player': player}
                     team[f'{k[0]}']['last_game'] = player.last_game(gw)
-                    try:
-                        team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.filter(player=player, event_id=gw).last()
-                    except:
-                        pass
+                    team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.filter(player=player, event_id=gw).first()
                 elif k[1] == 'pos':
                     team[f'{k[0]}']['pos'] = v + i*15
                 else:

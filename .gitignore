@@ -30,4 +30,4 @@ data.json
 secrets.json
 
 ##### Temporary ignore
-core
+# core

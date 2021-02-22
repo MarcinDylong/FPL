@@ -1,12 +1,13 @@
 from django.urls import path
 
-from .views.views import IndexView, TeamView, PlayerView, StandingsView, \
-    FixtureView, StatsView, PlayersSearchView, UserTeamView, UserProfile, \
-    BlankView, StatsGkpView
+from .views.views_display_data import IndexView, TeamView, PlayerView, \
+     StandingsView, FixtureView, StatsView, PlayersSearchView, UserTeamView, \
+     UserProfile, BlankView, StatsGkpView
+from .views.views_download_data import GetPlayersHistoryView, GetFixtureView, \
+     DownloadUserteamView, GetDataView, DownloadUserView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
-    ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
-from .views.views_data import GetPlayersHistoryView, GetFixtureView, \
-    DownloadUserteamView, GetDataView, DownloadUserView
+     ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
+
 
 app_name = 'fantasy_pl'
 

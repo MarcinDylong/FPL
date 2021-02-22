@@ -10,7 +10,7 @@ from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     download_json, get_fixtures_for_season, get_fpl_userteam, get_data, \
     get_fpl_user, get_fpl_user_history_and_season, get_fpl_user_picks, \
     DownloadDataJSON 
-from fantasy_pl.views.data_updates import update_teams, update_players, \
+from fantasy_pl.views.updates import update_teams, update_players, \
     populate_positions, update_player_data, update_player_fixture, \
     update_fixture, update_userteam, update_user, update_events, \
     update_user_history, update_user_season, update_user_picks

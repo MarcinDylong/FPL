@@ -110,8 +110,6 @@ class Team(models.Model):
         return games
 
 
-
-
 class Position(models.Model):
     id = models.SmallIntegerField(primary_key=True)
     name = models.CharField(max_length=16)
@@ -229,7 +227,7 @@ class Player(models.Model):
         except:
             return '-'
 
-    def last_game_stats(self, gw:int): 
+    def last_game_stat(self, gw:int): 
         games = PlayerHistory.objects.filter(player_id=self.id)
         try:
             last_game = games.get(event_id=gw)
