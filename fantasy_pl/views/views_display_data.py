@@ -81,11 +81,12 @@ class IndexView(LoginRequiredMixin, View):
         ctx['segment'] = 'home'
         players_raw = Player.objects.filter(minutes__gt=0)
         try:
-            gw = Fixtures.objects.filter(finished=True).last().event
+            gw = Fixtures.objects.filter(finished=True).order_by('event') \
+            .last().event
         except:
             gw = 1
         phistory_raw = PlayerHistory.objects.filter(event=gw) \
-            .filter(minutes__gt=0)
+        .filter(minutes__gt=0)
 
         ### Player availability
         avl = players_raw.filter(chance_of_playing_this_round__lt=100) \
@@ -516,7 +517,7 @@ class UserProfile(View):
 
 ## Blank View for development purposes
 class BlankView(View):
-    """Players statistic view
+    """Blank view
     """    
     def get(self, request):
         return render(request, 'page-blank.html')
