@@ -230,9 +230,22 @@ class StatsGkpView(View):
           'clean_sheets', 'goals_conceded', 'saves', 'penalties_saved',
           'yellow_cards', 'red_cards', 'dreamteam_count', 'form',
           'selected_by_percent', 'transfers_in', 'transfers_out'])
-        ## 
+        # Merge first_name and second_name
+        gkp['name'] = gkp['first_name'] + ' ' + gkp['second_name']
+        gkp.drop(['first_name','second_name'], axis=1, inplace=True)
+        ## Filter keepers with less than 30% times played
+        max_minutes = 90 * 21 ## Change value 21 by numbers of GW later
+        min_filter = gkp.minutes > max_minutes*0.3
+        gkp = gkp[min_filter]
+        # Change number of minutes to percent of time
+        gkp.minutes = gkp.minutes.apply(lambda x: f'{float(x)*100/max_minutes:.1f}%')
+        ## Get value from dataFrame
+        ctx['x'] = list(gkp['now_cost'])
+        ctx['y'] = list(gkp['total_points'])
+        ctx['size'] = list((gkp['dreamteam_count'] + 1) * 5)
+        ctx['players'] = gkp['name'].tolist()
 
-        return render(request, 'page-blank.html', ctx)
+        return render(request, 'stats_pos.html', ctx)
 
 
 class PlayersSearchView(View):

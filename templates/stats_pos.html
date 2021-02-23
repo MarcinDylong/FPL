@@ -1,0 +1,88 @@
+{% extends "layouts/base.html" %}
+
+{% block title %} {{title}} {% endblock %} 
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <div class="pcoded-content">
+        <div class="pcoded-inner-content">
+            <!-- [ breadcrumb ] start -->
+            <div class="page-header">
+                <div class="page-block">
+                    <div class="row align-items-center">
+                        <div class="col-md-12">
+                            <div class="page-header-title">
+                                <h5 class="m-b-10">{{title}}</h5>
+                                <div id="chart" style="width:90%;height:250px;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- [ breadcrumb ] end -->
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+var chartId = document.getElementById("chart");
+var x = {{x}};
+var y = {{y}};
+var names = {{players|safe}};
+var size = {{size}};
+var len = x.length;
+
+var data = []
+
+for(var indx = 0; indx < len; indx++){
+                data.push({
+                    x: [x[indx]],
+                    y: [y[indx]],
+                    mode: 'markers',
+                    name: names[indx],
+                    text: [names[indx]],
+                    marker: {
+                        size: [size[indx]]
+                        },
+                    type: 'scatter'
+                });
+            }
+
+var layout = {
+  title: {
+    text:'BPL Goalkeepers',
+    font: {
+      size: 24
+    }
+  },
+  xaxis: {
+    title: {
+      text: 'x Axis',
+      font: {
+        size: 18
+      }
+    }
+  },
+  yaxis: {
+    title: {
+      text: 'y Axis',
+      font: {
+        size: 18
+      }
+    }
+  },
+  height: 600,
+  showlegend: true,
+}
+
+var config = {responsive: true}
+
+Plotly.newPlot(chartId, data, layout, config);
+</script>
+{% endblock javascripts %}
