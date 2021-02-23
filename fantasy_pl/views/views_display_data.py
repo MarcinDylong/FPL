@@ -473,6 +473,18 @@ class UserProfile(View):
                     team[f'{k[0]}'] = {'player': player}
                     team[f'{k[0]}']['last_game'] = player.last_game(gw)
                     team[f'{k[0]}']['last_game_stats'] = PlayerHistory.objects.filter(player=player, event_id=gw).first()
+                    ## For double game during event sum up points
+                    phistory = PlayerHistory.objects.filter(player=player, event_id=gw)
+                    team[f'{k[0]}']['last_game_event'] = gw
+                    team[f'{k[0]}']['last_game_points'] = 0
+                    team[f'{k[0]}']['last_game_bonus'] = 0
+                    team[f'{k[0]}']['last_game_value'] = 0
+                    team[f'{k[0]}']['last_event_games'] = len(phistory)
+                    if len(phistory) > 0:
+                        for ph in phistory:
+                            team[f'{k[0]}']['last_game_points'] += ph.total_points
+                            team[f'{k[0]}']['last_game_bonus'] += ph.bonus
+                            team[f'{k[0]}']['last_game_value'] += ph.value 
                 elif k[1] == 'pos':
                     team[f'{k[0]}']['pos'] = v + i*15
                 else:

@@ -23,14 +23,13 @@ def give_percent_rev(value, arg):
 @register.filter(name='team_role')
 def team_role(value, arg):
     if arg == 0:
-        value = 'Bench'
-        return value
+        return 'Bench'
     elif arg == 1:
-        value = 'Played'
-        return value
+        return 'Played'
+    elif arg == 2:
+        return 'Captain'
     else:
-        value = 'Captain'
-        return value
+        return 'T. Captain'
 
 
 @register.filter(name='multiply')
