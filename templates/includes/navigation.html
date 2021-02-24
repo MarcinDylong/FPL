@@ -92,22 +92,11 @@
                             <a href={% url 'fpl:stats' %} class="">
                             General</a>
                         </li>
+                        {% for p in positions %}
                         <li class="">
-                            <a href={% url 'fpl:stats-gkp' %} class="">
-                            Goalkeepers</a>
+                            <a href="{% url 'fpl:stats-chart' p.id %}" class="">{{ p.name }}</a></li>
                         </li>
-                        <li class="">
-                            <a href={% url 'fpl:stats-def' %} class="">
-                            Defenders</a>
-                        </li>
-                        <li class="">
-                            <a href={% url 'fpl:stats-mid' %} class="">
-                            Midfielders</a>
-                        </li>
-                        <li class="">
-                            <a href={% url 'fpl:stats-fwd' %} class="">
-                            Forwards</a>
-                        </li>
+                        {% endfor %}
                     </ul>
                 </li>
                 <li data-username="players_search"

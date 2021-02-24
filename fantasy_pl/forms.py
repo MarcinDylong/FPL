@@ -55,10 +55,19 @@ class SearchForm(forms.Form):
 
 stats = (
     ('points_per_game', 'Points per game'),
+    ('total_points', 'Total Points'),
     ('now_cost', 'Cost',),
     ('form', 'Form'),
-    ('total_points', 'Total Points'),
     ('minutes', 'Minutes'),
+    ('assists', 'Assists'),
+    ('goals_scored', 'Goals scored'),
+    ('own_goals', 'Own goals'),
+    ('influence', 'Influence'),
+    ('influence_rank', 'Influence Rank'),
+    ('creativity', 'Creativity'),
+    ('creativity_rank', 'Creativity rank'),
+    ('threat', 'Threat'),
+    ('threat_rank','Threat rank'),
     ('clean_sheets', 'Clean sheets'),
     ('goals_conceded', 'Goals conceded'),
     ('saves', 'Saves'),
@@ -72,7 +81,7 @@ stats = (
 )
 
 
-class GkpStatsForm(forms.Form):
+class ChartForm(forms.Form):
     x_axis = forms.ChoiceField(label='Choose X axis value',
                                 choices = stats, widget=forms.Select(
                                       attrs={'class': 'form-control'}))
@@ -89,13 +98,14 @@ class GkpStatsForm(forms.Form):
                            'max': '100'}), required=True)
 
     def clean(self):
-        cleaned_data = super(GkpStatsForm, self).clean()
+        cleaned_data = super(ChartForm, self).clean()
         x = cleaned_data.get('x_axis')
         y = cleaned_data.get('y_axis')
         size = cleaned_data.get('size_points')
 
         if len(set([x, y, size])) != 3:
             raise forms.ValidationError('The options you choose must be unique.')
+
 
 class PlayerSearchForm(forms.Form):
     position = forms.ModelChoiceField(label='Position',

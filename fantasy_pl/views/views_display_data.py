@@ -8,12 +8,12 @@ from django.views import View
 import json
 
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
-    GetUserteamForm, GkpStatsForm
+    GetUserteamForm, ChartForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
 from fantasy_pl.views.views_download_data import DownloadUserView
-from fantasy_pl.views.pandas import gkp_ctx
+from fantasy_pl.views.pandas import players_ctx
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -214,26 +214,26 @@ class StatsView(View):
 
 class StatsGkpView(View):
    
-    def get(self, request):
-        ctx = {'title': 'Statistics - GKP'}
-        form = GkpStatsForm()
+    def get(self, request, id):
+        ctx = {'title': "Statistics - GKP"}
+        form = ChartForm()
         ## Return ctx for Goalkeepers
-        ctx = gkp_ctx(ctx, form)
+        ctx = players_ctx(pos=id, ctx=ctx, form=form)
         return render(request, 'stats_pos.html', ctx)
     
-    def post(self, request):
+    def post(self, request, id):
         ctx = {'title': 'Statistics - GKP'}
-        form = GkpStatsForm(request.POST)
+        form = ChartForm(request.POST)
 
         if form.is_valid():
             x_axis = form.cleaned_data['x_axis']
             y_axis = form.cleaned_data['y_axis']
             size_points = form.cleaned_data['size_points']
             limit = form.cleaned_data['limit']
-            ctx = gkp_ctx(ctx, form, x_axis=x_axis, y_axis=y_axis,
-                size=size_points, limit=limit)
+            ctx = players_ctx(pos=id, ctx=ctx, form=form, x_axis=x_axis,
+                y_axis=y_axis, size=size_points, limit=limit)
         else:
-            ctx = gkp_ctx(ctx, form)
+            ctx = gkp_ctx(pos=id, ctx=ctx, form=form)
 
         return render(request, 'stats_pos.html', ctx)
 

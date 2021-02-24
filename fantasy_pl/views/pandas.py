@@ -4,15 +4,17 @@ import pandas as pd
 
 from fantasy_pl.models import Player, Fixtures
 
-def gkp_ctx(ctx, form, x_axis='now_cost', y_axis='total_points',
+def players_ctx(pos, ctx, form, x_axis='now_cost', y_axis='total_points',
                   size='dreamteam_count', limit=20):
-    players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
+    players = Player.objects.filter(position=pos).filter(minutes__gt=0).order_by('now_cost')
     gw = Fixtures.objects.filter(finished=True).order_by('event_id').last().event_id
     ## Create DataFrame for Goalkeepers
     gkp = read_frame(players, fieldnames=['first_name', 'second_name',
-        'team', 'now_cost', 'points_per_game', 'total_points', 'minutes',
-        'clean_sheets', 'goals_conceded', 'saves', 'penalties_saved',
-        'yellow_cards', 'red_cards', 'dreamteam_count', 'form',
+        'team', 'points_per_game', 'total_points', 'now_cost', 'form', 
+        'minutes', 'assists', 'goals_scored', 'own_goals', 'influence',
+        'influence_rank', 'creativity', 'creativity_rank', 'threat',
+        'threat_rank', 'clean_sheets', 'goals_conceded', 'saves', 
+        'penalties_saved', 'yellow_cards', 'red_cards', 'dreamteam_count',
         'selected_by_percent', 'transfers_in', 'transfers_out'])
     # Merge first_name and second_name
     gkp['name'] = gkp['first_name'] + ' ' + gkp['second_name']
