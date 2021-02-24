@@ -2,11 +2,12 @@ from django_pandas.io import read_frame
 
 import pandas as pd
 
-from fantasy_pl.models import Player, Fixtures
+from fantasy_pl.models import Player, Fixtures, Position
 
-def players_ctx(pos, ctx, form, x_axis='now_cost', y_axis='total_points',
-                  size='dreamteam_count', limit=20):
-    players = Player.objects.filter(position=pos).filter(minutes__gt=0).order_by('now_cost')
+def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
+                  size='selected_by_percent', limit=20):
+    position = Position.objects.get(id=pos)
+    players = Player.objects.filter(position=position).filter(minutes__gt=0).order_by('now_cost')
     gw = Fixtures.objects.filter(finished=True).order_by('event_id').last().event_id
     ## Create DataFrame for Goalkeepers
     gkp = read_frame(players, fieldnames=['first_name', 'second_name',
@@ -26,6 +27,7 @@ def players_ctx(pos, ctx, form, x_axis='now_cost', y_axis='total_points',
     min_filter = gkp.minutes > limit
     gkp = gkp[min_filter]
     # Add data to ctx dictionary
+    ctx['title'] = f'Chart - {position.name}s'
     ctx['x'] = list(gkp[x_axis])
     ctx['y'] = list(gkp[y_axis])
     ctx['max_size'] = max(gkp[size]) if len(gkp[size]) > 0 else 0 

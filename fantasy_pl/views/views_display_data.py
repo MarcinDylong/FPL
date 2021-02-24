@@ -212,17 +212,18 @@ class StatsView(View):
         return render(request, 'stats.html', ctx)
 
 
-class StatsGkpView(View):
+class StatsChartView(View):
+    
    
     def get(self, request, id):
-        ctx = {'title': "Statistics - GKP"}
+        ctx = {'title': ''}
         form = ChartForm()
         ## Return ctx for Goalkeepers
         ctx = players_ctx(pos=id, ctx=ctx, form=form)
         return render(request, 'stats_pos.html', ctx)
     
     def post(self, request, id):
-        ctx = {'title': 'Statistics - GKP'}
+        ctx = {'title': ''}
         form = ChartForm(request.POST)
 
         if form.is_valid():

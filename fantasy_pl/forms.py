@@ -82,6 +82,16 @@ stats = (
 
 
 class ChartForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(ChartForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        self.initial['x_axis'] = 'points_per_game'
+        self.initial['y_axis'] = 'now_cost'
+        self.initial['size_points'] = 'selected_by_percent'
+
+
+    
     x_axis = forms.ChoiceField(label='Choose X axis value',
                                 choices = stats, widget=forms.Select(
                                       attrs={'class': 'form-control'}))
