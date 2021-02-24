@@ -58,7 +58,35 @@ stats = (
     ('now_cost', 'Cost',),
     ('form', 'Form'),
     ('total_points', 'Total Points'),
+    ('minutes', 'Minutes'),
+    ('clean_sheets', 'Clean sheets'),
+    ('goals_conceded', 'Goals conceded'),
+    ('saves', 'Saves'),
+    ('penalties_saved', 'Penalties saved'),
+    ('yellow_cards', 'Yellow cards'),
+    ('red_cards', 'Red cards'),
+    ('dreamteam_count', 'Dreamteam count'),
+    ('selected_by_percent', 'Selected by percent'),
+    ('transfers_in', 'Transfers In'),
+    ('transfers_out', 'Transfers Out')
 )
+
+
+class GkpStatsForm(forms.Form):
+    x_axis = forms.ChoiceField(label='Choose X axis value',
+                                choices = stats, widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    y_axis = forms.ChoiceField(label='Choose Y axis value',
+                                choices = stats, widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    size_points = forms.ChoiceField(label='Choose dot size value',
+                                choices = stats, widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    limit = forms.IntegerField(label='Choose minimum time of play [%]',
+                widget=forms.NumberInput(
+                    attrs={'type': 'range', 'class': 'custom-range',
+                           'id': 'limit', 'step': '5', 'min': '0',
+                           'max': '100'}), required=True)
 
 
 class PlayerSearchForm(forms.Form):

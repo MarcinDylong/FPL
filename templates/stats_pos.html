@@ -7,24 +7,63 @@
 
 {% block content %}
 
-    <div class="pcoded-content">
-        <div class="pcoded-inner-content">
-            <!-- [ breadcrumb ] start -->
-            <div class="page-header">
-                <div class="page-block">
-                    <div class="row align-items-center">
-                        <div class="col-md-12">
-                            <div class="page-header-title">
-                                <h5 class="m-b-10">{{title}}</h5>
-                                <div id="chart" style="width:90%;height:250px;"></div>
-                            </div>
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ breadcrumb ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-12">
+                        <div class="page-header-title">
+                            <h3 class="m-b-10">{{title}}</h3>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- [ breadcrumb ] end -->
+        </div>
+        <!-- [ breadcrumb ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Main Content ] start -->
+                <div class="row">
+                    <!-- [ Search-form-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <form action="" method="POST">
+                                    <div>
+                                        {% csrf_token %}
+                                        {{ form }}
+                                    </div>
+                                    <span>
+                                        <button class="btn btn-primary" type="Submit">Search</button>
+                                    </span>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Search-form-table ] end -->
+                </div>
+                {% if players %}
+                <div class="row">
+                    <!-- [ Search-results-table ] start -->
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-block table-border-style">
+                                <div class="table-responsive">
+                                    <div id="chart" ></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Search-results-table ] end -->
+                </div>
+                {% endif %}
+                <!-- [ Main Content ] end -->
+            </div>
         </div>
     </div>
+</div>
 
 {% endblock content %}
 
@@ -41,12 +80,13 @@ var len = x.length;
 var data = []
 
 for(var indx = 0; indx < len; indx++){
+                var size_ = (size[indx] / 5) - 1 
                 data.push({
                     x: [x[indx]],
                     y: [y[indx]],
                     mode: 'markers',
                     name: names[indx],
-                    text: [names[indx]],
+                    text: [`${names[indx]} ${size_}`],
                     marker: {
                         size: [size[indx]]
                         },
@@ -77,7 +117,7 @@ var layout = {
       }
     }
   },
-  height: 600,
+  height: 700,
   showlegend: true,
 }
 

@@ -4,9 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
-from django_pandas.io import read_frame
 
-import pandas as pd
 import numpy as np
 import plotly.express as px
 import plotly.graph_objects as go
@@ -15,11 +13,12 @@ import json
 # import seaborn as sns
 
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
-    GetUserteamForm
+    GetUserteamForm, GkpStatsForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
 from fantasy_pl.views.views_download_data import DownloadUserView
+from fantasy_pl.views.pandas import gkp_dataframe
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -219,31 +218,48 @@ class StatsView(View):
 
 
 class StatsGkpView(View):
-    """Players statistic view
-    """    
+   
     def get(self, request):
-        ctx = {'title': 'Stats - GKP'}
+        ctx = {'title': 'Statistics - GKP'}
         players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
         ## Create DataFrame for Goalkeepers
-        gkp = read_frame(players, fieldnames=['first_name', 'second_name',
-          'team', 'now_cost', 'points_per_game', 'total_points', 'minutes',
-          'clean_sheets', 'goals_conceded', 'saves', 'penalties_saved',
-          'yellow_cards', 'red_cards', 'dreamteam_count', 'form',
-          'selected_by_percent', 'transfers_in', 'transfers_out'])
-        # Merge first_name and second_name
-        gkp['name'] = gkp['first_name'] + ' ' + gkp['second_name']
-        gkp.drop(['first_name','second_name'], axis=1, inplace=True)
-        ## Filter keepers with less than 30% times played
-        max_minutes = 90 * 21 ## Change value 21 by numbers of GW later
-        min_filter = gkp.minutes > max_minutes*0.3
-        gkp = gkp[min_filter]
-        # Change number of minutes to percent of time
-        gkp.minutes = gkp.minutes.apply(lambda x: f'{float(x)*100/max_minutes:.1f}%')
+        gkp = gkp_dataframe()
         ## Get value from dataFrame
         ctx['x'] = list(gkp['now_cost'])
         ctx['y'] = list(gkp['total_points'])
         ctx['size'] = list((gkp['dreamteam_count'] + 1) * 5)
         ctx['players'] = gkp['name'].tolist()
+        ctx['form'] = GkpStatsForm()
+
+        return render(request, 'stats_pos.html', ctx)
+    
+    def post(self, request):
+        ctx = {'title': 'Statistics - GKP'}
+        form = GkpStatsForm(request.POST)
+        players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
+        ## Create DataFrame for Goalkeepers
+        gkp = gkp_dataframe()
+
+        if form.is_valid():
+            x_axis = form.cleaned_data['x_axis']
+            y_axis = form.cleaned_data['y_axis']
+            size_points = form.cleaned_data['size_points']
+            limit = form.cleaned_data['limit']
+            ## Filter keepers with more time than limit set
+            min_filter = gkp.minutes > limit
+            gkp = gkp[min_filter]
+            ## Get value from dataFrame
+            ctx['x'] = list(gkp[x_axis])
+            ctx['y'] = list(gkp[y_axis])
+            ctx['size'] = list((gkp[size_points] + 1) * 5)
+            ctx['players'] = gkp['name'].tolist()
+            ctx['form'] = form
+        else:
+            ctx['x'] = list(gkp['now_cost'])
+            ctx['y'] = list(gkp['total_points'])
+            ctx['size'] = list((gkp['dreamteam_count'] + 1) * 5)
+            ctx['players'] = gkp['name'].tolist()
+            ctx['form'] = GkpStatsForm()
 
         return render(request, 'stats_pos.html', ctx)
 
