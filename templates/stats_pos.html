@@ -76,11 +76,12 @@ var y = {{y}};
 var names = {{players|safe}};
 var size = {{size}};
 var len = x.length;
+var max_size = {{max_size}}
 
 var data = []
 
 for(var indx = 0; indx < len; indx++){
-                var size_ = (size[indx] / 5) - 1 
+                var size_ = Math.round(((size[indx]/10) - 1) * max_size * 100)/100
                 data.push({
                     x: [x[indx]],
                     y: [y[indx]],

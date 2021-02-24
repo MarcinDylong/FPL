@@ -5,12 +5,7 @@ from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
 
-import numpy as np
-import plotly.express as px
-import plotly.graph_objects as go
 import json
-# import matplotlib.pyplot as plt
-# import seaborn as sns
 
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
     GetUserteamForm, GkpStatsForm
@@ -18,7 +13,7 @@ from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
 from fantasy_pl.views.views_download_data import DownloadUserView
-from fantasy_pl.views.pandas import gkp_dataframe
+from fantasy_pl.views.pandas import gkp_ctx
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -221,45 +216,25 @@ class StatsGkpView(View):
    
     def get(self, request):
         ctx = {'title': 'Statistics - GKP'}
-        players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
-        ## Create DataFrame for Goalkeepers
-        gkp = gkp_dataframe()
-        ## Get value from dataFrame
-        ctx['x'] = list(gkp['now_cost'])
-        ctx['y'] = list(gkp['total_points'])
-        ctx['size'] = list((gkp['dreamteam_count'] + 1) * 5)
-        ctx['players'] = gkp['name'].tolist()
-        ctx['form'] = GkpStatsForm()
-
+        form = GkpStatsForm()
+        ## Return ctx for Goalkeepers
+        ctx = gkp_ctx(ctx, form)
         return render(request, 'stats_pos.html', ctx)
     
     def post(self, request):
         ctx = {'title': 'Statistics - GKP'}
         form = GkpStatsForm(request.POST)
-        players = Player.objects.filter(position=1).filter(minutes__gt=0).order_by('now_cost')
-        ## Create DataFrame for Goalkeepers
-        gkp = gkp_dataframe()
 
         if form.is_valid():
             x_axis = form.cleaned_data['x_axis']
             y_axis = form.cleaned_data['y_axis']
             size_points = form.cleaned_data['size_points']
             limit = form.cleaned_data['limit']
-            ## Filter keepers with more time than limit set
-            min_filter = gkp.minutes > limit
-            gkp = gkp[min_filter]
-            ## Get value from dataFrame
-            ctx['x'] = list(gkp[x_axis])
-            ctx['y'] = list(gkp[y_axis])
-            ctx['size'] = list((gkp[size_points] + 1) * 5)
-            ctx['players'] = gkp['name'].tolist()
-            ctx['form'] = form
+            ctx = gkp_ctx(ctx, form, x_axis=x_axis, y_axis=y_axis,
+                size=size_points, limit=limit)
         else:
-            ctx['x'] = list(gkp['now_cost'])
-            ctx['y'] = list(gkp['total_points'])
-            ctx['size'] = list((gkp['dreamteam_count'] + 1) * 5)
-            ctx['players'] = gkp['name'].tolist()
-            ctx['form'] = GkpStatsForm()
+            form = GkpStatsForm()
+            ctx = gkp_ctx(ctx, form)
 
         return render(request, 'stats_pos.html', ctx)
 
