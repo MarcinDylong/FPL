@@ -88,6 +88,14 @@ class GkpStatsForm(forms.Form):
                            'id': 'limit', 'step': '5', 'min': '0',
                            'max': '100'}), required=True)
 
+    def clean(self):
+        cleaned_data = super(GkpStatsForm, self).clean()
+        x = cleaned_data.get('x_axis')
+        y = cleaned_data.get('y_axis')
+        size = cleaned_data.get('size_points')
+
+        if len(set([x, y, size])) != 3:
+            raise forms.ValidationError('The options you choose must be unique.')
 
 class PlayerSearchForm(forms.Form):
     position = forms.ModelChoiceField(label='Position',
@@ -106,7 +114,7 @@ class PlayerSearchForm(forms.Form):
             max = 100
 
         if max < 0:
-            raise forms.ValidationError('Max value must be greater than 0')
+            raise forms.ValidationError('Max value must be greater than 0.')
 
 
 class PlayerChoiceField(ModelChoiceField):

@@ -233,7 +233,6 @@ class StatsGkpView(View):
             ctx = gkp_ctx(ctx, form, x_axis=x_axis, y_axis=y_axis,
                 size=size_points, limit=limit)
         else:
-            form = GkpStatsForm()
             ctx = gkp_ctx(ctx, form)
 
         return render(request, 'stats_pos.html', ctx)

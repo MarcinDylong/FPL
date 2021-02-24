@@ -30,9 +30,14 @@
                     <div class="col-xl-12">
                         <div class="card">
                             <div class="card-body">
-                                <form action="" method="POST">
+                                <form action="" method="POST" id='form'>
                                     <div>
                                         {% csrf_token %}
+                                        {% if form.non_field_errors %}
+                                            <button type="button" class="btn btn-danger">
+                                                {{ form.non_field_errors.as_text }}
+                                            </button><br>
+                                        {% endif %}
                                         {{ form }}
                                     </div>
                                     <span>
@@ -70,6 +75,7 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script>
+$('.errorlist').hide()
 var chartId = document.getElementById("chart");
 var x = {{x}};
 var y = {{y}};
@@ -98,6 +104,7 @@ for(var indx = 0; indx < len; indx++){
 
 var x_axis_tittle = $('#id_x_axis option:selected').text()
 var y_axis_tittle = $('#id_y_axis option:selected').text()
+var size_points = $('#id_size_points option:selected').text()
 
 var layout = {
   title: {
@@ -129,5 +136,19 @@ var layout = {
 var config = {responsive: true}
 
 Plotly.newPlot(chartId, data, layout, config);
+
+   
+// $(document).on('submit', '#form', function (event) {    
+
+//     if ((new Set([x_axis_tittle, y_axis_tittle, size_points])).size < 3 ) {
+//         alert('Picked value in form must be unique!')
+//         event.preventDefault();         
+//         return false;  
+//     } else {
+//         return True
+//     }
+        
+// }); 
+
 </script>
 {% endblock javascripts %}
