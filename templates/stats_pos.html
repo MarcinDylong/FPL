@@ -101,6 +101,27 @@ for(var indx = 0; indx < len; indx++){
                 });
             }
 
+var LinRegr = {
+    x: {{x_regr}},
+    y: {{pred_regr}},
+    mode: 'lines',
+    type: 'scatter',
+    text: 'Linear Regression',
+    name: 'Linear Regression'
+};
+
+data.push(LinRegr)
+
+var LinRegrPoly = {
+    x: {{x_regr_poly}},
+    y: {{pred_regr_poly}},
+    mode: 'lines',
+    type: 'scatter',
+    text: 'Polynomial Regression',
+    name: 'Polynomial Regression'
+};
+
+data.push(LinRegrPoly)
 
 var x_axis_tittle = $('#id_x_axis option:selected').text()
 var y_axis_tittle = $('#id_y_axis option:selected').text()
@@ -131,19 +152,6 @@ var layout = {
 var config = {responsive: true}
 
 Plotly.newPlot(chartId, data, layout, config);
-
-   
-// $(document).on('submit', '#form', function (event) {    
-
-//     if ((new Set([x_axis_tittle, y_axis_tittle, size_points])).size < 3 ) {
-//         alert('Picked value in form must be unique!')
-//         event.preventDefault();         
-//         return false;  
-//     } else {
-//         return True
-//     }
-        
-// }); 
 
 </script>
 {% endblock javascripts %}

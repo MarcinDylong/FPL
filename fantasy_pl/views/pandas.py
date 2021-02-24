@@ -1,13 +1,47 @@
 from django_pandas.io import read_frame
 
 import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.preprocessing import PolynomialFeatures
 
 from fantasy_pl.models import Player, Fixtures, Position
 
+
+def linear_regr(x, y):
+    
+    regr = LinearRegression()
+
+    X = np.array(x).reshape(-1, 1)
+    Y = np.array(y)
+
+    regr.fit(X, Y)
+    
+    point_pred = regr.predict(X)
+
+    return list(X.flatten()), list(point_pred)
+
+def poly_regr(x, y):
+
+    regr_poly = LinearRegression()
+
+    X = np.array(x).reshape(-1, 1)
+    Y = np.array(y)
+    
+    poly = PolynomialFeatures(degree=3)
+    X_poly = poly.fit_transform(X)
+
+    
+    regr_poly.fit(X_poly, Y)
+
+    point_pred = regr_poly.predict(X_poly)
+
+    return list(X.flatten()), list(point_pred)
+
 def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
-                  size='selected_by_percent', limit=20):
+                  size='selected_by_percent', limit=50):
     position = Position.objects.get(id=pos)
-    players = Player.objects.filter(position=position).filter(minutes__gt=0).order_by('now_cost')
+    players = Player.objects.filter(position=position).filter(minutes__gt=0).order_by('-'+x_axis)
     gw = Fixtures.objects.filter(finished=True).order_by('event_id').last().event_id
     ## Create DataFrame for Goalkeepers
     gkp = read_frame(players, fieldnames=['first_name', 'second_name',
@@ -24,7 +58,7 @@ def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
     max_minutes = 90 * gw
     gkp.minutes = gkp.minutes.apply(lambda x: round(float(x) * 100 / max_minutes, 2))
     # Filter
-    min_filter = gkp.minutes > limit
+    min_filter = gkp.minutes >= limit
     gkp = gkp[min_filter]
     # Add data to ctx dictionary
     ctx['title'] = f'Chart - {position.name}s'
@@ -34,5 +68,11 @@ def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
     ctx['size'] = list(((gkp[size]/ ctx['max_size']) + 1)  * 10)
     ctx['players'] = gkp['name'].tolist()
     ctx['form'] = form
+    x_regr, pred_regr = linear_regr(gkp[x_axis], gkp[y_axis])
+    ctx['x_regr'] = x_regr
+    ctx['pred_regr'] = pred_regr
+    x_regr_poly, pred_regr_poly = poly_regr(gkp[x_axis], gkp[y_axis])
+    ctx['x_regr_poly'] = x_regr_poly
+    ctx['pred_regr_poly'] = pred_regr_poly
 
     return ctx
