@@ -95,6 +95,10 @@ for(var indx = 0; indx < len; indx++){
                 });
             }
 
+
+var x_axis_tittle = $('#id_x_axis option:selected').text()
+var y_axis_tittle = $('#id_y_axis option:selected').text()
+
 var layout = {
   title: {
     text:'BPL Goalkeepers',
@@ -104,7 +108,7 @@ var layout = {
   },
   xaxis: {
     title: {
-      text: 'x Axis',
+      text: x_axis_tittle,
       font: {
         size: 18
       }
@@ -112,7 +116,7 @@ var layout = {
   },
   yaxis: {
     title: {
-      text: 'y Axis',
+      text: y_axis_tittle,
       font: {
         size: 18
       }
