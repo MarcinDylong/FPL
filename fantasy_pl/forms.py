@@ -123,7 +123,7 @@ class PlayerSearchForm(forms.Form):
                                       required=False,
                                       widget=forms.Select(
                                           attrs={'class': 'form-control'}))
-    max = forms.FloatField(label='Max Cost',
+    max = forms.FloatField(label='Max Cost (range from ~4 to ~13)',
                            required=False, widget=forms.NumberInput(
             attrs={'class': 'form-control'}))
 

@@ -82,28 +82,31 @@ var y = {{y}};
 var names = {{players|safe}};
 var size = {{size}};
 var len = x.length;
-var max_size = {{max_size}}
-
+var max_size = {{max_size}};
+var x_regr = {{x_regr}};
+var pred_regr = {{pred_regr}}
+var x_regr_poly = {{x_regr_poly}};
+var pred_regr_poly = {{pred_regr_poly}}
 var data = []
 
 for(var indx = 0; indx < len; indx++){
-                var size_ = Math.round(((size[indx]/10) - 1) * max_size * 100)/100
-                data.push({
-                    x: [x[indx]],
-                    y: [y[indx]],
-                    mode: 'markers',
-                    name: names[indx],
-                    text: [`${names[indx]} ${size_}`],
-                    marker: {
-                        size: [size[indx]]
-                        },
-                    type: 'scatter'
-                });
-            }
+    var size_ = Math.round(((size[indx]/10) - 1) * max_size * 100)/100
+    data.push({
+        x: [x[indx]],
+        y: [y[indx]],
+        mode: 'markers',
+        name: names[indx],
+        text: [`${names[indx]} ${size_}`],
+        marker: {
+            size: [size[indx]]
+            },
+        type: 'scatter'
+    });
+};
 
 var LinRegr = {
-    x: {{x_regr}},
-    y: {{pred_regr}},
+    x: x_regr,
+    y: pred_regr,
     mode: 'lines',
     type: 'scatter',
     text: 'Linear Regression',
@@ -113,8 +116,8 @@ var LinRegr = {
 data.push(LinRegr)
 
 var LinRegrPoly = {
-    x: {{x_regr_poly}},
-    y: {{pred_regr_poly}},
+    x: x_regr_poly,
+    y: pred_regr_poly,
     mode: 'lines',
     type: 'scatter',
     text: 'Polynomial Regression',
