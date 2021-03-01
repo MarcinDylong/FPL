@@ -160,10 +160,8 @@ class TeamView(View):
 
 class PlayerView(View):
     """View with BPL players informations
-    """    
-    def get(self, request, id):
-        ## Form 
-        form = PlayerChartForm()
+    """ 
+    def get_data(self, id, form, category='selected'):
         ## Django ORMs
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player) \
@@ -176,7 +174,9 @@ class PlayerView(View):
         chart = hist.order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        overall = player_gwByGw(hist)
+        ## Data for chart
+        overall = player_gwByGw(hist,category)
+
         ## Pass data to context
         ctx = {
             'team': team,
@@ -187,46 +187,28 @@ class PlayerView(View):
             'hist': hist,
             'chart': chart,
             'form': form,
-            'overall': overall,
-            'id': id
+            'overall': overall       
             }
+
+        return ctx
+
+    def get(self, request, id):
+        ## Form 
+        form = PlayerChartForm()
+        ## Context
+        ctx = self.get_data(id, form)
 
         return render(request, 'player.html', ctx)
 
     def post(self, request, id):
+        ## Form
         form = PlayerChartForm(request.POST)
-        ## Django ORMs
-        player = Player.objects.get(id=id)
-        hist = PlayerHistory.objects.filter(player=player) \
-            .filter(finished=True) \
-            .order_by('-kickoff_time')
-        games = PlayerHistory.objects.filter(player=player) \
-            .filter(event__isnull=False).filter(finished=False) \
-            .order_by('kickoff_time')
-        ## Data preparation for display
-        chart = hist.order_by('kickoff_time')
-        team = Team.objects.get(name=player.team)
-        photo = "/static/logos/" + team.short_name.lower() + ".png "
-
         if form.is_valid():
             category = form.cleaned_data['stat']
-            overall = player_gwByGw(hist, category)
         else:
-            overall = player_gwByGw(hist)
-        ## Pass data to context
-        ctx = {
-            'team': team,
-            'player': player,
-            'photo': photo,
-            'title': player,
-            'games': games,
-            'hist': hist,
-            'chart': chart,
-            'form': form,
-            'overall': overall,
-            'id': id,
-            'category': category          
-            }
+            category = 'selected'
+        ## Context
+        ctx = self.get_data(id, form, category)
 
         return render(request, 'player.html', ctx)
 

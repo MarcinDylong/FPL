@@ -95,6 +95,11 @@ class PlayerChartForm(forms.Form):
                              widget=forms.Select(
                                       attrs={'class': 'form-control'}))
 
+    def __init__(self, *args, **kwargs):
+        super(PlayerChartForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        self.initial['stat'] = 'selected'
+
 
 class PlayerSearchForm(forms.Form):
     position = forms.ModelChoiceField(label='Position',

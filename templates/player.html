@@ -614,7 +614,7 @@ new Morris.Line({
 new Morris.Line({
     element: 'Chart',
     data: [
-        {% for team,dbd,over in overall %}
+        {% for team,over,dbd in overall %}
             {
                 Fixture: '{{ team }}',
                 Overall: '{{ over }}',
@@ -626,7 +626,6 @@ new Morris.Line({
     parseTime: false,
     xkey: 'Fixture',
     ykeys: ['Overall', 'Gameweek'],
-    // ymax: 150,
     labels: ['Overall', 'Gameweek']
 });
 </script>

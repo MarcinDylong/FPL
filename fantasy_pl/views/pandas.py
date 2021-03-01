@@ -83,6 +83,7 @@ def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
 
 def player_gwByGw(playerhistory, category='selected'):
     ph_raw = read_frame(playerhistory)
+    ph_raw = ph_raw[::-1]
     team_raw = read_frame(Team.objects.all())
 
     ## Create team dict
@@ -102,6 +103,7 @@ def player_gwByGw(playerhistory, category='selected'):
         ph['category_changes'] = ph[category].cumsum()
         start = ph.iloc[0][1]
         ph.fillna(value=start, inplace=True)
+        ph = ph[['opponent_team','category_changes',category]]
 
     ph['opponent_team'].replace(team_dict, inplace=True)
 
