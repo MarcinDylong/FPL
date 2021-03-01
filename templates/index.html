@@ -330,7 +330,7 @@
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
                                 <div class="card-header">
-                                    <h5>Bonus for current GW</h5>
+                                    <h5>Bonuses for Season</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
                                     <div class="table-responsive">
@@ -349,22 +349,22 @@
                                                 {% for g in gwbonus %}
                                                     <tr class="unread center" align="center">
                                                         <td>
-                                                            {% if g.player.id in ut_ids %}
+                                                            {% if g.id in ut_ids %}
                                                                 <i class="fas fa-star"></i>
                                                             {% else %}
-                                                                {{ g.player.id }}
+                                                                {{ g.id }}
                                                             {% endif %}
                                                         </td>
-                                                        <td>{{ g.player.position.name_short }}</td>
+                                                        <td>{{ g.position.name_short }}</td>
                                                         <td>
-                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.player.id %}">
-                                                                <h6 class="mb-1">{{ g.player.second_name}}</h6>
-                                                                <p class="text-muted m-0">{{ g.player.first_name }}</p>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.id %}">
+                                                                <h6 class="mb-1">{{ g.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ g.first_name }}</p>
                                                             </a>
                                                         </td>
-                                                        <td>{{ g.player.team.short_name }}</td>
+                                                        <td>{{ g.team.short_name }}</td>
                                                         <td>{{ g.bonus }}</td>
-                                                        <td>{{ g.player.now_cost }}</td>
+                                                        <td>{{ g.now_cost }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>

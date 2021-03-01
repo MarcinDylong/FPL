@@ -3,6 +3,8 @@ from django.core.validators import ValidationError
 from django.forms import ModelChoiceField
 
 from fantasy_pl.models import Player, Team, Position
+from fantasy_pl.form_choices import choices_fixture, choices_data, \
+    choices_stats, choices_player_stats
 
 
 class GetPlayerDataForm(forms.Form):
@@ -19,25 +21,18 @@ class GetPlayerDataForm(forms.Form):
                                  attrs={'class': 'form-control'}))
 
 
-CHOICES_FIX = [(0, 'Update Fixtures')]
-
-
 class GetFixtureForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect(
         attrs={'class': 'custom-radio'}),
         label=False,
-        choices=CHOICES_FIX)
-
-
-CHOICES_DATA = [(0, 'Download data to JSON'), (1, 'Populate tables'),
-                (2, 'Update tables')]
+        choices=choices_fixture)
 
 
 class GetDataForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect(
         attrs={'class': 'custom-radio'}),
         label=False,
-        choices=CHOICES_DATA)
+        choices=choices_data)
 
 
 class GetUserteamForm(forms.Form):
@@ -53,34 +48,6 @@ class SearchForm(forms.Form):
                'placeholder': 'Search for player...'}))
 
 
-stats = (
-    ('points_per_game', 'Points per game'),
-    ('total_points', 'Total Points'),
-    ('now_cost', 'Cost',),
-    ('form', 'Form'),
-    ('minutes', 'Minutes'),
-    ('assists', 'Assists'),
-    ('goals_scored', 'Goals scored'),
-    ('own_goals', 'Own goals'),
-    ('influence', 'Influence'),
-    ('influence_rank', 'Influence Rank'),
-    ('creativity', 'Creativity'),
-    ('creativity_rank', 'Creativity rank'),
-    ('threat', 'Threat'),
-    ('threat_rank','Threat rank'),
-    ('clean_sheets', 'Clean sheets'),
-    ('goals_conceded', 'Goals conceded'),
-    ('saves', 'Saves'),
-    ('penalties_saved', 'Penalties saved'),
-    ('yellow_cards', 'Yellow cards'),
-    ('red_cards', 'Red cards'),
-    ('dreamteam_count', 'Dreamteam count'),
-    ('selected_by_percent', 'Selected by percent'),
-    ('transfers_in', 'Transfers In'),
-    ('transfers_out', 'Transfers Out')
-)
-
-
 class ChartForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -93,19 +60,22 @@ class ChartForm(forms.Form):
 
     
     x_axis = forms.ChoiceField(label='Choose X axis value',
-                                choices = stats, widget=forms.Select(
+                               choices=choices_stats,
+                               widget=forms.Select(
                                       attrs={'class': 'form-control'}))
     y_axis = forms.ChoiceField(label='Choose Y axis value',
-                                choices = stats, widget=forms.Select(
+                               choices=choices_stats,
+                               widget=forms.Select(
                                       attrs={'class': 'form-control'}))
     size_points = forms.ChoiceField(label='Choose dot size value',
-                                choices = stats, widget=forms.Select(
+                                choices=choices_stats,
+                                widget=forms.Select(
                                       attrs={'class': 'form-control'}))
     limit = forms.IntegerField(label='Choose minimum time of play [%]',
-                widget=forms.NumberInput(
-                    attrs={'type': 'range', 'class': 'custom-range',
-                           'id': 'limit', 'step': '5', 'min': '0',
-                           'max': '100'}), required=True)
+                    widget=forms.NumberInput(
+                        attrs={'type': 'range', 'class': 'custom-range',
+                            'id': 'limit', 'step': '5', 'min': '0',
+                            'max': '100'}), required=True)
 
     def clean(self):
         cleaned_data = super(ChartForm, self).clean()
@@ -114,7 +84,16 @@ class ChartForm(forms.Form):
         size = cleaned_data.get('size_points')
 
         if len(set([x, y, size])) != 3:
-            raise forms.ValidationError('The options you choose must be unique.')
+            raise forms.ValidationError(
+                'The options you choose must be unique.'
+                )
+
+
+class PlayerChartForm(forms.Form):
+    stat = forms.ChoiceField(label=False, 
+                             choices=choices_player_stats,
+                             widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
 
 
 class PlayerSearchForm(forms.Form):
@@ -138,7 +117,6 @@ class PlayerSearchForm(forms.Form):
 
 
 class PlayerChoiceField(ModelChoiceField):
-
     def label_from_instance(self, obj):
         return f'{obj.first_name} {obj.second_name} ({obj.team.short_name}) - \
                  {obj.now_cost}\xa3'

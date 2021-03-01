@@ -5,8 +5,9 @@ import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
-from fantasy_pl.models import Player, Fixtures, Position
+from fantasy_pl.models import Player, Fixtures, Position, PlayerHistory, Team
 
+pd.options.mode.chained_assignment = None
 
 def linear_regr(x, y):
     
@@ -20,6 +21,7 @@ def linear_regr(x, y):
     point_pred = regr.predict(X)
 
     return list(X.flatten()), list(point_pred)
+
 
 def poly_regr(x, y):
 
@@ -37,6 +39,7 @@ def poly_regr(x, y):
     point_pred = regr_poly.predict(X_poly)
 
     return list(X.flatten()), list(point_pred)
+
 
 def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
                   size='selected_by_percent', limit=50):
@@ -76,3 +79,30 @@ def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
     ctx['pred_regr_poly'] = pred_regr_poly
 
     return ctx
+
+
+def player_gwByGw(playerhistory, category='selected'):
+    ph_raw = read_frame(playerhistory)
+    team_raw = read_frame(Team.objects.all())
+
+    ## Create team dict
+    team = team_raw[['name', 'short_name']]
+    team_list = team.values.tolist()
+    team_dict = {k:v for k,v in team_list}
+
+    if category == 'selected':
+        ph = ph_raw[['opponent_team', category]]
+        ## Create column day_by_day
+        ph['category_changes'] = ph[category].diff()
+        start = ph.iloc[0][1]
+        ph.fillna(value=start, inplace=True)
+    else:
+        ph = ph_raw[['opponent_team', category]]
+        ## Create column day_by_day
+        ph['category_changes'] = ph[category].cumsum()
+        start = ph.iloc[0][1]
+        ph.fillna(value=start, inplace=True)
+
+    ph['opponent_team'].replace(team_dict, inplace=True)
+
+    return ph.values.tolist()

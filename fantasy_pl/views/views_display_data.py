@@ -8,12 +8,12 @@ from django.views import View
 import json
 
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
-    GetUserteamForm, ChartForm
+    GetUserteamForm, ChartForm, PlayerChartForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
     UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
 
 from fantasy_pl.views.views_download_data import DownloadUserView
-from fantasy_pl.views.pandas import players_ctx
+from fantasy_pl.views.pandas import players_ctx, player_gwByGw
 
 class IndexView(LoginRequiredMixin, View):
     """Dashboard with information about current players performance
@@ -98,7 +98,7 @@ class IndexView(LoginRequiredMixin, View):
             ctx['popular'] = self.season_best_eleven(players_raw,
                                                      '-selected_by_percent')
             ctx['gwbest'] = self.gw_best_eleven(phistory_raw, '-total_points')
-            ctx['gwbonus'] = self.gw_best_eleven(phistory_raw, '-bonus')
+            ctx['gwbonus'] = self.season_best_eleven(players_raw, '-bonus')
         except:
             pass
         return render(request, 'index.html', ctx)
@@ -162,6 +162,9 @@ class PlayerView(View):
     """View with BPL players informations
     """    
     def get(self, request, id):
+        ## Form 
+        form = PlayerChartForm()
+        ## Django ORMs
         player = Player.objects.get(id=id)
         hist = PlayerHistory.objects.filter(player=player) \
             .filter(finished=True) \
@@ -169,14 +172,65 @@ class PlayerView(View):
         games = PlayerHistory.objects.filter(player=player) \
             .filter(event__isnull=False).filter(finished=False) \
             .order_by('kickoff_time')
+        ## Data preparation for display
         chart = hist.order_by('kickoff_time')
         team = Team.objects.get(name=player.team)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
-        ctx = {'team': team, 'player': player, 'photo': photo, 'title': player,
-               'games': games, 'hist': hist, 'chart': chart}
+        overall = player_gwByGw(hist)
+        ## Pass data to context
+        ctx = {
+            'team': team,
+            'player': player,
+            'photo': photo,
+            'title': player,
+            'games': games,
+            'hist': hist,
+            'chart': chart,
+            'form': form,
+            'overall': overall,
+            'id': id
+            }
+
         return render(request, 'player.html', ctx)
 
+    def post(self, request, id):
+        form = PlayerChartForm(request.POST)
+        ## Django ORMs
+        player = Player.objects.get(id=id)
+        hist = PlayerHistory.objects.filter(player=player) \
+            .filter(finished=True) \
+            .order_by('-kickoff_time')
+        games = PlayerHistory.objects.filter(player=player) \
+            .filter(event__isnull=False).filter(finished=False) \
+            .order_by('kickoff_time')
+        ## Data preparation for display
+        chart = hist.order_by('kickoff_time')
+        team = Team.objects.get(name=player.team)
+        photo = "/static/logos/" + team.short_name.lower() + ".png "
 
+        if form.is_valid():
+            category = form.cleaned_data['stat']
+            overall = player_gwByGw(hist, category)
+        else:
+            overall = player_gwByGw(hist)
+        ## Pass data to context
+        ctx = {
+            'team': team,
+            'player': player,
+            'photo': photo,
+            'title': player,
+            'games': games,
+            'hist': hist,
+            'chart': chart,
+            'form': form,
+            'overall': overall,
+            'id': id,
+            'category': category          
+            }
+
+        return render(request, 'player.html', ctx)
+
+     
 class StandingsView(View):
     """View with BPL table
     """    
@@ -194,7 +248,7 @@ class FixtureView(View):
         fix_list = []
         for i in range(1,39):
             fix_list.append(Fixtures.objects.filter(event=i).order_by('kickoff_time'))
-        curr_event = Fixtures.objects.filter(finished=True).last().event.id
+        curr_event = Fixtures.objects.filter(finished=True).order_by('kickoff_time').last().event.id
         # tbd = Fixtures.objects.filter(event__isnull=True)
         paginator = Paginator(fix_list, 1)
         page = request.GET.get('page', curr_event)
