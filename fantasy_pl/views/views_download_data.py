@@ -70,7 +70,7 @@ def DownloadUserView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
-        last_event = Event.objects.filter(finished=false).first()
+        last_event = Event.objects.filter(finished=False).first()
         gw = last_event.id
         ## Retrieve data from API
         try:

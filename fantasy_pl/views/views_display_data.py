@@ -4,6 +4,7 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render
 from django.views import View
+from collections import OrderedDict
 
 import json
 
@@ -508,7 +509,7 @@ class UserProfile(View):
         """    
 
         end = len(user_season)
-        picks = {}
+        picks = OrderedDict()
 
         for i in range(end):
             inst = user_season[i]
@@ -520,7 +521,7 @@ class UserProfile(View):
             del pick['id']
             del pick['user_id']
 
-            team = {}
+            team = OrderedDict()
             for k, v in pick.items():
                 k = k.split('_')
                 if k[1] == 'id':
@@ -567,7 +568,7 @@ class UserProfile(View):
             for h in user_hist.chips:
                 ctx[h['name']] = h['event']
             ## User season
-            user_season = UserFplSeason.objects.filter(userfpl=profile)
+            user_season = UserFplSeason.objects.filter(userfpl=profile).order_by('event_id')
             ctx['season'] = user_season
             ## User Picks
             picks = self.dict_picks(user_season)
