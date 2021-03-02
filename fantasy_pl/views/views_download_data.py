@@ -9,7 +9,7 @@ from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     download_json, get_fixtures_for_season, get_fpl_userteam, get_data, \
     get_fpl_user, get_fpl_user_history_and_season, get_fpl_user_picks, \
-    DownloadDataJSON 
+    download_data_json 
 from fantasy_pl.views.updates import update_teams, update_players, \
     populate_positions, update_player_data, update_player_fixture, \
     update_fixture, update_userteam, update_user, update_events, \
@@ -28,7 +28,7 @@ def DownloadUserteamView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
-        last_event = Event.objects.filter(finished=True).last()
+        last_event = Event.objects.filter(finished=False).first()
         gw = last_event.id
         try:
             team = get_fpl_userteam(player_id, gw)
@@ -46,7 +46,7 @@ def DownloadUserView(request):
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
-        last_event = Event.objects.filter(finished=True).last()
+        last_event = Event.objects.filter(finished=false).first()
         gw = last_event.id
         ## Retrieve data from API
         try:
@@ -56,13 +56,19 @@ def DownloadUserView(request):
             messages.error(request, f"Failure updating your profile: "
                                     f"{format(e)}")
             return redirect('/user-profile/')
-        ## Update data
+        ## Update data for UserFPL
         user = request.user
         update_user(user, user_fpl)
         update_user_history(user, user_fpl_history)
         user_fpl_season = user_fpl_history['current']
         update_user_season(user, user_fpl_season)
         update_user_picks(user)
+        ## Update data for UserTeam
+        team = get_fpl_userteam(player_id, gw)
+        players = team['picks']
+        user = request.user
+        update_userteam(user, players)
+        ## Pass message
         messages.success(request, "Your Profile was succesfully updated.")
         return redirect('/user-profile/')
 
@@ -120,7 +126,7 @@ class GetDataView(PermissionRequiredMixin, View):
         if form.is_valid():
             choice = int(form.cleaned_data['choice'])
             if choice == 0:
-                ctx = DownloadDataJSON()
+                ctx = download_data_json()
             elif choice == 1:
                 ctx = PopulateTables()
             else:

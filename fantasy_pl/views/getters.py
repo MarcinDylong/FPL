@@ -205,7 +205,7 @@ def read_json():
         return data
 
 
-def DownloadDataJSON():
+def download_data_json():
     try:
         download_json()
         ctx = {'event': 'success', 'info': 'Data has been downloaded to JSON'}
