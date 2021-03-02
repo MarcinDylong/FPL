@@ -259,6 +259,7 @@ def update_user(user, user_fpl):
     """    
     defaults = {
         'joined_time': user_fpl['joined_time'],
+        'fpl': user_fpl['id'], ## Comment to disable updating data for User FPL
         'started_event': user_fpl['started_event'],
         'favourite_team': user_fpl['favourite_team'],
         'player_first_name': user_fpl['player_first_name'],
@@ -279,7 +280,7 @@ def update_user(user, user_fpl):
 
     usr, created = UserFpl.objects.update_or_create(
         user=user,
-        fpl=user_fpl['id'],
+        # fpl=user_fpl['id'], ## Uncomment to disable updating data for User FPL
         defaults=defaults      
     )
 
