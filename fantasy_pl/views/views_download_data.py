@@ -25,6 +25,14 @@ from fantasy_pl.views.updates import update_teams, update_players, \
                     database
 '''
 def DownloadUserteamView(request):
+    """
+    Donwload or update UserTeam model
+
+    View without own template, 
+
+    App is redirected to this view when user submit Form on site /user-team/;
+    After downloading/updating UserTeam model redirected back to /user-team/.
+    """
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
@@ -43,6 +51,22 @@ def DownloadUserteamView(request):
 
 
 def DownloadUserView(request):
+    """
+    Download and update UserProfile Model and connected to this model different
+    instances of models:
+    - UserFplHistory;
+    - UserFplSeason;
+    - UserFplPicks;
+
+    Noticed that when UserFpl is mutable instance connected OneToOne to user 
+    istances, rest of mentioned above models are immutable with Foreign key to 
+    Event model. They can be override only if user provide different ID from 
+    Fantasy Premier League
+
+    App is redirected to this view when user submit Form on site /user-profile/;
+    After downloading/updating UserTeam model redirected back to /user-profile/.
+
+    """
     form = GetUserteamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
@@ -74,6 +98,14 @@ def DownloadUserView(request):
 
 
 def PopulateTables():
+    """
+    Populate Tables for models:
+    - Team;
+    - Position;
+    - Players;
+    - Events;
+    """
+
     # data = read_json()  ## Read data from JSON file on disk
     data = get_data()  # Read data from Fantasy Premier League API
     teams = data['teams']
@@ -94,6 +126,13 @@ def PopulateTables():
 
 
 def UpdateTables():
+    """
+    Update Tables for models:
+    - Team;
+    - Position;
+    - Players;
+    - Events;
+    """
     # data = read_json()  ## Read data from JSON file on disk
     data = get_data()  # Read data from Fantasy Premier League API
     teams = data['teams']
@@ -113,6 +152,12 @@ def UpdateTables():
 
 
 class GetDataView(PermissionRequiredMixin, View):
+    """
+    View for manual updating data for tables:
+    - Team;
+    - Players;
+    - Events;
+    """
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -136,6 +181,11 @@ class GetDataView(PermissionRequiredMixin, View):
 
 
 class GetPlayersHistoryView(PermissionRequiredMixin, View):
+    """
+    View for manual updating data for table:
+    - PlayerHistory
+    """
+    
     permission_required = 'fantasy_pl.add_player'
     permission_denied_message = 'Sorry, You do not have permission!'
 
@@ -207,6 +257,10 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
 
 
 class GetFixtureView(PermissionRequiredMixin, View):
+    """
+    View for manual updating data for tables:
+    - Fixtures;
+    """
     permission_required = 'fantasy_pl.add_fixture'
     permission_denied_message = 'Sorry, You do not have permission!'
 

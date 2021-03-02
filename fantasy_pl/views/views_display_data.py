@@ -16,7 +16,8 @@ from fantasy_pl.views.views_download_data import DownloadUserView
 from fantasy_pl.views.pandas import players_ctx, player_gwByGw
 
 class IndexView(LoginRequiredMixin, View):
-    """Dashboard with information about current players performance
+    """
+    Dashboard with information about current players performance
     """    
     login_url = '/login'
 
@@ -105,31 +106,36 @@ class IndexView(LoginRequiredMixin, View):
 
 
 def view_400(request, *args, **kwargs):
-    """Error 400 handler
+    """
+    Error 400 handler
     """    
     return render(request, 'page-400.html')
 
 
 def view_403(request, *args, **kwargs):
-    """Error 403 handler
+    """
+    Error 403 handler
     """
     return render(request, 'page-403.html')
 
 
 def view_404(request, *args, **kwargs):
-    """Error 404 handler
+    """
+    Error 404 handler
     """
     return render(request, 'page-404.html')
 
 
 def view_500(request, *args, **kwargs):
-    """Error 500 handler
+    """
+    Error 500 handler
     """
     return render(request, 'page-500.html')
 
 
 class TeamView(View):
-    """View with BPL teams informations
+    """
+    View for BPL teams informations
     """    
 
     def get(self, request, id):
@@ -159,7 +165,8 @@ class TeamView(View):
 
 
 class PlayerView(View):
-    """View with BPL players informations
+    """
+    View for BPL players informations
     """ 
     def get_data(self, id, form, category='selected'):
         ## Django ORMs
@@ -214,7 +221,8 @@ class PlayerView(View):
 
      
 class StandingsView(View):
-    """View with BPL table
+    """
+    View with BPL table
     """    
     def get(self, request):
         table = Team.objects.all().order_by('position')
@@ -223,7 +231,8 @@ class StandingsView(View):
 
 
 class FixtureView(View):
-    """View with fixture for BPL Season
+    """
+    View with fixture for BPL Season
     """    
 
     def get(self, request):
@@ -240,7 +249,8 @@ class FixtureView(View):
 
 
 class StatsView(View):
-    """Players statistic view
+    """
+    Players statistic view
     """    
     def get(self, request):
         ctx = {'title': 'Stats'}
@@ -249,7 +259,9 @@ class StatsView(View):
 
 
 class StatsChartView(View):
-    
+    """
+    Statistic for player on given position in form of Bubble Charts
+    """
    
     def get(self, request, id):
         ctx = {'title': ''}
@@ -276,7 +288,8 @@ class StatsChartView(View):
 
 
 class PlayersSearchView(View):
-    """Player searching View
+    """
+    Player searching View
     """    
     def get(self, request):
         form = SearchForm(request.GET)
@@ -318,7 +331,8 @@ class PlayersSearchView(View):
 
 
 class UserTeamView(View):
-    """View for planning next gameweek team
+    """
+    View for planning next gameweek team
     """    
     def team_overall(self, uteam, ctx):
         """Determine overall stats for user team and adding it to template 
@@ -461,7 +475,8 @@ class UserTeamView(View):
 
 
 class UserProfile(View):
-    """Display User profile data
+    """
+    Display User profile data
     """  
 
     def dict_picks(self, user_season):
