@@ -14,6 +14,24 @@
             <!-- [ breadcrumb ] end -->
             <div class="main-body">
                 <div class="page-wrapper">
+                    <!-- [ About ] start -->
+                    <div class='row'>
+                        <div class="col-xl-12 col-md-12">
+                            <div class="accordion" id="aboutCollapse">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h4 class="mb-0"><a href="#!" data-toggle="collapse" data-target="#about" aria-expanded="True" class="" aria-controls="collapseOne" ><!-- class="collapsed" aria-expanded="true"  -->
+                                            About this site!
+                                        </a></h4>
+                                    </div>
+                                    <div id="about" class="card-body collapse show" aria-labelledby="headingOne" data-parent="#aboutCollapse">
+                                        {% include 'includes/about.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ About ] end -->
                     <!-- [ Main Content ] start -->
                     <div class="row">
                         <!--[ Best eleven of current GW ] start-->
