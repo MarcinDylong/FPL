@@ -28,7 +28,7 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect("/")
+                return redirect("fpl:home")
             else:
                 return render(request, "accounts/login.html", {"form": form})
         else:
@@ -38,8 +38,7 @@ class LoginView(View):
 class RegisterUserView(View):
     def get(self, request):
         form = SignUpForm()
-        return render(request, "accounts/register.html",
-                      {"form": form, "msg": None, "success": False})
+        return render(request, "accounts/register.html", {"form": form})
 
     def post(self, request):
         form = SignUpForm(request.POST)
@@ -49,7 +48,7 @@ class RegisterUserView(View):
             raw_password = form.cleaned_data.get("password1")
             user = authenticate(username=username, password=raw_password)
             messages.success(request, "User Created, please log in")
-            return redirect('/login/')
+            return redirect('auth:login')
 
         return render(request, "accounts/register.html", {"form": form})
         

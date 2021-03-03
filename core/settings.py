@@ -19,15 +19,12 @@ def get_secret(setting, secrets=secrets):
     except KeyError:
         raise ImproperlyConfigured("Set the {} setting".format(setting))
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = config('SECRET_KEY', default='S#perS3crEt_1122')
 SECRET_KEY = get_secret('SECRET_KEY')
-# SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=True)
 DEBUG = True
-# DEBUG = int(os.environ.get("DEBUG", default=0))
+
 
 # load production server from .env
 ALLOWED_HOSTS = '*'
@@ -47,7 +44,8 @@ INSTALLED_APPS = [
     'fantasy_pl',
     'rest_framework',
     'django_extensions',
-    'django_filters'
+    'django_filters',
+    'widget_tweaks'
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
