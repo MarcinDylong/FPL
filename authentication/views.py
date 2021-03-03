@@ -52,49 +52,7 @@ class RegisterUserView(View):
             return redirect('/login/')
 
         return render(request, "accounts/register.html", {"form": form})
-
-
-class PasswordResetRequestView(View):
-    def get(self, request):
-        password_reset_form = PasswordResetForm()
-        return render(request=request,
-                      template_name="accounts/reset_password.html",
-                      context={"form": password_reset_form})
-
-    def post(self, request):
-        password_reset_form = PasswordResetForm(request.POST)
-        if password_reset_form.is_valid():
-            data = password_reset_form.cleaned_data['email']
-            associated_users = User.objects.filter(Q(email=data))
-            if associated_users.exists():
-                for user in associated_users:
-                    subject = "Password Reset Requested"
-                    email_template_name = "accounts/reset_password_email.txt"
-                    c = {
-                        "email": user.email,
-                        'domain': '127.0.0.1:8000',
-                        'site_name': 'Website',
-                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-                        'token': default_token_generator.make_token(user),
-                        'protocol': 'http',
-                    }
-                    email = render_to_string(email_template_name, c)
-                    try:
-                        send_mail(subject, email, 'admin@example.com',
-                                  [user.email], fail_silently=False)
-                    except BadHeaderError:
-                        return HttpResponse('Invalid header found.')
-
-                    return redirect("/reset/done/")
-            else:
-                messages.error(request, 'Email was not found in database.')
-                return render(request=request,
-                              template_name="accounts/reset_password.html",
-                              context={"form": password_reset_form})
-        else:
-            return render(request=request,
-                          template_name="accounts/reset_password.html",
-                          context={"form": password_reset_form})
+        
 
 def LogoutView(request):
     logout(request)
