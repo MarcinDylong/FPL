@@ -24,6 +24,9 @@ class UserFpl(models.Model):
     last_deadline_bank = models.FloatField(null=True)
     last_deadline_value = models.FloatField(null=True)
     last_deadline_total_transfers = models.IntegerField(null=True)
+    past = JSONField(null=True)
+    chips = JSONField(null=True)
+    transfers = JSONField(null=True)
 
     def __str__(self):
         return f'{self.player_first_name} {self.player_last_name}'
@@ -275,18 +278,6 @@ class Event(models.Model):
 
     def __str__(self):
         return f'{self.name}'
-
-
-class UserFplHistory(models.Model):
-    userfpl = models.OneToOneField(UserFpl, on_delete=models.CASCADE)
-    past = JSONField()
-    chips = JSONField()
-
-    class Meta:
-        unique_together = ('userfpl',)
-
-    def __str__(self):
-        return f'{self.userfpl} history'
 
 
 class UserFplSeason(models.Model):

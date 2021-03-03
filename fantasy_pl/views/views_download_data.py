@@ -7,13 +7,13 @@ from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
     GetUserteamForm, GetDataForm
 from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
-    download_json, get_fixtures_for_season, get_fpl_userteam, get_data, \
-    get_fpl_user, get_fpl_user_history_and_season, get_fpl_user_picks, \
+    download_json, get_fixtures_for_season, get_data, get_fpl_user, \
+    get_fpl_user_history_and_season, get_fpl_user_transfers, get_fpl_user_picks, \
     download_data_json 
 from fantasy_pl.views.updates import update_teams, update_players, \
     populate_positions, update_player_data, update_player_fixture, \
     update_fixture, update_userteam, update_user, update_events, \
-    update_user_history, update_user_season, update_user_picks
+    update_user_season, update_user_picks
 
 '''
     Views for downloading data from Fantasy Premier League API;
@@ -39,7 +39,7 @@ def DownloadUserteamView(request):
         last_event = Event.objects.filter(finished=False).first()
         gw = last_event.id
         try:
-            team = get_fpl_userteam(player_id, gw)
+            team = get_fpl_user_picks(player_id, gw)
             players = team['picks']
             user = request.user
             update_userteam(user, players)
@@ -54,7 +54,6 @@ def DownloadUserView(request):
     """
     Download and update UserProfile Model and connected to this model different
     instances of models:
-    - UserFplHistory;
     - UserFplSeason;
     - UserFplPicks;
 
@@ -76,19 +75,20 @@ def DownloadUserView(request):
         try:
             user_fpl = get_fpl_user(player_id)
             user_fpl_history = get_fpl_user_history_and_season(player_id)
+            user_fpl_transfers = get_fpl_user_transfers(player_id)
         except Exception as e:
             messages.error(request, f"Failure updating your profile: "
                                     f"{format(e)}")
             return redirect('/user-profile/')
         ## Update data for UserFPL
         user = request.user
-        update_user(user, user_fpl)
-        update_user_history(user, user_fpl_history)
+        update_user(user, user_fpl, user_fpl_history, user_fpl_transfers)
+                    # update_user_history(user, user_fpl_history)
         user_fpl_season = user_fpl_history['current']
         update_user_season(user, user_fpl_season)
         update_user_picks(user)
         ## Update data for UserTeam
-        team = get_fpl_userteam(player_id, gw)
+        team = get_fpl_user_picks(player_id, gw)
         players = team['picks']
         user = request.user
         update_userteam(user, players)

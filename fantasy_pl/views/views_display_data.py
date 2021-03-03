@@ -11,7 +11,7 @@ import json
 from fantasy_pl.forms import SearchForm, PlayerSearchForm, UserTeamForm, \
     GetUserteamForm, ChartForm, PlayerChartForm
 from fantasy_pl.models import Team, Player, PlayerHistory, Fixtures, Position, \
-    UserTeam, Event, UserFpl, UserFplHistory, UserFplSeason, UserFplPicks
+    UserTeam, Event, UserFpl, UserFplSeason, UserFplPicks
 
 from fantasy_pl.views.views_download_data import DownloadUserView
 from fantasy_pl.views.pandas import players_ctx, player_gwByGw
@@ -564,8 +564,7 @@ class UserProfile(View):
             event = Event.objects.get(id=profile.current_event)
             ctx['event'] = event
             ## User history
-            user_hist = UserFplHistory.objects.get(userfpl=profile)
-            for h in user_hist.chips:
+            for h in profile.chips:
                 ctx[h['name']] = h['event']
             ## User season
             user_season = UserFplSeason.objects.filter(userfpl=profile).order_by('event_id')

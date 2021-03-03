@@ -253,7 +253,7 @@ class UserTeamForm(forms.Form):
 
         gkp_check = self.check_unique_models(l_gkp)
         if gkp_check[0] == False:
-            raise ValidationError(f'Repeated forward {gkp_check[1]}')
+            raise ValidationError(f'Repeated goalkeeper {gkp_check[1]}')
 
         players_list = l_gkp + l_def + l_mid + l_fwd
         teams = {}

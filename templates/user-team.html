@@ -95,12 +95,12 @@
                                     <div class="col">
                                         <h3 class="f-w-300">{{ overall_cost }}</h3>
                                         <span class="d-block text-uppercase">
-                                                    {% if overpaid %}
-                                                    Your team might be overpaid!
-                                                    {% else %}
-                                                    Cost
-                                                    {% endif %}
-                                                    </span>
+                                            {% if overpaid %}
+                                                Your team might be overpaid!
+                                            {% else %}
+                                                Cost
+                                            {% endif %}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -112,76 +112,72 @@
                 {% endif %}
                 <!-- [ Team Form and List ] start -->
                 <div class="row">
-                    <!--[ UserTeam Form ] start-->
-                    <div class="col-xl-3">
+                    <div class="col-sm-12">
                         <div class="card Recent-Users">
                             <div class="card-header">
                                 <h5 class="text-dark" align="left">Update your team manually</h5>
+                                <br><br>
+                                <h6 align="left" class="text-muted">Note!</h7>
+                                <br>
+                                This form is created to experiment with your team. Submitting form will change Your saved team. However each time you use form above or
+                                form in tab "User Profile" your team will be updated according to the data from yours Fantasy Premier League official account.
                             </div>
-                            <div class="card-body text-left">
-                                <div class="form-group">
-                                    <form role="form" method="post" action="#">
-                                        {% csrf_token %}
-                                        {{ form }}
-                                        <button type='submit' class="btn btn-primary">
-                                            Get
-                                        </button>
-                                    </form>
+                            <div class="card-body">
+                                <div class='row'>
+                                    <!--[ UserTeam Form ] start-->
+                                    <div class="col-md-3">
+                                        <div class="form-group">
+                                            <form method="post" action="#">
+                                                {% csrf_token %}
+                                                {% include 'includes/form.html' %}
+                                                <button type='submit' class="btn btn-primary">Get</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!--[ UserTeam Form ] end-->
+                                    <!--[ UserTeam Table ] start-->
+                                    {% if uteam %}
+                                    <div class="col-md-9">
+                                        <div class="table-responsive">
+                                            <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
+                                                <thead>
+                                                    <tr class="center" align="center">
+                                                        <th>id</th>
+                                                        <th>Position</th>
+                                                        <th>Player</th>
+                                                        <th>Team</th>
+                                                        <th>PPG</th>
+                                                        <th>Total Points</th>
+                                                        <th>Cost</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for u in uteam %}
+                                                        <tr class="unread center" align="center">
+                                                            <td>{{ u.id }}</td>
+                                                            <td>{{ u.position.name_short }}</td>
+                                                            <td>
+                                                                <a class='golink' href="{% url 'fantasy_pl:player' u.id %}">
+                                                                    <h6 class="mb-1">{{ u.second_name }}</h6>
+                                                                    <p class="text-muted m-0">{{ u.first_name }}</p>
+                                                                </a>
+                                                            </td>
+                                                            <td>{{ u.team.short_name }}</td>
+                                                            <td>{{ u.points_per_game }}</td>
+                                                            <td>{{ u.total_points }}</td>
+                                                            <td>{{ u.now_cost }}</td>
+                                                        </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
+                                <!--[ UserTeam Table ] end-->
                             </div>
                         </div>
                     </div>
-                    <!--[ UserTeam Form ] end-->
-                    {% if uteam %}
-                    <!--[ UserTeam Stat ] start-->
-                    <div class="col-xl-9">
-                        <div class="card Recent-Users">
-                            <div class="card-header">
-                                <h5>Your Team players stats</h5>
-                            </div>
-                            <div class="card-block px-0 py-3">
-                                <div class="table-responsive">
-                                    <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
-                                        <thead>
-                                            <tr class="center" align="center">
-                                                <th>sort</th>
-                                                <th>id</th>
-                                                <th>Position</th>
-                                                <th>Player</th>
-                                                <th>Team</th>
-                                                <th>Next Game</th>
-                                                <th>PPG</th>
-                                                <th>Total Points</th>
-                                                <th>Cost</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {% for u in uteam %}
-                                            <tr class="unread center" align="center">
-                                                <td>{{ u.position.id }}</td>
-                                                <td>{{ u.id }}</td>
-                                                <td>{{ u.position.name_short }}</td>
-                                                <td>
-                                                    <a class='golink' href="{% url 'fantasy_pl:player' u.id %}">
-                                                        <h6 class="mb-1">{{ u.second_name }}</h6>
-                                                        <p class="text-muted m-0">{{ u.first_name }}</p>
-                                                    </a>
-                                                </td>
-                                                <td>{{ u.team.short_name }}</td>
-                                                <td>{{ u.next_game }}</td>
-                                                <td>{{ u.points_per_game }}</td>
-                                                <td>{{ u.total_points }}</td>
-                                                <td>{{ u.now_cost }}</td>
-                                            </tr>
-                                            {% endfor %}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--[ UserTeam Stat ] end-->
-                    {% endif %}
                 </div>
                 <!-- [ Team Form and List ] end -->
                 {% if uteam %}

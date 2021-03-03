@@ -6,7 +6,7 @@ import urllib.request
 import requests
 
 from fantasy_pl.models import Team, Position, Player, PlayerHistory, Fixtures, \
-    UserTeam, UserFpl, Event, UserFplHistory, UserFplSeason, UserFplPicks
+    UserTeam, UserFpl, Event, UserFplSeason, UserFplPicks
 from fantasy_pl.views.getters import league_table_scraper, get_fpl_user_picks
 
 
@@ -250,13 +250,16 @@ def update_userteam(user, players):
     )
 
 
-def update_user(user, user_fpl):
+def update_user(user, user_fpl, user_fpl_history, user_fpl_transfers):
     """Update/create user in database
 
     Args:
         user (model_instance): Currently logged user
         user_fpl (dict): Retrieved data from API
     """    
+    chips = user_fpl_history['chips']
+    past = user_fpl_history['past']
+
     defaults = {
         'joined_time': user_fpl['joined_time'],
         'fpl': user_fpl['id'], ## Comment to disable updating data for User FPL
@@ -275,32 +278,16 @@ def update_user(user, user_fpl):
         'name': user_fpl['name'],
         'last_deadline_bank': user_fpl['last_deadline_bank'] / 10,
         'last_deadline_value': user_fpl['last_deadline_value'] / 10,
-        'last_deadline_total_transfers': user_fpl['last_deadline_total_transfers'] 
+        'last_deadline_total_transfers': user_fpl['last_deadline_total_transfers'],
+        'chips': chips,
+        'past': past,
+        'transfers': user_fpl_transfers
     }
 
     usr, created = UserFpl.objects.update_or_create(
         user=user,
         # fpl=user_fpl['id'], ## Uncomment to disable updating data for User FPL
         defaults=defaults      
-    )
-
-
-def update_user_history(user, user_fpl_history):
-    """Update/create UserHistory table in database
-
-    Args:
-        user (model_instance): User instance
-        user_fpl_history (model_instance): UserFpl instance for User
-    """    
-    user_fpl = UserFpl.objects.get(user=user)
-    chips = user_fpl_history['chips']
-    past = user_fpl_history['past']
-    obj, created = UserFplHistory.objects.update_or_create(
-        userfpl=user_fpl,
-        defaults={
-            'chips': chips,
-            'past': past
-        }
     )
 
 

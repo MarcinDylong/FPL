@@ -111,20 +111,19 @@ def get_fpl_user_history_and_season(player_id: int):
     return data
 
 
-def get_fpl_user_picks(player_id: int, gw: int):
-    """Retrieve user team for given gameweek
+def get_fpl_user_transfers(player_id: int):
+    """Retrieve Player season data
 
     Args:
-        player_id (int): User ID
-        gw (int): Gameweek
+        player_id (int): Player ID
 
     Raises:
-        Exception: Status code different than 200
+        Exception: Status different than 200
 
     Returns:
-        dict: Dictionary with data about user team
+        dict: Dictionary with season data of player
     """    
-    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/event/{gw}/picks/'
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/transfers/'
     response = requests.get(base_url)
 
     if response.status_code != 200:
@@ -134,7 +133,7 @@ def get_fpl_user_picks(player_id: int, gw: int):
     return data
 
 
-def get_fpl_userteam(player_id: int, gw: int):
+def get_fpl_user_picks(player_id: int, gw: int):
     """Retrieve user team for given gameweek
 
     Args:
