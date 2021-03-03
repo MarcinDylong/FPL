@@ -26,7 +26,11 @@
                     <form role="form" method="post" action="">
 
                         {% csrf_token %}                    
-
+                        {% if form.non_field_errors %}
+                            <button type="button" class="btn btn-danger">
+                                {{ form.non_field_errors.as_text }}
+                            </button>
+                        {% endif %}
                         <div class="input-group mb-3">
                             {{ form.username }}
                         </div>

@@ -85,7 +85,7 @@ class PasswordResetRequestView(View):
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
 
-                    return redirect("done/")
+                    return redirect("/reset/done/")
             else:
                 messages.error(request, 'Email was not found in database.')
                 return render(request=request,
