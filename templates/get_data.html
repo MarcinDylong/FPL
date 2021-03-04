@@ -18,15 +18,25 @@
                         <i class="fas fa-download f-50 text-c-blue"></i>
                     </div>
                     <div class="form-group">
-                        <h3 class="mb-4">Download data for tables Team, Player, Position & Events</h3>
+                        <!-- All data or  -->
+                        {% if all %}
+                            <h3 class="mb-4">Download all data at once including: <br> - Team <br> - Position <br> - Player <br> - Event <br> - Fixtues <br> - PlayerHistory</h3>
+                        {% else %}
+                            <h3 class="mb-4">Download data for tables Team, Player, Position & Events</h3>
+                        {% endif %}
+                        <!--  -->
                         <span>
                             {% if event == 'error' %}
                             <h3 class="text-danger mb-1">
-                                {{ error }}
+                                {% for e in error %}
+                                    {{ e }}
+                                {% endfor %}
                             </h3>
                             {% else %}
                             <h3 class="text-success mb-1">
-                                {{ info }}
+                                {% for i in info %}
+                                    {{ i }}
+                                {% endfor %}
                             </h3>
                             {% endif %}
                         </span>
@@ -43,9 +53,7 @@
                                 {{ form }}
                             </div>
                             <br>
-                            <button class="btn btn-primary shadow-2 mb-4">
-                                Get!
-                            </button>
+                            <button class="btn btn-primary shadow-2 mb-4"> Get! </button>
                         </form>
                         <span class="mb-0 text-muted">
                             Back <a href="/">Home</a>

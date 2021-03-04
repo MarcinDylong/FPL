@@ -4,7 +4,7 @@ from django.views import View
 from django.contrib import messages
 
 from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
-    GetUserteamForm, GetDataForm
+    GetUserteamForm, GetDataForm, GetAllDataForm
 from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     download_json, get_fixtures_for_season, get_data, get_fpl_user, \
@@ -118,10 +118,10 @@ def PopulateTables():
         update_players(players)
         update_events(events, total_players)
         ctx = {'event': 'success',
-               'info': 'Tables Team, Position, Player & Event has been populated.'}
-        return ctx
+                'info': 'Tables Team, Position, Player & Event has been populated.'}
     except Exception as e:
         ctx = {'event': 'error', 'error': format(e)}
+    return ctx
 
 
 def UpdateTables():
@@ -150,6 +150,57 @@ def UpdateTables():
         return ctx
 
 
+class GetAllDataView(PermissionRequiredMixin, View):
+    """
+    View for manual updating data for tables:
+    - Team;
+    - Players;
+    - Events;
+    """
+    permission_required = 'fantasy_pl.add_team'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self, request):
+        ctx = {'form': GetAllDataForm, 'all':True}
+        return render(request, 'get_data.html', ctx)
+
+    def post(self, request):
+        form = GetDataForm(request.POST)
+        ctx = {}
+        if form.is_valid():
+            choice = int(form.cleaned_data['choice'])
+            if choice == 1:
+                ctx = PopulateTables()
+                try: 
+                    fixture = get_fixtures_for_season()
+                    update_fixture(fixture)
+                    players = Player.objects.all()
+                    for p in players:
+                            data = get_individual_player_data(p.id)
+                            history = data['history']
+                            update_player_data(history)
+                            game = data['fixtures']
+                            update_player_fixture(game, p.id)
+                except Exception as e:
+                    ctx['error'] = format(e)
+            else:
+                ctx = UpdateTables()
+                try: 
+                    fixture = get_fixtures_for_season()
+                    update_fixture(fixture)
+                    players = Player.objects.all()
+                    for p in players:
+                            data = get_individual_player_data(p.id)
+                            history = data['history']
+                            update_player_data(history)
+                            game = data['fixtures']
+                            update_player_fixture(game, p.id)
+                except Exception as e:
+                    ctx['error'] = format(e)
+
+            ctx['form'] = GetAllDataForm
+            return render(request, 'get_data.html', ctx)
+
 class GetDataView(PermissionRequiredMixin, View):
     """
     View for manual updating data for tables:
@@ -177,6 +228,35 @@ class GetDataView(PermissionRequiredMixin, View):
                 ctx = UpdateTables()
             ctx['form'] = GetDataForm
             return render(request, 'get_data.html', ctx)
+
+
+class GetFixtureView(PermissionRequiredMixin, View):
+    """
+    View for manual updating data for tables:
+    - Fixtures;
+    """
+    permission_required = 'fantasy_pl.add_fixture'
+    permission_denied_message = 'Sorry, You do not have permission!'
+
+    def get(self, request):
+        ctx = {'form': GetFixtureForm()}
+        return render(request, 'get_fixture.html', ctx)
+
+    def post(self, request):
+        form = GetFixtureForm(request.POST)
+        if form.is_valid():
+            choice = int(form.cleaned_data['choice'])
+            if choice == 0:
+                try:
+                    fixture = get_fixtures_for_season()
+                    update_fixture(fixture)
+                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
+                            'form': GetFixtureForm()}
+                    return render(request, 'get_fixture.html', ctx)
+                except Exception as e:
+                    ctx = {'event': 'error', 'error': format(e),
+                           'form': GetFixtureForm()}
+                    return render(request, "page-event.html", ctx)
 
 
 class GetPlayersHistoryView(PermissionRequiredMixin, View):
@@ -253,32 +333,3 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
             else:
                 ctx = {'form': GetPlayerDataForm()}
                 return render(request, 'get_player_data.html', ctx)
-
-
-class GetFixtureView(PermissionRequiredMixin, View):
-    """
-    View for manual updating data for tables:
-    - Fixtures;
-    """
-    permission_required = 'fantasy_pl.add_fixture'
-    permission_denied_message = 'Sorry, You do not have permission!'
-
-    def get(self, request):
-        ctx = {'form': GetFixtureForm()}
-        return render(request, 'get_fixture.html', ctx)
-
-    def post(self, request):
-        form = GetFixtureForm(request.POST)
-        if form.is_valid():
-            choice = int(form.cleaned_data['choice'])
-            if choice == 0:
-                try:
-                    fixture = get_fixtures_for_season()
-                    update_fixture(fixture)
-                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
-                            'form': GetFixtureForm()}
-                    return render(request, 'get_fixture.html', ctx)
-                except Exception as e:
-                    ctx = {'event': 'error', 'error': format(e),
-                           'form': GetFixtureForm()}
-                    return render(request, "page-event.html", ctx)

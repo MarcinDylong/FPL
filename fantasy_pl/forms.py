@@ -4,7 +4,7 @@ from django.forms import ModelChoiceField
 
 from fantasy_pl.models import Player, Team, Position
 from fantasy_pl.form_choices import choices_fixture, choices_data, \
-    choices_stats, choices_player_stats
+    choices_stats, choices_player_stats, choices_all_data
 
 
 class GetPlayerDataForm(forms.Form):
@@ -20,6 +20,8 @@ class GetPlayerDataForm(forms.Form):
                              widget=forms.CheckboxInput(
                                  attrs={'class': 'form-control'}))
 
+                        
+
 
 class GetFixtureForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect(
@@ -33,6 +35,13 @@ class GetDataForm(forms.Form):
         attrs={'class': 'custom-radio'}),
         label=False,
         choices=choices_data)
+
+
+class GetAllDataForm(forms.Form):
+    choice = forms.ChoiceField(widget=forms.RadioSelect(
+        attrs={'class': 'custom-radio'}),
+        label=False,
+        choices=choices_all_data)
 
 
 class GetUserteamForm(forms.Form):

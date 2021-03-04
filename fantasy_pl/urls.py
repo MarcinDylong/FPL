@@ -4,7 +4,7 @@ from .views.views_display_data import IndexView, TeamView, PlayerView, \
      StandingsView, FixtureView, StatsView, PlayersSearchView, UserTeamView, \
      UserProfile, BlankView, StatsChartView, UserProfileTrans
 from .views.views_download_data import GetPlayersHistoryView, GetFixtureView, \
-     DownloadUserteamView, GetDataView, DownloadUserView
+     DownloadUserteamView, GetDataView, DownloadUserView, GetAllDataView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
      ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
 
@@ -27,6 +27,7 @@ urlpatterns = [
     path('user-profile/transfers/', UserProfileTrans.as_view(),
          name='user-profile-transfers'),
     ### Data download views
+    path('get_all', GetAllDataView.as_view(), name='get_all'),
     path('get_data/', GetDataView.as_view(), name='get_data'),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),

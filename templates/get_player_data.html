@@ -22,11 +22,15 @@
                         <span>
                             {% if event == 'error' %}
                             <h3 class="text-danger mb-1">
-                                {{ error }}
+                                {% for e in error %}
+                                    {{ e }}
+                                {% endfor %}
                             </h3>
                             {% else %}
                             <h3 class="text-success mb-1">
-                                {{ info }}
+                                {% for i in info %}
+                                    {{ i }}
+                                {% endfor %}
                             </h3>
                             {% endif %}
                         </span>

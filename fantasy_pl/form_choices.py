@@ -8,6 +8,11 @@ choices_data = [
     (2, 'Update tables')
     ]
 
+choices_all_data = [
+    (0, 'Update'),
+    (1, 'Download')
+    ]
+
 choices_stats = [
     ('points_per_game', 'Points per game'),
     ('total_points', 'Total Points'),

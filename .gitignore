@@ -28,3 +28,7 @@ staticfiles/*
 data.json
 .git_
 secrets.json
+
+# Dumps
+fpl_dump_tables.sqlite3
+fpl_dump.sql
