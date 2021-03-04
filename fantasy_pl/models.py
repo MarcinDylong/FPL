@@ -291,6 +291,7 @@ class UserFplSeason(models.Model):
     rank_sort = models.IntegerField(null=True)
     overall_rank = models.IntegerField(null=True)
     bank = models.FloatField(null=True)
+    money = models.FloatField(null=True)
     value = models.FloatField(null=True)
     event_transfers = models.IntegerField(null=True)
     event_transfers_cost = models.IntegerField(null=True)

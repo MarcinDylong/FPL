@@ -1,0 +1,195 @@
+{% extends "layouts/base.html" %} {% block title %} - {{title}} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ Header ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-1">
+                        <div class="page-header-title">
+                            <i class="fas fa-star text-muted f-50"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="page-header-title">
+                            <h1 class="m-b-10">Transfers history</h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Header ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Cost & Point Charts ] end -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Team costs through season</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="teamCost"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Cost & Points Charts ] end -->
+                <!-- [ Players list ] start -->
+                <div class="row">
+                    <!--[ Current team ] start-->
+                    <div class="col-xl-4 col-md-4">
+                        <div class="card Recent-Users">
+                            <div class="card-header">
+                                <h5>Current Team</h5>
+                            </div>
+                            <div class="card-block px-0 py-3">
+                                <div class="table-responsive">
+                                    <table class="table table-hr table-striped table-bordered table-hover" id="currTeam" style="padding: 1.2rem 0.75rem;">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>#</th>
+                                                <th>Player</th>
+                                                <th>Since</th>
+                                                <th>Streak</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for p in picks %}
+                                            <tr class="unread center" align="center">
+                                                <td>{{ p.no }}</td>
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' p.player.id %}">
+                                                        <h6 class="mb-1">{{p.player.second_name}}</h6>
+                                                        <p class="text-muted m-0">{{p.player.first_name}}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ p.since }}</td>
+                                                <td>{{ p.streak }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--[ Current team ] end-->
+                    <!--[ Transfers history ] start-->
+                    <div class="col-xl-8 col-md-8">
+                        <div class="card Recent-Users">
+                            <div class="card-header">
+                                <h5>Transfers history</h5>
+                            </div>
+                            <div class="card-block px-0 py-3">
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-bordered table-hover"  id="transfers" style="padding: 1.2rem 0.75rem;">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>Player In</th>
+                                                <th>Cost</th>
+                                                <th>Player Out</th>
+                                                <th>Cost</th>
+                                                <th>Gameweek</th>
+                                                <th>Date</th>
+                                                <th>Balance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for tran in transfers %}
+                                            <tr class="unread center" align="center">
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' tran.element_in.id %}">
+                                                        <h6 class="mb-1">{{tran.element_in.second_name}}</h6>
+                                                        <p class="text-muted m-0">{{tran.element_in.first_name}}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ tran.element_in_cost }}</td>
+                                                <td>
+                                                    <a class='golink' href="{% url 'fantasy_pl:player' tran.element_out.id %}">
+                                                        <h6 class="mb-1">{{tran.element_out.second_name}}</h6>
+                                                        <p class="text-muted m-0">{{tran.element_out.first_name}}</p>
+                                                    </a>
+                                                </td>
+                                                <td>{{ tran.element_out_cost }}</td>
+                                                <td>{{ tran.event }}</td>
+                                                <td>{{ tran.time }}</td>
+                                                <td>{{ tran.diff }}</td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--[ Transfers history ] end-->
+                </div>
+                <!-- [ Players list ] end -->
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+{% block javascripts %}
+<script>
+
+$(document).ready(function() {
+    $('#currTeam').DataTable({
+        responsive: true,
+        info: false,
+        paging: false,
+        searching: false
+    });
+});
+
+const FROM_PATTERN = 'YYYY-MM-DD HH:mm:ss.SSSSSS';
+const TO_PATTERN   = 'DD-MM-YYYY';
+
+$(document).ready(function() {
+    $('#transfers').DataTable({
+        responsive: true,
+        info: false,
+        paging: false,
+        searching: false,
+        order: [[4,'asc']],
+        columnDefs: [{
+            targets: 5,
+            render: function(data) {
+                        return moment(data).format('DD/MM/YYYY');
+                    }
+            }]
+    });
+});
+
+new Morris.Line({
+        element: 'teamCost',
+        data: [
+            {% for s in season %} 
+                {
+                    Fixture: '{{ s.event }}',
+                    Value: '{{ s.value }}',
+                    Bank: '{{ s.money }}'
+                }{% if not forloop.last %}, {% endif %} 
+            {% endfor %}
+        ],
+        parseTime: false,
+        smooth: true,
+        xkey: 'Fixture',
+        ykeys: ['Value', 'Bank'],
+        labels: ['Value', 'Total Money'],
+        ymax: {{ max_val }},
+        ymin: {{ min_val }},
+        yLabelFormat: function(y){return y = Math.round(y*10)/10;}
+    });
+
+</script>
+{% endblock javascripts %}

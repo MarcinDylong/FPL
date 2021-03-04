@@ -83,7 +83,6 @@ def DownloadUserView(request):
         ## Update data for UserFPL
         user = request.user
         update_user(user, user_fpl, user_fpl_history, user_fpl_transfers)
-                    # update_user_history(user, user_fpl_history)
         user_fpl_season = user_fpl_history['current']
         update_user_season(user, user_fpl_season)
         update_user_picks(user)

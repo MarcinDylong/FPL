@@ -307,7 +307,8 @@ def update_user_season(user, user_fpl_season):
             'rank_sort': season['rank_sort'],
             'overall_rank': season['overall_rank'],
             'bank': season['bank']/10,
-            'value': season['value']/10,
+            'value': season['value'] / 10,
+            'money': season['bank']/10 + season['value']/10,
             'event_transfers': season['event_transfers'],
             'event_transfers_cost': season['event_transfers_cost'],
             'points_on_bench': season['points_on_bench']

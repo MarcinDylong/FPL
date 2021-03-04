@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views.views_display_data import IndexView, TeamView, PlayerView, \
      StandingsView, FixtureView, StatsView, PlayersSearchView, UserTeamView, \
-     UserProfile, BlankView, StatsChartView
+     UserProfile, BlankView, StatsChartView, UserProfileTrans
 from .views.views_download_data import GetPlayersHistoryView, GetFixtureView, \
      DownloadUserteamView, GetDataView, DownloadUserView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
@@ -24,6 +24,8 @@ urlpatterns = [
     path('player-search/', PlayersSearchView.as_view(), name='player-search'),
     path('user-team/', UserTeamView.as_view(), name='user-team'),
     path('user-profile/', UserProfile.as_view(), name='user-profile'),
+    path('user-profile/transfers/', UserProfileTrans.as_view(),
+         name='user-profile-transfers'),
     ### Data download views
     path('get_data/', GetDataView.as_view(), name='get_data'),
     path('get_players_history/', GetPlayersHistoryView.as_view(),

@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.db.models import Q, Max, Min
 from django.shortcuts import render
 from django.views import View
 from collections import OrderedDict
@@ -265,14 +265,14 @@ class StatsChartView(View):
     """
    
     def get(self, request, id):
-        ctx = {'title': ''}
+        ctx = {'title': 'Chart'}
         form = ChartForm()
         ## Return ctx for Goalkeepers
         ctx = players_ctx(pos=id, ctx=ctx, form=form)
         return render(request, 'stats_pos.html', ctx)
     
     def post(self, request, id):
-        ctx = {'title': ''}
+        ctx = {'title': 'Chart'}
         form = ChartForm(request.POST)
 
         if form.is_valid():
@@ -381,7 +381,7 @@ class UserTeamView(View):
         return ctx
 
     def get(self, request):
-        ctx = {}
+        ctx = {'title': 'UserTeam'}
         form = UserTeamForm()
         form_gut = GetUserteamForm()
         ctx['form'] = form
@@ -460,20 +460,14 @@ class UserTeamView(View):
                 userTeam.fwd3 = form.cleaned_data['fwd3']
                 userTeam.save()
                 ctx['success'] = 'Team created'
-
-            uteam = UserTeam.objects.filter(user=request.user).last()
-            self.team_overall(uteam, ctx)
-            ctx['form'] = form
-            ctx['form_gut'] = GetUserteamForm()
-            return render(request, 'user-team.html', ctx)
         else:
-            uteam = UserTeam.objects.filter(user=request.user).last()
-            self.team_overall(uteam, ctx)
             ctx['failure'] = True
-            ctx['form'] = form
-            ctx['form_gut'] = GetUserteamForm()
-            return render(request, 'user-team.html', ctx)
-
+            
+        uteam = UserTeam.objects.filter(user=request.user).last()
+        self.team_overall(uteam, ctx)
+        ctx['form'] = form
+        ctx['form_gut'] = GetUserteamForm()
+        return render(request, 'user-team.html', ctx)
 
 class UserProfile(View):
     """
@@ -552,7 +546,7 @@ class UserProfile(View):
 
     def get(self, request):
         user = request.user
-        ctx = {}
+        ctx = {'title': 'UserProfile'}
         form = GetUserteamForm()
         try:
             ## Profile
@@ -580,6 +574,74 @@ class UserProfile(View):
         ctx['segment'] = 'user-profile'
         ctx['form'] = form
         return render(request, 'user-profile.html', ctx)
+
+
+class UserProfileTrans(View):
+    def get(self, request):
+        ## Get Data from database
+        user = request.user
+        userFpl = UserFpl.objects.get(user=user)
+        userSeason = UserFplSeason.objects.filter(userfpl=userFpl).order_by('event_id')
+        userFplPick = UserFplPicks.objects.filter(user=userSeason.last()).order_by('id').last()
+        gw = Fixtures.objects.filter(finished=True).order_by('event_id').last().event_id
+
+        ## Prepare yLimits for team value charts 
+        min_value = userSeason.aggregate(Min('money'))['money__min'] - .5
+        max_value = userSeason.aggregate(Max('money'))['money__max'] + .5
+        
+        ## Prepare data for transfers table
+        transfers = userFpl.transfers
+        for tran in transfers:
+            del tran['entry']
+            in_id = tran['element_in']
+            out_id = tran['element_out']
+            tran['element_in_cost'] /= 10
+            tran['element_out_cost'] /= 10
+            tran['element_in'] = Player.objects.get(id=in_id)
+            tran['element_out'] = Player.objects.get(id=out_id)
+            tran['diff'] = round(tran['element_out_cost'] - tran['element_in_cost'], 1)
+        transfers = sorted(transfers, key=lambda i: i['event'], reverse=True)
+
+        ## Prepare picks dict with actual squad with GW when this players join
+        ## team and how long are they in team
+        # Extract actual players from UserFplPicks
+        userPicks = [
+            userFplPick.pck1, userFplPick.pck2, userFplPick.pck3,
+            userFplPick.pck4, userFplPick.pck5, userFplPick.pck6,
+            userFplPick.pck7, userFplPick.pck8, userFplPick.pck9,
+            userFplPick.pck10, userFplPick.pck11, userFplPick.pck12,
+            userFplPick.pck13, userFplPick.pck14, userFplPick.pck15
+         ]
+
+        # Create new dicts with players and additional data 
+        picks = []
+        i = 0
+        for up in userPicks:
+            i += 1
+            pick = {}
+            pick['no'] = i
+            pick['player'] = up
+            for t in transfers:
+                if t['element_in'] == up:
+                    pick['since'] = t['event']
+                    break
+            else:
+                pick['since'] = userFpl.started_event
+            pick['streak'] = gw - pick['since']
+
+            picks.append(pick)
+
+        ## Prepare context data for template
+        ctx = {
+            'title': 'Transfers history',
+            'transfers': transfers,
+            'season': userSeason,
+            'min_val': min_value,
+            'max_val': max_value,
+            'picks': picks
+            }
+
+        return render(request, 'user-profile-trans.html', ctx)
 
 
 ## Blank View for development purposes

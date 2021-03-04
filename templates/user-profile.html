@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %} 
 {% load custom_filters %} 
-{% block title %} - UserTeam {% endblock %}
+{% block title %} - {{title}} {% endblock %}
 
 <!-- Specific CSS goes HERE -->
 {% block stylesheets %}
@@ -336,11 +336,10 @@
                 <!-- [ Team Form and List ] start -->
                 <div class="row">
                     <!--[ UserTeam Stat ] start-->
-                    <!-- {{ picks }} -->
                     <div class="col-xl-12">
                         <div class="card Recent-Users">
                             <div class="card-header">
-                                <h5>Your Team players stats</h5>
+                                <h5>Your Team players stats</h5> - Check transfers history <a href="{% url 'fpl:user-profile-transfers' %}">here</a>
                             </div>
                             <div class="card-block px-0 py-3">
                                 <div class="table-responsive">
