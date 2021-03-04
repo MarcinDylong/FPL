@@ -117,10 +117,10 @@ def PopulateTables():
         populate_positions(positions)
         update_players(players)
         update_events(events, total_players)
-        ctx = {'event': 'success',
-                'info': 'Tables Team, Position, Player & Event has been populated.'}
+        ctx = {'event': 'success', 'error': [],
+                'info': ['Tables Team, Position, Player & Event has been populated.']}
     except Exception as e:
-        ctx = {'event': 'error', 'error': format(e)}
+        ctx = {'event': 'error', 'error': [format(e)], 'info': []}
     return ctx
 
 
@@ -142,23 +142,48 @@ def UpdateTables():
         update_teams(teams)
         update_players(players)
         update_events(events, total_players)
-        ctx = {'event': 'success',
-            'info': 'Tables Team, Player & Event in database has been updated.'}
+        ctx = {'event': 'success', 'error': [],
+            'info': ['Tables Team, Player & Event in database has been updated.']}
         return ctx
     except Exception as e:
-        ctx = {'event': 'error', 'error': format(e)}
+        ctx = {'event': 'error', 'error': [format(e)], 'info': []}
         return ctx
 
 
 class GetAllDataView(PermissionRequiredMixin, View):
     """
-    View for manual updating data for tables:
+    Get all data except those related to User:
     - Team;
     - Players;
     - Events;
+    - Positions;
+    - Fixtures;
+    - PlayerHistory
     """
     permission_required = 'fantasy_pl.add_team'
     permission_denied_message = 'Sorry, You do not have permission!'
+
+    def prepare_context(self, ctx):
+        ctx = ctx
+        try:
+            ## Get fixtures
+            fixture = get_fixtures_for_season()
+            update_fixture(fixture)
+            ctx['info'].append('Data for fixtures has been updated')
+            ## Get players history
+            players = Player.objects.all()
+            for p in players:
+                    data = get_individual_player_data(p.id)
+                    history = data['history']
+                    update_player_data(history)
+                    game = data['fixtures']
+                    update_player_fixture(game, p.id)
+            ctx['info'].append('Data for players has been updated')
+        except Exception as e:
+            ctx['event'] = 'error'
+            ctx['error'].append(format(e))
+        
+        return ctx
 
     def get(self, request):
         ctx = {'form': GetAllDataForm, 'all':True}
@@ -171,33 +196,10 @@ class GetAllDataView(PermissionRequiredMixin, View):
             choice = int(form.cleaned_data['choice'])
             if choice == 1:
                 ctx = PopulateTables()
-                try: 
-                    fixture = get_fixtures_for_season()
-                    update_fixture(fixture)
-                    players = Player.objects.all()
-                    for p in players:
-                            data = get_individual_player_data(p.id)
-                            history = data['history']
-                            update_player_data(history)
-                            game = data['fixtures']
-                            update_player_fixture(game, p.id)
-                except Exception as e:
-                    ctx['error'] = format(e)
+                ctx = self.prepare_context(ctx)
             else:
                 ctx = UpdateTables()
-                try: 
-                    fixture = get_fixtures_for_season()
-                    update_fixture(fixture)
-                    players = Player.objects.all()
-                    for p in players:
-                            data = get_individual_player_data(p.id)
-                            history = data['history']
-                            update_player_data(history)
-                            game = data['fixtures']
-                            update_player_fixture(game, p.id)
-                except Exception as e:
-                    ctx['error'] = format(e)
-
+                ctx = self.prepare_context(ctx)
             ctx['form'] = GetAllDataForm
             return render(request, 'get_data.html', ctx)
 
@@ -250,11 +252,11 @@ class GetFixtureView(PermissionRequiredMixin, View):
                 try:
                     fixture = get_fixtures_for_season()
                     update_fixture(fixture)
-                    ctx = {'event': 'success', 'info': 'Fixture downloaded',
+                    ctx = {'event': 'success', 'info': ['Fixture downloaded'],
                             'form': GetFixtureForm()}
                     return render(request, 'get_fixture.html', ctx)
                 except Exception as e:
-                    ctx = {'event': 'error', 'error': format(e),
+                    ctx = {'event': 'error', 'error': [format(e)],
                            'form': GetFixtureForm()}
                     return render(request, "page-event.html", ctx)
 
@@ -286,11 +288,11 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                     game = data['fixtures']
                     update_player_fixture(game, id)
                     ctx = {'event': 'success',
-                           'info': f'Data for player {id} has been updated',
+                           'info': [f'Data for player {id} has been updated'],
                            'form': GetPlayerDataForm()}
                     return render(request, "get_player_data.html", ctx)
                 except Exception as e:
-                    ctx = {'event': 'error', 'error': format(e),
+                    ctx = {'event': 'error', 'error': [format(e)],
                            'form': GetPlayerDataForm()}
                     return render(request, "get_player_data.html", ctx)
             elif team:
@@ -303,12 +305,12 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         game = data['fixtures']
                         update_player_fixture(game, p.id)
                     except Exception as e:
-                        ctx = {'event': 'error', 'error': format(e),
+                        ctx = {'event': 'error', 'error': [format(e)],
                                'form': GetPlayerDataForm()}
                         return render(request, "get_player_data.html", ctx)
 
                 ctx = {'event': 'success',
-                       'info': f'Data for players in {team} has been updated',
+                       'info': [f'Data for players in {team} has been updated'],
                        'form': GetPlayerDataForm()}
                 return render(request, "get_player_data.html", ctx)
             elif all:
@@ -322,12 +324,12 @@ class GetPlayersHistoryView(PermissionRequiredMixin, View):
                         update_player_fixture(game, p.id)
                     except Exception as e:
                         ctx = {'event': 'error',
-                               'error': format(e),
+                               'error': [format(e)],
                                'form': GetPlayerDataForm()}
                         return render(request, "get_player_data.html", ctx)
 
                 ctx = {'event': 'success',
-                       'info': f'Data for players has been updated',
+                       'info': ['Data for players has been updated'],
                        'form': GetPlayerDataForm()}
                 return render(request, "get_player_data.html", ctx)
             else:
