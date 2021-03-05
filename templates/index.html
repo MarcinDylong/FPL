@@ -37,7 +37,7 @@
                         <!--[ Best eleven of current GW ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
+                                <div class="card-header toolTip" data-value='currBest'>
                                     <h5>Current GW Bests</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
@@ -58,7 +58,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if g.player.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ g.player.id }}
                                                             {% endif %}
@@ -85,8 +85,8 @@
                         <!--[ Best eleven of season ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
-                                    <h5>All season Best 11</h5>
+                                <div class="card-header toolTip" data-value='allBest'>
+                                    <h5>All season Best</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
                                     <div class="table-responsive">
@@ -107,7 +107,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if b.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ b.id }}
                                                             {% endif %}
@@ -138,7 +138,7 @@
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
                                 <div class="card-header">
-                                    <div class="col-9">
+                                    <div class="col-9  toolTip" data-value='mostIn'>
                                         <h5 class="d-flex align-items-center">
                                             <i class="fas fa-arrow-up text-c-green f-30 m-r-10"></i>
                                             Most transfers in of current GW
@@ -164,7 +164,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if t.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ t.id }}
                                                             {% endif %}
@@ -193,7 +193,7 @@
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
                                 <div class="card-header">
-                                    <div class="col-9">
+                                    <div class="col-9  toolTip" data-value='mostOut'>
                                         <h5 class="d-flex align-items-center">
                                             <i class="fas fa-arrow-down text-c-red f-30 m-r-10"></i>
                                             Most transfers out of current GW
@@ -219,7 +219,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if t.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ t.id }}
                                                             {% endif %}
@@ -249,7 +249,7 @@
                         <!-- [ availability ] start -->
                         <div class="col-xl-12">
                             <div class="card">
-                                <div class="card-header">
+                                <div class="card-header  toolTip" data-value="plAvl">
                                     <h5>Player Availability</h5>
                                 </div>
                                 <div class="card-block table-border-style">
@@ -270,7 +270,7 @@
                                                 <tr class="center" align="center">
                                                     <td>
                                                         {% if a.id in ut_ids %}
-                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                         {% else %}
                                                             {{ a.id }}
                                                         {% endif %}
@@ -299,7 +299,7 @@
                         <!--[ Most popular eleven ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
+                                <div class="card-header toolTip" data-value="mostPop">
                                     <h5>Most popular</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
@@ -320,7 +320,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if p.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ p.id }}
                                                             {% endif %}
@@ -347,7 +347,7 @@
                         <!--[ Most bonus of gw ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
+                                <div class="card-header toolTip" data-value="bonSeason">
                                     <h5>Bonuses for Season</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
@@ -368,7 +368,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if g.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ g.id }}
                                                             {% endif %}
