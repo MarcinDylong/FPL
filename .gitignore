@@ -23,11 +23,13 @@ fpl_venv
 # javascript
 package-lock.json
 
+# Else
 staticfiles/*
 !staticfiles/.gitkeep 
 data.json
 .git_
 secrets.json
+core/_settings.py
 
 # Dumps
 fpl_dump_tables_updated.sql
