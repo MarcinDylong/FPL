@@ -156,14 +156,15 @@ def update_fixture(fixtures):
         try:
             updated_values = {
                 'finished': f['finished'],
-                'event': Event.objects.get(id=f['event']),
+                'event': Event.objects.get(id=f['event']) \
+                    if type(f['event'])== int else None,
                 'kickoff_time': f['kickoff_time'],
                 'team_h_difficulty': f['team_h_difficulty'],
                 'team_a_difficulty': f['team_a_difficulty'],
-                'team_h_score': str(f['team_h_score']) if f['finished'] == True \
-                                                    else '-',
-                'team_a_score': str(f['team_a_score']) if f['finished'] == True \
-                                                    else '-'
+                'team_h_score': str(f['team_h_score']) \
+                    if f['finished'] == True else '-',
+                'team_a_score': str(f['team_a_score']) \
+                    if f['finished'] == True else '-'
             }
 
             fix, created = Fixtures.objects.update_or_create(
