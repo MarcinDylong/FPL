@@ -30,5 +30,6 @@ data.json
 secrets.json
 
 # Dumps
-fpl_dump_tables.sqlite3
+fpl_dump_tables_updated.sql
+fpl_dump_tables.sql
 fpl_dump.sql
