@@ -10,7 +10,14 @@ admin.site.register(Position)
 admin.site.register(UserTeam)
 admin.site.register(PlayerHistory)
 admin.site.register(Fixtures)
+<<<<<<< HEAD
 # admin.site.register(UserTeam)
 # admin.site.register(UserFpl)
 # admin.site.register(UserFplSeason)
 # admin.site.register(UserFplPicks)
+=======
+admin.site.register(UserTeam)
+admin.site.register(UserFpl)
+admin.site.register(UserFplSeason)
+admin.site.register(UserFplPicks)
+>>>>>>> 77c2455980d6812dbcb8bdf1b80bcb55dce2bd52
