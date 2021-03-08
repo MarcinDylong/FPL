@@ -10,7 +10,7 @@ __pycache__/
 *.db
 *.sqlite3
 *.log
-# fantasy_pl/migrations/
+fantasy_pl/migrations/
 
 # venv
 fpl_venv
@@ -29,7 +29,7 @@ staticfiles/*
 data.json
 .git_
 secrets.json
-core/p_settings.py
+core/local_settings.py
 .env
 
 # Dumps

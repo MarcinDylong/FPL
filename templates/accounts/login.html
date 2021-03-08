@@ -28,6 +28,11 @@
                             {% endfor %}
                         </span>
                     {% endif %}
+                    <span class="mb-0 text-muted">
+                        <h4>Test user:</h4>
+                        <h6>Login: Test</h6>
+                        <h6>Pass:  Test123!</h6>
+                    </span>
                     <form role="form" method="post" novalidate>
                         {% csrf_token %}
                         {% include 'includes/form.html' %}

@@ -10,8 +10,14 @@ class LoginForm(forms.Form):
         attrs={"placeholder": "Username",
                "class": "form-control"}))
     password = forms.CharField(label='Password', widget=forms.PasswordInput(
+        render_value = True,
         attrs={"placeholder": "Password",
                "class": "form-control"}))
+
+    def __init__(self, *args, **kwargs):
+        super(LoginForm, self).__init__(*args, **kwargs)
+        self.fields["username"].initial = "Test"
+        self.fields["password"].initial = "Test123!"
 
     def clean(self):
         cleaned_data = super().clean()
