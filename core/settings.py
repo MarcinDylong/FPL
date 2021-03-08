@@ -78,27 +78,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'HOST': 'localhost',
-        'NAME': 'fpl_data',
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
-        'PASSWORD': 'coderslab',
-        'PORT': 5432,
-        'OPTIONS': {
-            'client_encoding': 'UTF8'},
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'HOST': 'localhost',
+#         'NAME': 'fpl_data',
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'USER': 'postgres',
+#         'PASSWORD': 'coderslab',
+#         'PORT': 5432,
+#         'OPTIONS': {
+#             'client_encoding': 'UTF8'},
+#     }
+# }
 
 # db_from_env = dj_database_url.config(conn_max_age=500)
 # DATABASES['default'].update(db_from_env)
 
-# DATABASES = {
-#     'default': dj_database_url.config(
-#         default=config('DATABASE_URL')
-#     )
-# }
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
+}
 
 # Password validation
 
