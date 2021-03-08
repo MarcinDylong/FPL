@@ -10,7 +10,7 @@ __pycache__/
 *.db
 *.sqlite3
 *.log
-fantasy_pl/migrations/
+# fantasy_pl/migrations/
 
 # venv
 fpl_venv
