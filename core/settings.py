@@ -9,25 +9,25 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
-with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
-    secrets = json.load(secrets_file)
+# with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
+#     secrets = json.load(secrets_file)
 
-def get_secret(setting, secrets=secrets):
-    """Get secret setting or fail with ImproperlyConfigured"""
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured("Set the {} setting".format(setting))
+# def get_secret(setting, secrets=secrets):
+#     """Get secret setting or fail with ImproperlyConfigured"""
+#     try:
+#         return secrets[setting]
+#     except KeyError:
+#         raise ImproperlyConfigured("Set the {} setting".format(setting))
 
-SECRET_KEY = get_secret('SECRET_KEY')
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = config('DEBUG', default=True)
-DEBUG = True
+DEBUG = int(os.environ.get('DEBUG', default=0))
 
 
 # load production server from .env
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS').split(" ")
 # ALLOWED_HOSTS = ['localhost', '127.0.0.1', config('SERVER', default='127.0.0.1')]
 # ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
@@ -90,12 +90,12 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'localhost',
-        'NAME': 'fpl_data',
-        'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'postgres',
-        'PASSWORD': 'coderslab',
-        'PORT': 5432,
+        'HOST': os.environ.get("SQL_HOST", "localhost")
+        'NAME': os.environ.get("SQL_NAME")
+        'ENGINE': os.environ.get("SQL_ENGINE","django.db.backends.postgresql")
+        'USER': os.environ.get("SQL_USER")
+        'PASSWORD': os.environ.get("SQL_PASSWORD")
+        'PORT': os.environ.get("SQL_HOST", "5432")
         'OPTIONS': {
             'client_encoding': 'UTF8'},
     }

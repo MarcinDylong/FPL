@@ -24,6 +24,8 @@ services:
       - db
     networks:
       - db_network
+    env_file: 
+      - .env.dev
 
 networks:
   db_network:
