@@ -35,7 +35,8 @@ $ # Create in PostgreSQl database called fpl_data
 $ sudo -u postgres psql -c 'create database fpl_data;'
 $
 $ # Configure connection to database in .env.example
-$ # Provide username and password and remove .example file name
+$ # Provide username and password
+$ # Remove .example from file name
 $ # Also set SECRET_KEY you can use page below to generate your own secret key
 $ # https://djecrety.ir/
 $ # If necessary change parameters for DB connection in core/settings_local.py
@@ -53,7 +54,7 @@ $
 $ # Access the web app in browser: http://127.0.0.1:8000/
 ```
 > Note: To use the app, you have to create user. After authentication, the app will be ready to use.
-For using tools for data management like download Data from API You have to create superuser:
+For using tools for data management like e.g. download Data from API, You have to create superuser:
 ```
 $ # Create Super User
 $ python manage.py createsuperuser
