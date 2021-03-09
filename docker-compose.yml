@@ -24,6 +24,8 @@ services:
       - db
     networks:
       - db_network
+    environment: 
+      SECRET_KEY: s+s6-^@s&=xg@l7!qsprhd5-1-0*wuh*0tjm_5)%uq(5q(nc4c
 
 networks:
   db_network:
