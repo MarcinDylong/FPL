@@ -29,7 +29,8 @@ staticfiles/*
 data.json
 .git_
 secrets.json
-core/_settings.py
+core/local_settings.py
+.env
 
 # Dumps
 # fpl_dump_tables_updated.sql
