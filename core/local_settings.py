@@ -9,27 +9,17 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
-with open(os.path.join(BASE_DIR, 'secrets.json')) as secrets_file:
-    secrets = json.load(secrets_file)
 
-def get_secret(setting, secrets=secrets):
-    """Get secret setting or fail with ImproperlyConfigured"""
-    try:
-        return secrets[setting]
-    except KeyError:
-        raise ImproperlyConfigured("Set the {} setting".format(setting))
-
-SECRET_KEY = get_secret('SECRET_KEY')
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=True)
 
 
 # load production server from .env
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = config('ALLOWED_HOSTS')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -98,6 +88,7 @@ DATABASES = {
     }
 }
 
+
 # Password validation
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -156,3 +147,4 @@ REST_FRAMEWORK = {
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
