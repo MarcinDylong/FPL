@@ -22,35 +22,18 @@
                         <i class="feather icon-user-plus auth-icon"></i>
                     </div>
                     <h3 class="mb-4">Sign up</h3>
-
+                    {% if messsages %}
+                        <span class="mb-0 text-muted">
+                            {% for m in messages%}
+                                {{ m | safe }}
+                            {% endfor %}
+                        </span>
+                    {% endif %}
                     <form role="form" method="post" action="">
-
                         {% csrf_token %}                    
-
-                        <div class="input-group mb-3">
-                            {{ form.username }}
-                        </div>
-                        <span class="text-error">{{ form.username.errors }}</span>
-
-                        <div class="input-group mb-3">
-                            {{ form.email }}
-                        </div>
-                        <span class="text-error">{{ form.email.errors }}</span>
-
-                        <div class="input-group mb-3">
-                            {{ form.password1 }}
-                        </div>
-                        <span class="text-error">{{ form.password1.errors }}</span>
-
-                        <div class="input-group mb-3">
-                            {{ form.password2 }}
-                        </div>
-                        <span class="text-error">{{ form.password2.errors }}</span>
-
+                        {% include 'includes/form.html' %}
                         <button type="submit" name="register" class="btn btn-primary shadow-2 mb-4">Register</button>
-
                     </form>
-
                     <p class="mb-0 text-muted">Already have an account? <a href="{% url 'auth:login' %}" >Login</a></p>
                 </div>
             </div>

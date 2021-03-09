@@ -22,7 +22,6 @@
             </form>
         </div>
         <div class="navbar-content scroll-div">
-        {# Search form goes here #}
             <ul class="nav pcoded-inner-navbar">
                 <li data-username="dashboard"
                     class="nav-item {% if 'home' in segment %} active {% endif %}">
@@ -30,6 +29,14 @@
                         <span class="pcoded-micon">
                         <i class="feather icon-home"></i></span>
                         <span class="pcoded-mtext">Dashboard</span>
+                    </a>
+                </li>
+                <li data-username="userteam"
+                    class="nav-item {% if 'user-profile' in segment %} active {% endif %}">
+                    <a href="{% url 'fpl:user-profile' %}" class="nav-link ">
+                        <span class="pcoded-micon">
+                        <i class="fas fa-user"></i></span>
+                        <span class="pcoded-mtext">User Profile</span>
                     </a>
                 </li>
                 <li data-username="userteam"
@@ -75,11 +82,23 @@
                 <li class="nav-item pcoded-menu-caption">
                     <label>Players</label>
                 </li>
-                <li data-username="stats"
-                    class="nav-item {% if 'stats' in segment %} active {% endif %}">
-                    <a href="{% url 'fpl:stats' %}" class="nav-link ">
+                <li data-username="stats" class="nav-item pcoded-hasmenu">
+                    <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon"><i class="feather icon-bar-chart-2"></i></span>
-                        <span class="pcoded-mtext">Stats</span></a></li>
+                        <span class="pcoded-mtext">Stats</span>
+                    </a>
+                    <ul class="pcoded-submenu">
+                        <li class="">
+                            <a href={% url 'fpl:stats' %} class="">
+                            General</a>
+                        </li>
+                        {% for p in positions %}
+                        <li class="">
+                            <a href="{% url 'fpl:stats-chart' p.id %}" class="">{{ p.name }} - Chart</a></li>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </li>
                 <li data-username="players_search"
                     class="nav-item {% if 'player-search' in segment %} active {% endif %}">
                     <a href="{% url 'fpl:player-search' %}" class="nav-link ">
@@ -97,24 +116,24 @@
                     </a>
                     <ul class="pcoded-submenu">
                         <li class="">
-                            <a href={% url 'fpl:download_json' %} class="">
-                            Download data to JSON</a>
-                        </li>
-                        <li class="">
-                            <a href={% url 'fpl:populate_tables' %} class="">
-                            Populate Tables</a>
-                        </li>
-                        <li class="">
-                            <a href={% url 'fpl:update_tables' %} class="">
-                            Update Tables</a>
-                        </li>
-                        <li class="">
-                            <a href={% url 'fpl:get_players_history' %} class="">
-                            Get players stats</a>
+                            <a href={% url 'fpl:get_data' %} class="">
+                                Get data
+                            </a>
                         </li>
                         <li class="">
                             <a href={% url 'fpl:get_fixture' %} class="">
-                            Get Fixtures</a>
+                                Get Fixtures
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:get_players_history' %} class="">
+                                Get players stats
+                            </a>
+                        </li>
+                        <li class="">
+                            <a href={% url 'fpl:get_all' %} class="">
+                                Get All Data
+                            </a>
                         </li>
                     </ul>
                 </li>
@@ -127,11 +146,13 @@
                     <a href="javascript:" class="nav-link ">
                         <span class="pcoded-micon">
                         <i class="feather icon-lock"></i></span>
-                        <span class="pcoded-mtext">Authentication</span></a>
+                        <span class="pcoded-mtext">User Managment</span></a>
                     <ul class="pcoded-submenu">
-                        <li class=""><a
-                                href={% url 'auth:password_reset' %} class="">Reset
-                            Pass</a></li>
+                        <li class="">
+                            <a href={% url 'auth:password_change' %} class="">
+                                Change Pass
+                            </a>
+                        </li>
                     </ul>
                 </li>
                 <li data-username="Logout" class="nav-item">

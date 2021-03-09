@@ -141,7 +141,7 @@
                                                         <tbody>
                                                             {% for g in games %}
                                                                 <tr class="unread">
-                                                                    <td class="center" align="center">{{g.round}}</td>
+                                                                    <td class="center" align="center">{{ g.event.id }}</td>
                                                                     <td align="center">
                                                                         <a class="golink" href="{% url 'fpl:team' g.team_h.id %}">
                                                                             {% if g.is_home %}
@@ -211,7 +211,7 @@
                                                         <tbody>
                                                             {% for h in hist %}
                                                                 <tr class="unread">
-                                                                    <td class="center" align="center">{{h.round}}</td>
+                                                                    <td class="center" align="center">{{ h.event.id }}</td>
                                                                     <td align="center">
                                                                         <a class="golink" href="{% url 'fpl:team' h.opponent_team.id %}">
                                                                             <h6 class=" text-dark mb-1"> {{ h.opponent_team.short_name }}
@@ -247,7 +247,7 @@
                             </div>
                             <!-- [ Player stats per game ] end -->
                             <br>
-                            <!-- [ Player charts ] start -->
+                            <!-- [ Player ICT charts ] start -->
                             <div class="row">
                                 <div class="col-xl-12">
                                     <div class="card">
@@ -260,7 +260,49 @@
                                     </div>
                                 </div>
                             </div>
-                            <!-- [ Player charts ] end -->
+                            <!-- [ Player ICT charts ] end -->
+                            <br>
+                            <!-- [ Player Overall vs day by day charts ] start -->
+                            <div class='card'>
+                                <div class="col-md-12">
+                                    <!-- [ Statistic form ] start -->
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="card-header">
+                                                <h5>Overall vs GW by GW stats</h5>
+                                                <!-- {% if messages %} {% for message in messages %}
+                                                <div class="text-dark">
+                                                    Info: {{ message }}
+                                                </div>
+                                                {% endfor %} {% endif %} -->
+                                                <hr>
+                                                <div class="input-group-sm mb-3">
+                                                    <form method="POST" action="">
+                                                        <div class="nav-item input-group mb-3" style="background-color: transparent">
+                                                            {% csrf_token %} 
+                                                            {{ form }}
+                                                            <div class="input-group-prepend">
+                                                                <button class="btn btn-primary" type="submit">Go</button>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- [ Statistic form] end -->
+                                    <!-- [ Player statistics charts ] start -->
+                                    <div class="row">
+                                        <div class="col-xl-12">
+                                            <div class="card-block">
+                                                <div id="Chart"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- [ Player statistics Charts ] end -->
+                                </div>
+                            </div>
+                            <!-- [ Player Overall vs day by day charts ] end -->
                             <br>
                             <!-- [ Player stats for season ] start -->
                             <div class="row">
@@ -483,6 +525,30 @@
                                                                 <h6 class="text-muted">{{ player.saves }}</h6>
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Direct freekicks</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.direct_freekicks_order }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Indirect freekicks and corners</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.corners_and_indirect_freekicks_order }}</h6>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-dark">Penalties</h6>
+                                                            </td>
+                                                            <td class="center" align="center">
+                                                                <h6 class="text-muted">{{ player.penalties_order }}</h6>
+                                                            </td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -524,24 +590,44 @@ $(document).ready(function() {
 });
 
 new Morris.Line({
-        element: 'ictChart',
-        data: [
-            {% for c in chart %}
-                {
-                    Fixture: '{{ c.opponent_team.short_name }}',
-                    Cost: '{{ c.value }}',
-                    Influence: '{{ c.influence }}',
-                    Creativity: '{{ c.creativity }}',
-                    Threat: '{{ c.threat }}'
-                }{% if not forloop.last %},{% endif %}
-            {% endfor %}
-        ],
-        xLabelAngle: 45,
-        parseTime: false,
-        xkey: 'Fixture',
-        ykeys: ['Cost','Influence','Creativity','Threat'],
-        ymax: 150,
-        labels: ['Cost','Influence','Creativity','Threat']
-    });
+    element: 'ictChart',
+    data: [
+        {% for c in chart %}
+            {
+                Fixture: '{{ c.opponent_team.short_name }}',
+                Cost: '{{ c.value }}',
+                Influence: '{{ c.influence }}',
+                Creativity: '{{ c.creativity }}',
+                Threat: '{{ c.threat }}',
+                BPS: '{{ c.bps }}'
+            }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ],
+    xLabelAngle: 45,
+    parseTime: false,
+    xkey: 'Fixture',
+    ykeys: ['Cost','Influence','Creativity','Threat','BPS'],
+    ymax: 150,
+    labels: ['Cost','Influence','Creativity','Threat','BPS']
+});
+
+new Morris.Line({
+    element: 'Chart',
+    data: [
+        {% for team,over,dbd in overall %}
+            {
+                Fixture: '{{ team }}',
+                Overall: '{{ over }}',
+                Gameweek: '{{ dbd }}'
+            }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    ],
+    xLabelAngle: 45,
+    smooth: false,
+    parseTime: false,
+    xkey: 'Fixture',
+    ykeys: ['Overall', 'Gameweek'],
+    labels: ['Overall', 'Gameweek']
+});
 </script>
 {% endblock javascripts %}

@@ -1,12 +1,16 @@
-from .models import Team, Position, UserTeam, User
+from .models import Team, Position, UserFplPicks, UserFpl, UserFplSeason
 from .forms import SearchForm
-#
+
+from django.core.exceptions import ObjectDoesNotExist
+
 def get_userTeam_players_id(request):
+
     player_id_list = []
     try:
-        current_user = User.objects.get(username=request.user.username)
-        uteam = UserTeam.objects.filter(user=current_user).values()[0]
-        for k, v in uteam.items():
+        current_user = UserFpl.objects.get(user=request.user)
+        user_season = UserFplSeason.objects.filter(userfpl=current_user).order_by('id').last()
+        picks = UserFplPicks.objects.get(user=user_season)
+        for k,v in picks.__dict__.items():
             if k == 'user_id':
                 continue
             elif k.endswith('_id'):
@@ -29,5 +33,5 @@ def my_cp(request):
         'search_form': SearchForm,
         'ut_ids': player_id_list
     }
-
+    
     return ctx

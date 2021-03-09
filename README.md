@@ -10,7 +10,7 @@ Fantasy Premier League Helper is a Django based app for optimizing user Team in 
 - Session-Based Authentication, Forms validation
 - Deployment scripts: Docker;
 
-<br />
+<br/>
 
 
 ## How to use it
@@ -31,36 +31,35 @@ $
 $ # Install modules
 $ pip3 install -r requirements.txt
 $
-$ # Configure connection to database in _secrets.json
-$ # Provide username and password and remove "_" from json file name
+$ # Create in PostgreSQl database called fpl_data
+$ sudo -u postgres psql -c 'create database fpl_data;'
+$
+$ # Configure connection to database in .env.example
+$ # Provide username and password
+$ # Remove .example from file name
+$ # Also set SECRET_KEY you can use page below to generate your own secret key
+$ # https://djecrety.ir/
 $ # If necessary change parameters for DB connection in core/settings_local.py
 $
 $ # Create tables
 $ python3 manage.py makemigrations
 $ python3 manage.py migrate
 $
-$ # Create in PostgreSQl database called fpl_data
-$ sudo -u postgres psql -c 'create database fpl_data;'
 $ # Import data from fpl_dump.sql
-$ pg_restore -d fpl_data < fpl_dump.sql
+$ fpl_data < fpl_dump_tables_updated.sql
 $
 $ # Start the application
-$ python3 manage.py runserver --settings core.settings_local
+$ python3 manage.py runserver --settings core.local_settings
 $
 $ # Access the web app in browser: http://127.0.0.1:8000/
 ```
-> Note: To use the app, please access the registration page and **create a new user**. After authentication, the app will unlock the private pages.
-For using tools for data management like download Data from API You have to create superuser:
+> Note: To use the app, you have to create user. After authentication, the app will be ready to use.
+For using tools for data management like e.g. download Data from API, You have to create superuser:
 ```
 $ # Create Super User
 $ python manage.py createsuperuser
 $ # Follow instructions in terminal to create Super User
 ```
-You may also use User from loaded database; <br>
-Data for log in: <br>
-User: admin <br>
-Pass: admin
-<br/>
 
 ## Deployment in Docker
 
@@ -74,8 +73,8 @@ The application can be easily executed in a docker container. The steps:
 > Get the code
 
 ```bash
-$ git clone https://github.com/app-generator/django-dashboard-dattaable.git
-$ cd django-dashboard-dattaable
+$ git clone https://github.com/MarcinDylong/FPL.git
+$ cd FPL
 ```
 
 > Start the app in Docker
@@ -86,16 +85,31 @@ $ sudo docker-compose pull && sudo docker-compose build && sudo docker-compose u
 
 > Populate database of project
 ```
-$ sudo docker exec -i -u postgres fpl_db_1 pg_restore -d fpl_data < fpl_dump.sql
 $ sudo docker-compose exec web python manage.py migrate
+$ sudo docker-compose exec web python manage.py createsuperuser
+$ cat fpl_dump_tables_updated.sql | sudo docker exec -i fpl_db_1 psql -U postgres fpl_data
 ```
 
-Visit `http://localhost:8000` in your browser. The app should be up & running.<br/>
-Note: You may use User from database and log in as:<br/>
-Username: admin<br/>
-password: admin
+Alternatively, the data can be downloaded to database inside the application. After logging in as
+Super User it is possible to use form to download all necessary data, but it takes longer than load
+from fpl_dump_tables_updated.sql.
 
-## API endpoints used in project
+Visit `http://localhost:8000` in your browser. The app should be up & running.<br/>
+You can use created Super User or create new user in App
+
+## Heroku
+
+For a quick preview, you can visit page:
+
+https://fpl-helper.herokuapp.com/
+
+This demo version has created Test user which allow to log in to application.
+
+#### Important
+Heroku version of application due to database size limitations contains gap in data!<br>
+This means that some features or pages may be unavailable or there may be missing data in the tables.
+
+## API endpoints used in project to download data:
 
 Teams & players season data:
 ```

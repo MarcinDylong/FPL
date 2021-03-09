@@ -14,12 +14,30 @@
             <!-- [ breadcrumb ] end -->
             <div class="main-body">
                 <div class="page-wrapper">
+                    <!-- [ About ] start -->
+                    <div class='row'>
+                        <div class="col-xl-12 col-md-12">
+                            <div class="accordion" id="aboutCollapse">
+                                <div class="card">
+                                    <div class="card-header" id="headingOne">
+                                        <h4 class="mb-0"><a href="#!" data-toggle="collapse" data-target="#about" aria-expanded="True" class="" aria-controls="collapseOne" ><!-- class="collapsed" aria-expanded="true"  -->
+                                            About this site!
+                                        </a></h4>
+                                    </div>
+                                    <div id="about" class="card-body collapse show" aria-labelledby="headingOne" data-parent="#aboutCollapse">
+                                        {% include 'includes/about.html' %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ About ] end -->
                     <!-- [ Main Content ] start -->
                     <div class="row">
                         <!--[ Best eleven of current GW ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
+                                <div class="card-header toolTip" data-value='currBest'>
                                     <h5>Current GW Bests</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
@@ -40,7 +58,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if g.player.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ g.player.id }}
                                                             {% endif %}
@@ -67,8 +85,8 @@
                         <!--[ Best eleven of season ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
-                                    <h5>All season Best 11</h5>
+                                <div class="card-header toolTip" data-value='allBest'>
+                                    <h5>All season Best</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
                                     <div class="table-responsive">
@@ -89,7 +107,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if b.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ b.id }}
                                                             {% endif %}
@@ -116,9 +134,124 @@
                         <!--[ Best eleven of season ] end-->
                     </div>
                     <div class="row">
+                        <!--[ Transfers IN of current GW ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <div class="col-9  toolTip" data-value='mostIn'>
+                                        <h5 class="d-flex align-items-center">
+                                            <i class="fas fa-arrow-up text-c-green f-30 m-r-10"></i>
+                                            Most transfers in of current GW
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="gwBestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>Id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Tran. IN</th>
+                                                    <th>Team</th>
+                                                    <th>PPG</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in tri %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if t.id in ut_ids %}
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
+                                                            {% else %}
+                                                                {{ t.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{ t.position.name_short }}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' t.id %}">
+                                                                <h6 class="mb-1">{{ t.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ t.first_name }}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{ t.transfers_in_event }}</td>
+                                                        <td>{{ t.team.short_name }}</td>
+                                                        <td>{{ t.points_per_game }}</td>
+                                                        <td>{{ t.now_cost }}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Transfers IN of current GW ] end-->
+                        <!--[ Transfers OUT of current GW ] start-->
+                        <div class="col-xl-6 col-md-6">
+                            <div class="card Recent-Users">
+                                <div class="card-header">
+                                    <div class="col-9  toolTip" data-value='mostOut'>
+                                        <h5 class="d-flex align-items-center">
+                                            <i class="fas fa-arrow-down text-c-red f-30 m-r-10"></i>
+                                            Most transfers out of current GW
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="card-block px-0 py-3">
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered table-hover" id="bestEleven">
+                                            <thead>
+                                                <tr class="center" align="center">
+                                                    <th>id</th>
+                                                    <th>Position</th>
+                                                    <th>Player</th>
+                                                    <th>Tran. OUT</th>
+                                                    <th>Team</th>
+                                                    <th>PPG</th>
+                                                    <th>Cost</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for t in tro %}
+                                                    <tr class="unread center" align="center">
+                                                        <td>
+                                                            {% if t.id in ut_ids %}
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
+                                                            {% else %}
+                                                                {{ t.id }}
+                                                            {% endif %}
+                                                        </td>
+                                                        <td>{{t.position.name_short}}</td>
+                                                        <td>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' t.id %}">
+                                                                <h6 class="mb-1">{{t.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{t.first_name}}</p>
+                                                            </a>
+                                                        </td>
+                                                        <td>{{t.transfers_out_event}}</td>
+                                                        <td>{{t.team.short_name}}</td>
+                                                        <td>{{t.points_per_game}}</td>
+                                                        <td>{{t.now_cost}}</td>
+                                                    </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--[ Transfers OUT of current GW ] end-->
+                    </div>
+                    <div class="row">
                         <!-- [ availability ] start -->
                         <div class="col-xl-12">
                             <div class="card">
+                                <div class="card-header  toolTip" data-value="plAvl">
+                                    <h5>Player Availability</h5>
+                                </div>
                                 <div class="card-block table-border-style">
                                     <div class="table-responsive">
                                         <table class="table table-striped table-bordered table-hover" id="availability">
@@ -137,7 +270,7 @@
                                                 <tr class="center" align="center">
                                                     <td>
                                                         {% if a.id in ut_ids %}
-                                                            <i class="fas fa-star"></i>
+                                                            <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                         {% else %}
                                                             {{ a.id }}
                                                         {% endif %}
@@ -166,7 +299,7 @@
                         <!--[ Most popular eleven ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
+                                <div class="card-header toolTip" data-value="mostPop">
                                     <h5>Most popular</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
@@ -187,7 +320,7 @@
                                                     <tr class="unread center" align="center">
                                                         <td>
                                                             {% if p.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
                                                                 {{ p.id }}
                                                             {% endif %}
@@ -214,8 +347,8 @@
                         <!--[ Most bonus of gw ] start-->
                         <div class="col-xl-6 col-md-6">
                             <div class="card Recent-Users">
-                                <div class="card-header">
-                                    <h5>Bonus for current GW</h5>
+                                <div class="card-header toolTip" data-value="bonSeason">
+                                    <h5>Bonuses for Season</h5>
                                 </div>
                                 <div class="card-block px-0 py-3">
                                     <div class="table-responsive">
@@ -234,22 +367,22 @@
                                                 {% for g in gwbonus %}
                                                     <tr class="unread center" align="center">
                                                         <td>
-                                                            {% if g.player.id in ut_ids %}
-                                                                <i class="fas fa-star"></i>
+                                                            {% if g.id in ut_ids %}
+                                                                <i class="fas fa-star toolTip" data-value='yourTeam'></i>
                                                             {% else %}
-                                                                {{ g.player.id }}
+                                                                {{ g.id }}
                                                             {% endif %}
                                                         </td>
-                                                        <td>{{ g.player.position.name_short }}</td>
+                                                        <td>{{ g.position.name_short }}</td>
                                                         <td>
-                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.player.id %}">
-                                                                <h6 class="mb-1">{{ g.player.second_name}}</h6>
-                                                                <p class="text-muted m-0">{{ g.player.first_name }}</p>
+                                                            <a class='golink' href="{% url 'fantasy_pl:player' g.id %}">
+                                                                <h6 class="mb-1">{{ g.second_name}}</h6>
+                                                                <p class="text-muted m-0">{{ g.first_name }}</p>
                                                             </a>
                                                         </td>
-                                                        <td>{{ g.player.team.short_name }}</td>
+                                                        <td>{{ g.team.short_name }}</td>
                                                         <td>{{ g.bonus }}</td>
-                                                        <td>{{ g.player.now_cost }}</td>
+                                                        <td>{{ g.now_cost }}</td>
                                                     </tr>
                                                 {% endfor %}
                                             </tbody>

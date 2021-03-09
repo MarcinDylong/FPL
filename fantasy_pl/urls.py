@@ -1,12 +1,13 @@
-from django.urls import path, re_path
+from django.urls import path
 
-from .views.views import IndexView, TeamView, PlayerView, StandingsView, \
-    FixtureView, StatsView, PlayersSearchView, UserTeamView
-from .views.views_data import PopulateTablesView, UpdateTablesView, \
-    DownloadDataView, GetPlayersHistoryView, GetFixtureView, \
-    DownloadUserteamView
+from .views.views_display_data import IndexView, TeamView, PlayerView, \
+     StandingsView, FixtureView, StatsView, PlayersSearchView, UserTeamView, \
+     UserProfile, BlankView, StatsChartView, UserProfileTrans
+from .views.views_download_data import GetPlayersHistoryView, GetFixtureView, \
+     DownloadUserteamView, GetDataView, DownloadUserView, GetAllDataView
 from .views.views_api import ApiTeamsView, ApiTeamsListView, \
-    ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
+     ApiPlayersListView, ApiPlayersView, ApiUserTeamListView, ApiUserTeamView
+
 
 app_name = 'fantasy_pl'
 
@@ -19,18 +20,21 @@ urlpatterns = [
     path('standings/', StandingsView.as_view(), name='standings'),
     path('fixtures/', FixtureView.as_view(), name='fixtures'),
     path('stats/', StatsView.as_view(), name='stats'),
+    path('stats_chart/<int:id>', StatsChartView.as_view(), name='stats-chart'),
     path('player-search/', PlayersSearchView.as_view(), name='player-search'),
     path('user-team/', UserTeamView.as_view(), name='user-team'),
+    path('user-profile/', UserProfile.as_view(), name='user-profile'),
+    path('user-profile/transfers/', UserProfileTrans.as_view(),
+         name='user-profile-transfers'),
     ### Data download views
-    path('download_data/', DownloadDataView.as_view(), name='download_json'),
-    path('populate_table/', PopulateTablesView.as_view(),
-         name='populate_tables'),
-    path('update_table/', UpdateTablesView.as_view(), name='update_tables'),
+    path('get_all', GetAllDataView.as_view(), name='get_all'),
+    path('get_data/', GetDataView.as_view(), name='get_data'),
     path('get_players_history/', GetPlayersHistoryView.as_view(),
          name="get_players_history"),
     path('get_fixture/', GetFixtureView.as_view(), name="get_fixture"),
     path('download_userteam', DownloadUserteamView,
          name='download_userteam'),
+    path('download_user', DownloadUserView, name='download_user'),
     ### API
     path('api/teams', ApiTeamsListView.as_view(), name='api_teams'),
     path('api/teams/<int:pk>', ApiTeamsView.as_view(), name='api_team_detail'),
@@ -42,12 +46,3 @@ urlpatterns = [
     path('api/userteam/<int:pk>', ApiUserTeamView.as_view(),
          name='api_userteam'),
 ]
-
-# from .views.views_userteam import UserTeamView
-
-# urlpatterns = [
-#
-#     path('download_userteam/', DownloadUserteamView, name="download_userteam"),
-#     ## API
-
-# ]

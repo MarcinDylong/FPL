@@ -16,6 +16,8 @@
                     <div class="col-md-12">
                         <div class="page-header-title">
                             <h3 class="m-b-10">Premier League Fixtures</h3>
+                            <h4 class="m-b-10">Note:</h4>
+                            <h5 class="text-muted"> Matching a game to a gameweek depends on the BPL settings, therofore it is possible for gameweek to host more (or less) than ten games. </h5>
                         </div>
                     </div>
                 </div>
@@ -42,14 +44,16 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {% for f in fixture %}
-                                            <tr class="center" align="center">
-                                                <td>{{f.event}}</td>
-                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_h.id %}">{{f.team_h}}</a></td>
-                                                <td><a class="text-dark" href="{% url 'fpl:team' f.team_a.id %}">{{f.team_a}}</a></td>
-                                                <td>{{f.team_h_score}} - {{f.team_a_score}}</td>
-                                                <td>{{f.kickoff_time}}</td>
-                                            </tr>
+                                            {% for fix in fixture %}
+                                                {% for f in fix %}
+                                                <tr class="center" align="center">
+                                                    <td>{{f.event.id}}</td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' f.team_h.id %}">{{f.team_h}}</a></td>
+                                                    <td><a class="text-dark" href="{% url 'fpl:team' f.team_a.id %}">{{f.team_a}}</a></td>
+                                                    <td>{{f.team_h_score}} - {{f.team_a_score}}</td>
+                                                    <td>{{f.kickoff_time}}</td>
+                                                </tr>
+                                                {% endfor %}
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -64,7 +68,7 @@
                                             {% endif %}
                                         {% endfor %}
                                     </ul>
-                                {% endif %}
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

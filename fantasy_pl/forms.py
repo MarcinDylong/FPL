@@ -1,16 +1,13 @@
 from django import forms
-from django.contrib.auth.models import User
-from django.core.validators import ValidationError, MinValueValidator
-from fantasy_pl.models import Player, Team, Position
+from django.core.validators import ValidationError
 from django.forms import ModelChoiceField
 
+from fantasy_pl.models import Player, Team, Position
+from fantasy_pl.form_choices import choices_fixture, choices_data, \
+    choices_stats, choices_player_stats, choices_all_data
 
-class LoginForm(forms.Form):
-    username = forms.CharField(label='User name', widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
-
-class GetDataForm(forms.Form):
+class GetPlayerDataForm(forms.Form):
     id = forms.IntegerField(label='Get by ID', required=False,
                             widget=forms.NumberInput(
                                 attrs={'class': 'form-control',
@@ -21,16 +18,30 @@ class GetDataForm(forms.Form):
                                       attrs={'class': 'form-control'}))
     all = forms.BooleanField(label='Get all', required=False,
                              widget=forms.CheckboxInput(
-                                    attrs={'class': 'form-control'}))
+                                 attrs={'class': 'form-control'}))
 
+                        
 
-CHOICES = [(0, 'Download Fixtures'), (1, 'Update Fixtures')]
 
 class GetFixtureForm(forms.Form):
     choice = forms.ChoiceField(widget=forms.RadioSelect(
-                               attrs={'class': 'custom-radio'}),
-                               label = False,
-                               choices=CHOICES)
+        attrs={'class': 'custom-radio'}),
+        label=False,
+        choices=choices_fixture)
+
+
+class GetDataForm(forms.Form):
+    choice = forms.ChoiceField(widget=forms.RadioSelect(
+        attrs={'class': 'custom-radio'}),
+        label=False,
+        choices=choices_data)
+
+
+class GetAllDataForm(forms.Form):
+    choice = forms.ChoiceField(widget=forms.RadioSelect(
+        attrs={'class': 'custom-radio'}),
+        label=False,
+        choices=choices_all_data)
 
 
 class GetUserteamForm(forms.Form):
@@ -42,22 +53,72 @@ class GetUserteamForm(forms.Form):
 
 class SearchForm(forms.Form):
     search = forms.CharField(label='', max_length=64, widget=forms.TextInput(
-        attrs={'type': 'text', 'class': 'form-control', 'placeholder': 'Search for player...'}))
+        attrs={'type': 'text', 'class': 'form-control',
+               'placeholder': 'Search for player...'}))
 
 
-stats = (
-    ('points_per_game', 'Points per game'),
-    ('now_cost', 'Cost',),
-    ('form', 'Form'),
-    ('total_points', 'Total Points'),
-)
+class ChartForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        super(ChartForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        self.initial['x_axis'] = 'points_per_game'
+        self.initial['y_axis'] = 'now_cost'
+        self.initial['size_points'] = 'selected_by_percent'
+
+
+    
+    x_axis = forms.ChoiceField(label='Choose X axis value',
+                               choices=choices_stats,
+                               widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    y_axis = forms.ChoiceField(label='Choose Y axis value',
+                               choices=choices_stats,
+                               widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    size_points = forms.ChoiceField(label='Choose dot size value',
+                                choices=choices_stats,
+                                widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+    limit = forms.IntegerField(label='Choose minimum time of play [%]',
+                    widget=forms.NumberInput(
+                        attrs={'type': 'range', 'class': 'custom-range',
+                            'id': 'limit', 'step': '5', 'min': '0',
+                            'max': '100'}), required=True)
+
+    def clean(self):
+        cleaned_data = super(ChartForm, self).clean()
+        x = cleaned_data.get('x_axis')
+        y = cleaned_data.get('y_axis')
+        size = cleaned_data.get('size_points')
+
+        if len(set([x, y, size])) != 3:
+            raise forms.ValidationError(
+                'The options you choose must be unique.'
+                )
+
+
+class PlayerChartForm(forms.Form):
+    stat = forms.ChoiceField(label=False, 
+                             choices=choices_player_stats,
+                             widget=forms.Select(
+                                      attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        super(PlayerChartForm, self).__init__(*args, **kwargs)
+        # assign a (computed, I assume) default value to the choice field
+        self.initial['stat'] = 'selected'
 
 
 class PlayerSearchForm(forms.Form):
-    position = forms.ModelChoiceField(label='Position', queryset=Position.objects.all(), required=False,
-                                      widget=forms.Select(attrs={'class': 'form-control'}))
-    max = forms.FloatField(label='Max Cost',
-                           required=False, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    position = forms.ModelChoiceField(label='Position',
+                                      queryset=Position.objects.all(),
+                                      required=False,
+                                      widget=forms.Select(
+                                          attrs={'class': 'form-control'}))
+    max = forms.FloatField(label='Max Cost (range from ~4 to ~13)',
+                           required=False, widget=forms.NumberInput(
+            attrs={'class': 'form-control'}))
 
     def clean(self):
 
@@ -66,62 +127,91 @@ class PlayerSearchForm(forms.Form):
             max = 100
 
         if max < 0:
-            raise forms.ValidationError('Max value must be greater than 0')
+            raise forms.ValidationError('Max value must be greater than 0.')
 
 
 class PlayerChoiceField(ModelChoiceField):
-
     def label_from_instance(self, obj):
         return f'{obj.first_name} {obj.second_name} ({obj.team.short_name}) - \
                  {obj.now_cost}\xa3'
 
 
 class UserTeamForm(forms.Form):
-    gkp = PlayerChoiceField(label='Goalkeeper',
-                                 queryset=Player.objects.filter(position=1).order_by('-now_cost'),
-                                 widget=forms.Select(attrs={'class': 'form-control',}))
-    gkpb = PlayerChoiceField(label='Bench goalkepper',
-                                  queryset=Player.objects.filter(position=1).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+    gkp1 = PlayerChoiceField(label='Goalkeeper',
+                            queryset=Player.objects.filter(
+                                position=1).order_by('-now_cost'),
+                            widget=forms.Select(
+                                attrs={'class': 'form-control', }))
+    gkp2 = PlayerChoiceField(label='Goalkepper 2',
+                             queryset=Player.objects.filter(
+                                 position=1).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     def1 = PlayerChoiceField(label='Defender 1',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=2).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     def2 = PlayerChoiceField(label='Defender 2',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=2).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     def3 = PlayerChoiceField(label='Defender 3',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=2).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     def4 = PlayerChoiceField(label='Defender 4',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    defb = PlayerChoiceField(label='Bench defender',
-                                  queryset=Player.objects.filter(position=2).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf1 = PlayerChoiceField(label='Middlefielder 1',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf2 = PlayerChoiceField(label='Middlefielder 2',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf3 = PlayerChoiceField(label='Middlefielder 3',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdf4 = PlayerChoiceField(label='Middlefielder 4',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    mdfb = PlayerChoiceField(label='Bench middlefielder',
-                                  queryset=Player.objects.filter(position=3).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=2).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    def5 = PlayerChoiceField(label='Defender 5',
+                             queryset=Player.objects.filter(
+                                 position=2).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    mid1 = PlayerChoiceField(label='Middlefielder 1',
+                             queryset=Player.objects.filter(
+                                 position=3).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    mid2 = PlayerChoiceField(label='Middlefielder 2',
+                             queryset=Player.objects.filter(
+                                 position=3).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    mid3 = PlayerChoiceField(label='Middlefielder 3',
+                             queryset=Player.objects.filter(
+                                 position=3).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    mid4 = PlayerChoiceField(label='Middlefielder 4',
+                             queryset=Player.objects.filter(
+                                 position=3).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    mid5 = PlayerChoiceField(label='Middlefielder 5',
+                             queryset=Player.objects.filter(
+                                 position=3).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     fwd1 = PlayerChoiceField(label='Forward 1',
-                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=4).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
     fwd2 = PlayerChoiceField(label='Forward 2',
-                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
-    fwdb = PlayerChoiceField(label='Bench forward',
-                                  queryset=Player.objects.filter(position=4).order_by('-now_cost'),
-                                  widget=forms.Select(attrs={'class': 'form-control'}))
+                             queryset=Player.objects.filter(
+                                 position=4).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
+    fwd3 = PlayerChoiceField(label='Forward 3',
+                             queryset=Player.objects.filter(
+                                 position=4).order_by('-now_cost'),
+                             widget=forms.Select(
+                                 attrs={'class': 'form-control'}))
 
     @staticmethod
     def check_unique_models(player_list):
@@ -129,52 +219,52 @@ class UserTeamForm(forms.Form):
             for p2 in range(len(player_list)):
                 if p1 != p2:
                     if player_list[p1] == player_list[p2]:
-                        return [True, player_list[p1]]
+                        return [False, player_list[p1]]
         else:
-            return [False]
+            return [True]
 
     def clean(self):
         cleaned_data = super().clean()
         fwd1 = cleaned_data.get('fwd1')
         fwd2 = cleaned_data.get('fwd2')
-        fwdb = cleaned_data.get('fwdb')
-        l_fwd = [fwd1, fwd2, fwdb]
+        fwd3 = cleaned_data.get('fwd3')
+        l_fwd = [fwd1, fwd2, fwd3]
 
         fwd_check = self.check_unique_models(l_fwd)
-        if fwd_check[0] == True:
+        if fwd_check[0] == False:
             raise ValidationError(f'Repeated forward {fwd_check[1]}')
 
-        mdf1 = cleaned_data.get('mdf1')
-        mdf2 = cleaned_data.get('mdf2')
-        mdf3 = cleaned_data.get('mdf3')
-        mdf4 = cleaned_data.get('mdf4')
-        mdfb = cleaned_data.get('mdfb')
-        l_mdf = [mdf1, mdf2, mdf3, mdf4, mdfb]
+        mid1 = cleaned_data.get('mid1')
+        mid2 = cleaned_data.get('mid2')
+        mid3 = cleaned_data.get('mid3')
+        mid4 = cleaned_data.get('mid4')
+        mid5 = cleaned_data.get('mid5')
+        l_mid = [mid1, mid2, mid3, mid4, mid5]
 
-        mdf_check = self.check_unique_models(l_mdf)
-        if mdf_check[0] == True:
-            raise ValidationError(f'Repeated forward {mdf_check[1]}')
+        mid_check = self.check_unique_models(l_mid)
+        if mid_check[0] == False:
+            raise ValidationError(f'Repeated midfielder {mid_check[1]}')
 
         def1 = cleaned_data.get('def1')
         def2 = cleaned_data.get('def2')
         def3 = cleaned_data.get('def3')
         def4 = cleaned_data.get('def4')
-        defb = cleaned_data.get('defb')
-        l_def = [def1, def2, def3, def4, defb]
+        def5 = cleaned_data.get('def5')
+        l_def = [def1, def2, def3, def4, def5]
 
         def_check = self.check_unique_models(l_def)
-        if def_check[0] == True:
-            raise ValidationError(f'Repeated forward {def_check[1]}')
+        if def_check[0] == False:
+            raise ValidationError(f'Repeated defender {def_check[1]}')
 
-        gkp = cleaned_data.get('gkp')
-        gkpb = cleaned_data.get('gkpb')
-        l_gkp = [gkp, gkpb]
+        gkp1 = cleaned_data.get('gkp1')
+        gkp2 = cleaned_data.get('gkp2')
+        l_gkp = [gkp1, gkp2]
 
         gkp_check = self.check_unique_models(l_gkp)
-        if gkp_check[0] == True:
-            raise ValidationError(f'Repeated forward {gkp_check[1]}')
+        if gkp_check[0] == False:
+            raise ValidationError(f'Repeated goalkeeper {gkp_check[1]}')
 
-        players_list = l_gkp + l_def + l_mdf + l_fwd
+        players_list = l_gkp + l_def + l_mid + l_fwd
         teams = {}
         for p in players_list:
             team = p.team
@@ -186,6 +276,6 @@ class UserTeamForm(forms.Form):
         for k, v in teams.items():
             if len(teams[k]) > 3:
                 names = ', '.join(
-                                [f'{_.first_name} {_.second_name}' for _ in v])
+                    [f'{_.first_name} {_.second_name}' for _ in v])
                 raise ValidationError(f'Too much player from team '
                                       f'{k.short_name}: {names}')

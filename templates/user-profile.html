@@ -1,0 +1,516 @@
+{% extends "layouts/base.html" %} 
+{% load custom_filters %} 
+{% block title %} - {{title}} {% endblock %}
+
+<!-- Specific CSS goes HERE -->
+{% block stylesheets %}
+<link rel="stylesheet" href="/static/assets/plugins/chart-morris/css/morris.css"> 
+{% endblock stylesheets %} 
+
+{% block content %}
+<div class="pcoded-content">
+    <div class="pcoded-inner-content">
+        <!-- [ Header ] start -->
+        <div class="page-header">
+            <div class="page-block">
+                <div class="row align-items-center">
+                    <div class="col-md-1">
+                        <div class="page-header-title">
+                            <i class="fas fa-user text-muted f-50"></i>
+                        </div>
+                    </div>
+                    <div class="col-md-11">
+                        <div class="page-header-title">
+                            {% if profile.player_first_name %}
+                            <h1 class="m-b-10">{{ profile }}</h1>
+                            {% else %}
+                            <h1 class="m-b-10">Profile</h1>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- [ Header ] end -->
+        <div class="main-body">
+            <div class="page-wrapper">
+                <!-- [ Download User Team ] start -->
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Update your FPL profile</h5>
+                                {% if messages %} {% for message in messages %}
+                                <div class="text-dark">
+                                    Info: {{ message }}
+                                </div>
+                                {% endfor %} {% endif %}
+                                <hr>
+                                <div class="input-group-sm mb-3">
+                                    <form method="POST" action="{% url 'fpl:download_user' %}">
+                                        <div class="nav-item input-group mb-3" style="background-color: transparent">
+                                            {% csrf_token %} {{ form }}
+                                            <div class="input-group-prepend">
+                                                <button class="btn btn-primary" type="submit">Go</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Download User Team ] end -->
+                {% if profile.fpl %}
+                <!-- [ Basic Info Content ] start -->
+                <div class="row">
+                    <!-- [ Basic info ] start -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-id-badge text-c-purple f-50"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.fpl }}</h3>
+                                        <span class="text-dark d-block text-uppercase">FPL ID</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-shield-alt f-50 text-c-green"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.name }}</h3>
+                                        <span class="d-block text-uppercase">Team name</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fa fa-flag f-50 text-c-blue"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.player_region_iso_code_long }}</h3>
+                                        <span class="d-block text-uppercase">Country</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Basif info ] end -->
+                </div>
+                <!-- [ Basic Info Content ] end -->
+                <!-- [ Basic Info Content 2 ] start -->
+                <div class="row">
+                    <!-- [ Basic info ] start -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-dollar-sign text-c-purple f-50"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.last_deadline_value }}</h3>
+                                        <span class="text-dark d-block text-uppercase">Total team value</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="fas fa-wallet f-50 text-c-green"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.last_deadline_bank }}</h3>
+                                        <span class="d-block text-uppercase">Bank</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        <i class="far fa-chart-bar f-50 text-c-blue"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">{{ profile.summary_overall_points }}</h3>
+                                        <span class="d-block text-uppercase">Total season points</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Basif info ] end -->
+                </div>
+                <!-- [ Basic Info Content 2] end -->
+                <!-- [ Wild card info ] start -->
+                <div class="row">
+                    <!-- [ Basic info ] start -->
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        {% if freehit %}
+                                        <i class="far fa-star f-50 text-c-purple"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">
+                                            Used on GW {{ freehit }}
+                                        </h3>
+                                        {% else %}
+                                        <i class="fas fa-star f-50 text-c-purple"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">
+                                            Available
+                                        </h3>
+                                        {% endif %}
+                                        <span class="text-dark d-block text-uppercase">Free Hit</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        {% if 3xc %}
+                                        <i class="far fa-star f-50 text-c-green"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">
+                                            Used on GW {{ 3xc }}
+                                        </h3>
+                                        {% else %}
+                                        <i class="fas fa-star f-50 text-c-green"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">
+                                            Available
+                                        </h3>
+                                        {% endif %}
+                                        <span class="d-block text-uppercase">Triple captain</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-4 col-md-6">
+                        <div class="card">
+                            <div class="card-block border-bottom">
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-auto">
+                                        {% if bboost %}
+                                        <i class="far fa-star f-50 text-c-blue"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300">
+                                            Used on GW {{ bboost }}
+                                        </h3>
+                                        {% else %}
+                                        <i class="fas fa-star f-50 text-c-blue"></i>
+                                    </div>
+                                    <div class="col">
+                                        <h3 class="f-w-300"> Available </h3>
+                                        {% endif %}
+                                        <span class="d-block text-uppercase">Bench boost</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Basif info ] end -->
+                </div>
+                <!-- [ Wild cards info] end -->
+                <!-- [ Basic Info Content 3 ] start -->
+                <div class="row">
+                    <!-- [ Basic info ] start -->
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card daily-sales">
+                            <div class="card-block">
+                                <h6 class="mb-4">Overall Rank</h6>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-9">
+                                        <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                            {% if profile.summary_overall_rank < prev.overall_rank %} 
+                                            <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i>
+                                            {% elif profile.summary_overall_rank == prev.overall_rank %}
+                                            <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
+                                            {% else %}
+                                            <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow""></i> 
+                                            {% endif %} 
+                                            {{ profile.summary_overall_rank }}
+                                        </h3>
+                                    </div>
+                                    <div class="col-3 text-right toolTip" data-value='betterThan'>
+                                        <p class="m-b-0">{{ profile.summary_overall_rank|give_percent_rev:event.total_players }}%</p>
+                                    </div>
+                                </div>
+                                <div class="progress m-t-30" style="height: 7px;">
+                                    <div class="progress-bar progress-c-theme2" role="progressbar" style="width: {{ profile.summary_overall_rank|give_percent_rev:event.total_players }}%;" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card daily-sales">
+                            <div class="card-block">
+                                <h6 class="mb-4">Game week Points</h6>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-9">
+                                        <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                            {% if profile.summary_event_points > prev.points %}
+                                            <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i> 
+                                            {% elif profile.summary_event_points == prev.points %}
+                                            <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
+                                            {% else %}
+                                            <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow"></i> 
+                                            {% endif %} 
+                                            {{ profile.summary_event_points }} (avg. {{ event.average_entry_score }})
+                                        </h3>
+                                    </div>
+                                    <div class="col-3 text-right toolTip" data-value='betterThan'>
+                                        <p class="m-b-0">{{ profile.summary_event_points|give_percent:event.highest_score }}%</p>
+                                    </div>
+                                </div>
+                                <div class="progress m-t-30" style="height: 7px;">
+                                    <div class="progress-bar progress-c-theme" role="progressbar" style="width: {{ profile.summary_event_points|give_percent:event.highest_score }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4">
+                        <div class="card daily-sales">
+                            <div class="card-block">
+                                <h6 class="mb-4">Game week Rank</h6>
+                                <div class="row d-flex align-items-center">
+                                    <div class="col-9">
+                                        <h3 class="f-w-300 d-flex align-items-center m-b-0">
+                                            {% if profile.summary_event_rank < prev.rank %} 
+                                            <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i>
+                                            {% elif profile.summary_event_rank == prev.rank %}
+                                            <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
+                                            {% else %}
+                                            <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow"></i> 
+                                            {% endif %} 
+                                            {{ profile.summary_event_rank }}
+                                        </h3>
+                                    </div>
+                                    <div class="col-3 text-right toolTip" data-value='betterThan'>
+                                        <p class="m-b-0">{{ profile.summary_event_rank|give_percent_rev:event.total_players }}%</p>
+                                    </div>
+                                </div>
+                                <div class="progress m-t-30" style="height: 7px;">
+                                    <div class="progress-bar progress-c-blue" role="progressbar" style="width: {{ profile.summary_event_rank|give_percent_rev:event.total_players }}%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- [ Basif info ] end -->
+                </div>
+                <!-- [ Basic Info Content 3] end -->
+                <!-- [ Team Form and List ] start -->
+                <div class="row">
+                    <!--[ UserTeam Stat ] start-->
+                    <div class="col-xl-12">
+                        <div class="card Recent-Users">
+                            <div class="card-header">
+                                <h5>Your Team players stats</h5> - Check transfers history <a href="{% url 'fpl:user-profile-transfers' %}">here</a>
+                            </div>
+                            <div class="card-block px-0 py-3">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
+                                        <thead>
+                                            <tr class="center" align="center">
+                                                <th>#</th>
+                                                <th>Role</th>
+                                                <th>Position</th>
+                                                <th>Player</th>
+                                                <th>Team</th>
+                                                <th>Game</th>
+                                                <th>Points (Bonus)</th>
+                                                <th>Total Points</th>
+                                                <th>Cost</th>
+                                                <th>Performance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% for key1, gameweek in picks.items %}
+                                            {% for key2,t in gameweek.items %}
+                                                <tr class="unread center" align="center">
+                                                    <td>{{ t.pos }}</td>
+                                                    <td>
+                                                        {{ t.pos|team_role:t.mult }} - GW: {{t.last_game_event}}
+                                                    </td>
+                                                    <td>{{ t.player.position.name_short }}</td>
+                                                    <td>
+                                                       <a class='golink' href="{% url 'fantasy_pl:player' t.player.id %}">
+                                                            <h6 class="mb-1">{{ t.player.second_name }}</h6>
+                                                            <p class="text-muted m-0">{{ t.player.first_name }}</p>
+                                                        </a>
+                                                    </td>
+                                                    <td>{{ t.player.team.short_name }}</td>
+                                                    <td>{{ t.last_game }}</td>
+                                                    <td>{{ t.last_game_points }}({{ t.last_game_bonus }})</td>
+                                                    <td>{{ t.last_game_points|multiply:t.mult }}</td>
+                                                    <td>{{ t.last_game_value|division:t.last_event_games }}</td>
+                                                    <td>{{ t.last_game_points|division:t.last_game_value }}</td>
+                                                </tr>
+                                            {% endfor %}
+                                        {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--[ UserTeam Stat ] end-->
+                </div>
+                <!-- [ Team Form and List ] end -->
+                <!-- [ Cost & Point Charts ] end -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Points:</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="pointCost" style="height: 300px;  position: relative;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Cost & Points Charts ] end -->
+                <!-- [ Rank Charts ] end -->
+                <div class="row">
+                    <div class="col-xl-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Rank:</h5>
+                            </div>
+                            <div class="card-block">
+                                <div id="rank" style="height: 400px; position: relative;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- [ Rank Charts ] end -->
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+
+{% block javascripts %}
+<script>
+$(document).ready(function() {
+    $('#players').DataTable({
+        pageLength: 15,
+        pagingType: 'numbers',
+        bLengthChange: false,
+        responsive: true,
+        info: false,
+        filter: false
+        });
+});
+
+new Morris.Line({
+        element: 'pointCost',
+        data: [
+            {% for s in season %} 
+                {
+                    Fixture: '{{ s.event }}',
+                    Points: '{{ s.points }}',
+                    Average: '{{ s.event.average_entry_score }}',
+                    Highest: '{{ s.event.highest_score }}'
+                }{% if not forloop.last %}, {% endif %} 
+            {% endfor %}
+        ],
+        smooth: false,
+        parseTime: false,
+        numLines: 8,
+        xkey: 'Fixture',
+        ykeys: ['Points', 'Average','Highest'],
+        ymax: 175,
+        labels: ['Points', 'Average','Highest']
+    });
+
+new Morris.Line({
+        element: 'rank',
+        data: [
+            {% for s in season %} 
+                {
+                    Fixture: '{{ s.event }}',
+                    RankGW: '{{ s.rank }}',
+                    Rank: '{{ s.overall_rank }}',
+                }{% if not forloop.last %}, {% endif %} 
+            {% endfor %}
+        ],
+        parseTime: false,
+        smooth: false,
+        xkey: 'Fixture',
+        numLines: 9,
+        ykeys: ['RankGW', 'Rank'],
+        ymax: 0,
+        ymin: 8000000,
+        labels: ['RankGW', 'Rank']
+    });
+
+$(document).ready(function() {
+    // Initialize table on the last page
+    var oTable = $('#players').dataTable();
+    oTable.fnPageChange( 'last' );
+    // Initialize number of buttons from started event for User
+    var buttons = document.querySelectorAll("#players_paginate > ul > li> a");
+    len = buttons.length;
+    var start = {{ profile.started_event }};
+
+    for (var i = 0; i < len; i++) { 
+        if (buttons[i].innerText != '…') {
+            buttons[i].innerText = Number(buttons[i].innerText) + start - 1    
+            }
+        };
+
+    // Keep numbering every time page is changed
+    $(document).on('click', '[class="paginate_button page-item "]', function() {
+            var buttons = document.querySelectorAll("#players_paginate > ul > li> a");
+            len = buttons.length;
+            var start = {{ profile.started_event }};
+            for (var i = 0; i < len; i++) { 
+                if (buttons[i].innerText != '…') {
+                    buttons[i].innerText = Number(buttons[i].innerText) + start - 1    
+                    }
+                }; 
+        })
+    });
+</script>
+{% endblock javascripts %}
