@@ -90,11 +90,11 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'localhost',
+        'HOST': 'db',
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': 'coderslab',
+        'PASSWORD': 'postgres',
         'PORT': 5432,
         'OPTIONS': {
             'client_encoding': 'UTF8'},
@@ -159,5 +159,3 @@ REST_FRAMEWORK = {
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-#############################################################
-#############################################################

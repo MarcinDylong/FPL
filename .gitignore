@@ -32,6 +32,6 @@ secrets.json
 core/_settings.py
 
 # Dumps
-fpl_dump_tables_updated.sql
+# fpl_dump_tables_updated.sql
 fpl_dump_tables.sql
 fpl_dump.sql
