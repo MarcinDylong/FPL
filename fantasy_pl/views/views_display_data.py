@@ -172,15 +172,17 @@ class PlayerView(View):
     def get_data(self, id, form, category='selected'):
         ## Django ORMs
         player = Player.objects.get(id=id)
+        team_id = player.team.id
         hist = PlayerHistory.objects.filter(player=player) \
             .filter(finished=True) \
             .order_by('-kickoff_time')
         games = PlayerHistory.objects.filter(player=player) \
             .filter(event__isnull=False).filter(finished=False) \
+            .filter(Q(team_a_id=team_id) | Q(team_h_id=team_id)) \
             .order_by('kickoff_time')
         ## Data preparation for display
         chart = hist.order_by('kickoff_time')
-        team = Team.objects.get(name=player.team)
+        team = Team.objects.get(id=team_id)
         photo = "/static/logos/" + team.short_name.lower() + ".png "
         ## Data for chart
         overall = player_gwByGw(hist,category)

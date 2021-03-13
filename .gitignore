@@ -28,11 +28,8 @@ staticfiles/*
 !staticfiles/.gitkeep 
 data.json
 .git_
-secrets.json
 core/local_settings.py
 .env
 
 # Dumps
-# fpl_dump_tables_updated.sql
-fpl_dump_tables.sql
-fpl_dump.sql
+fpl_dump_tables_updated.sql
