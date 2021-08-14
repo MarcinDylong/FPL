@@ -112,15 +112,15 @@ def PopulateTables():
     players = data['elements']
     events = data['events']
     total_players = data['total_players']
-    try:
-        update_teams(teams)
-        populate_positions(positions)
-        update_players(players)
-        update_events(events, total_players)
-        ctx = {'event': 'success', 'error': [],
-                'info': ['Tables Team, Position, Player & Event has been populated.']}
-    except Exception as e:
-        ctx = {'event': 'error', 'error': [format(e)], 'info': []}
+    # try:
+    update_teams(teams)
+    populate_positions(positions)
+    update_players(players)
+    update_events(events, total_players)
+    ctx = {'event': 'success', 'error': [],
+            'info': ['Tables Team, Position, Player & Event has been populated.']}
+    # except Exception as e:
+    #     ctx = {'event': 'error', 'error': [format(e)], 'info': []}
     return ctx
 
 

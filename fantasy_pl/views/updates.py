@@ -85,7 +85,8 @@ def update_players(players):
             'dreamteam_count': p['dreamteam_count'],
             'position': Position.objects.get(id=p['element_type']),
             'ep_next': float(p['ep_next']),
-            'ep_this': float(p['ep_this']),
+            'ep_this': float(p['ep_this']) 
+                if p['ep_this'] != None else 0,
             'event_points': p['event_points'],
             'form': p['form'],
             'in_dreamteam': p['in_dreamteam'],

@@ -95,12 +95,16 @@ def player_gwByGw(playerhistory, category='selected'):
         ph = ph_raw[['opponent_team', category]]
         ## Create column day_by_day
         ph['category_changes'] = ph[category].diff()
-        start = ph.iloc[0][1]
-        ph.fillna(value=start, inplace=True)
+        try:
+            start = ph.iloc[0][1]
+            ph.fillna(value=start, inplace=True)
+        except IndexError:
+            None
     else:
         ph = ph_raw[['opponent_team', category]]
         ## Create column day_by_day
         ph['category_changes'] = ph[category].cumsum()
+        print(ph)
         start = ph.iloc[0][1]
         ph.fillna(value=start, inplace=True)
         ph = ph[['opponent_team','category_changes',category]]
