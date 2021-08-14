@@ -11,6 +11,7 @@ __pycache__/
 *.sqlite3
 *.log
 fantasy_pl/migrations/
+authentication/migrations/
 
 # venv
 fpl_venv
@@ -32,4 +33,5 @@ core/local_settings.py
 .env
 
 # Dumps
+fpl_dump_*
 fpl_dump_tables_updated.sql
