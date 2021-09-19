@@ -62,15 +62,20 @@ class IndexView(LoginRequiredMixin, View):
         df = phistory_raw.filter(position=2)
         md = phistory_raw.filter(position=3)
         fw = phistory_raw.filter(position=4)
-        ### All season best parameter
-        ball_gk = gk.order_by(parameter)[:1]
-        ball_df = df.order_by(parameter)[:4]
-        ball_md = md.order_by(parameter)[:4]
-        ball_fw = fw.order_by(parameter)[:2]
+        ### GW best parameter
+        gw_best_gk = gk.order_by(parameter)[:1]
+        gw_best_df = df.order_by(parameter)[:5]
+        gw_best_md = md.order_by(parameter)[:5]
+        gw_best_fw = fw.order_by(parameter)[:3]
+        ### Every team has to have at least one GKP, two DEFs and MIDs and one
+        ### FWD's; The remaining five places in the squad should be filled by 
+        ### the players with the highest score, regardless of their position
+        core_of_squad = (gw_best_gk | gw_best_df[:2] | gw_best_md[:2] | gw_best_fw[:1])
+        rest_of_squad = (gw_best_df[2:] | gw_best_md[2:] | gw_best_fw[1:]).order_by(parameter)[:5]
         ### Add all querries together and order by postion
-        ball = (ball_gk | ball_df | ball_md | ball_fw).order_by('position')
+        best_gw_squad = (core_of_squad | rest_of_squad).order_by('position')
 
-        return ball
+        return best_gw_squad
 
     def get(self, request):
         ctx = {}
@@ -470,6 +475,7 @@ class UserTeamView(View):
         ctx['form'] = form
         ctx['form_gut'] = GetUserteamForm()
         return render(request, 'user-team.html', ctx)
+
 
 class UserProfile(View):
     """
