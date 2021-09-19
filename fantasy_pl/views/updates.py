@@ -22,19 +22,19 @@ def update_teams(teams):
         teams (dict): Retrieved data from API
     """    
     
-    perf = league_table_scraper()
+    performance = league_table_scraper()
     for t in teams:
-        t_perf = perf[t['pulse_id']]
+        team_performance = performance[t['pulse_id']]
         defaults = {
-            'position': t_perf[0],
-            'played': t_perf[1],
-            'win': t_perf[2],
-            'draw': t_perf[3],
-            'loss': t_perf[4],
-            'gf': t_perf[5],
-            'ga': t_perf[6],
-            'gd': t_perf[7],
-            'points': t_perf[8],
+            'position': team_performance[0],
+            'played': team_performance[1],
+            'win': team_performance[2],
+            'draw': team_performance[3],
+            'loss': team_performance[4],
+            'gf': team_performance[5],
+            'ga': team_performance[6],
+            'gd': team_performance[7],
+            'points': team_performance[8],
             'form': t['form'],
             'short_name': t['short_name'],
             'strength': t['strength'],
@@ -233,7 +233,7 @@ def update_userteam(user, players):
         event (model_instance): instance of GW from Event model
     """    
     defaults = {}
-    pos_d = {'gkp':1, 'def':1, 'mid':1 ,'fwd':1}
+    position_dictionary = {'gkp':1, 'def':1, 'mid':1 ,'fwd':1}
     for p in players:
         element = Player.objects.get(id=p['element'])
         pos = element.position.name_short.lower()
@@ -244,7 +244,7 @@ def update_userteam(user, players):
             f'{key}_pos': p['position'],
         }
         defaults.update(elem)
-        pos_d[pos] += 1
+        position_dictionary[pos] += 1
 
     ust = UserTeam.objects.update_or_create(
         user=user,

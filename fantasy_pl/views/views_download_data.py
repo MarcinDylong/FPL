@@ -4,7 +4,7 @@ from django.views import View
 from django.contrib import messages
 
 from fantasy_pl.forms import GetPlayerDataForm, GetFixtureForm, \
-    GetUserteamForm, GetDataForm, GetAllDataForm
+    GetUserTeamForm, GetDataForm, GetAllDataForm
 from fantasy_pl.models import Player, Fixtures, Event
 from fantasy_pl.views.getters import read_json, get_individual_player_data, \
     download_json, get_fixtures_for_season, get_data, get_fpl_user, \
@@ -33,13 +33,13 @@ def DownloadUserteamView(request):
     App is redirected to this view when user submit Form on site /user-team/;
     After downloading/updating UserTeam model redirected back to /user-team/.
     """
-    form = GetUserteamForm(request.POST)
+    form = GetUserTeamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
         last_event = Event.objects.filter(finished=False).first()
-        gw = last_event.id
+        gameweek_id = last_event.id
         try:
-            team = get_fpl_user_picks(player_id, gw)
+            team = get_fpl_user_picks(player_id, gameweek_id)
             players = team['picks']
             user = request.user
             update_userteam(user, players)
@@ -66,11 +66,11 @@ def DownloadUserView(request):
     After downloading/updating UserTeam model redirected back to /user-profile/.
 
     """
-    form = GetUserteamForm(request.POST)
+    form = GetUserTeamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
         last_event = Event.objects.filter(finished=False).first()
-        gw = last_event.id
+        gameweek_id = last_event.id
         ## Retrieve data from API
         try:
             user_fpl = get_fpl_user(player_id)
@@ -87,7 +87,7 @@ def DownloadUserView(request):
         update_user_season(user, user_fpl_season)
         update_user_picks(user)
         ## Update data for UserTeam
-        team = get_fpl_user_picks(player_id, gw)
+        team = get_fpl_user_picks(player_id, gameweek_id)
         players = team['picks']
         user = request.user
         update_userteam(user, players)
@@ -118,7 +118,7 @@ def PopulateTables():
     update_players(players)
     update_events(events, total_players)
     ctx = {'event': 'success', 'error': [],
-            'info': ['Tables Team, Position, Player & Event has been populated.']}
+           'info': ['Tables Team, Position, Player & Event has been populated.']}
     # except Exception as e:
     #     ctx = {'event': 'error', 'error': [format(e)], 'info': []}
     return ctx
@@ -143,7 +143,7 @@ def UpdateTables():
         update_players(players)
         update_events(events, total_players)
         ctx = {'event': 'success', 'error': [],
-            'info': ['Tables Team, Player & Event in database has been updated.']}
+               'info': ['Tables Team, Player & Event in database has been updated.']}
         return ctx
     except Exception as e:
         ctx = {'event': 'error', 'error': [format(e)], 'info': []}
