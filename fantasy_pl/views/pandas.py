@@ -10,7 +10,10 @@ from fantasy_pl.models import Player, Fixtures, Position, PlayerHistory, Team
 pd.options.mode.chained_assignment = None
 
 def linear_regr(x, y):
-    
+    """
+        Create linear regression for provided data, return two list which can be 
+        visualize in chart.
+    """
     regr = LinearRegression()
 
     X = np.array(x).reshape(-1, 1)
@@ -24,7 +27,10 @@ def linear_regr(x, y):
 
 
 def poly_regr(x, y):
-
+    """
+        Create polynomial regression for provided data, return two list which can be 
+        visualize in chart.
+    """
     regr_poly = LinearRegression()
 
     X = np.array(x).reshape(-1, 1)
@@ -43,6 +49,9 @@ def poly_regr(x, y):
 
 def players_ctx(pos, ctx, form, x_axis='points_per_game', y_axis='now_cost',
                   size='selected_by_percent', limit=50):
+    """
+        Create dictonary 
+    """
     position = Position.objects.get(id=pos)
     players = Player.objects.filter(position=position).filter(minutes__gt=0).order_by('-'+x_axis)
     gw = Fixtures.objects.filter(finished=True).order_by('event_id').last().event_id
