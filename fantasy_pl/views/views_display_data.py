@@ -47,7 +47,8 @@ class IndexView(LoginRequiredMixin, View):
 
         return ball
 
-    def gw_best_eleven(self, phistory_raw, parameter: str):
+    def gw_best_eleven(self, phistory_raw, parameter: str, 
+        additional_parameter = 'bps'):
         """Determine best 11 for for current GW by given paramater
 
         Args:
@@ -63,15 +64,17 @@ class IndexView(LoginRequiredMixin, View):
         md = phistory_raw.filter(position=3)
         fw = phistory_raw.filter(position=4)
         ### GW best parameter
-        gw_best_gk = gk.order_by(parameter)[:1]
-        gw_best_df = df.order_by(parameter)[:5]
-        gw_best_md = md.order_by(parameter)[:5]
-        gw_best_fw = fw.order_by(parameter)[:3]
+        gw_best_gk = gk.order_by(parameter, additional_parameter)[:1]
+        gw_best_df = df.order_by(parameter, additional_parameter)[:5]
+        gw_best_md = md.order_by(parameter, additional_parameter)[:5]
+        gw_best_fw = fw.order_by(parameter, additional_parameter)[:3]
         ### Every team has to have at least one GKP, two DEFs and MIDs and one
         ### FWD's; The remaining five places in the squad should be filled by 
         ### the players with the highest score, regardless of their position
-        core_of_squad = (gw_best_gk | gw_best_df[:2] | gw_best_md[:2] | gw_best_fw[:1])
-        rest_of_squad = (gw_best_df[2:] | gw_best_md[2:] | gw_best_fw[1:]).order_by(parameter)[:5]
+        core_of_squad = (gw_best_gk | gw_best_df[:2] | gw_best_md[:2] | \
+            gw_best_fw[:1])
+        rest_of_squad = (gw_best_df[2:] | gw_best_md[2:] | gw_best_fw[1:]) \
+            .order_by(parameter, additional_parameter)[:5]
         ### Add all querries together and order by postion
         best_gw_squad = (core_of_squad | rest_of_squad).order_by('position')
 
