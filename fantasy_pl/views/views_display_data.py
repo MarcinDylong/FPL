@@ -22,7 +22,8 @@ class IndexView(LoginRequiredMixin, View):
     """    
     login_url = '/login'
 
-    def season_best_eleven(self, players_raw, parameter: str):
+    def season_best_eleven(self, players_raw, parameter: str, 
+        additional_parameter = '-minutes'):
         """Determine best 11 for season by given paramater
 
         Args:
@@ -33,19 +34,26 @@ class IndexView(LoginRequiredMixin, View):
             [ORM querries]: Querries of 11 selected players
         """        
         ### Divide by position
-        gkt = players_raw.filter(position=(Position.objects.get(id=1)))
-        dft = players_raw.filter(position=(Position.objects.get(id=2)))
-        mdt = players_raw.filter(position=(Position.objects.get(id=3)))
-        fwt = players_raw.filter(position=(Position.objects.get(id=4)))
+        gk = players_raw.filter(position=(Position.objects.get(id=1)))
+        df = players_raw.filter(position=(Position.objects.get(id=2)))
+        md = players_raw.filter(position=(Position.objects.get(id=3)))
+        fw = players_raw.filter(position=(Position.objects.get(id=4)))
         ### All season best parameter
-        ball_gk = gkt.order_by(parameter)[:1]
-        ball_df = dft.order_by(parameter)[:4]
-        ball_md = mdt.order_by(parameter)[:4]
-        ball_fw = fwt.order_by(parameter)[:2]
+        season_best_gk = gk.order_by(parameter, additional_parameter)[:1]
+        season_best_df = df.order_by(parameter, additional_parameter)[:5]
+        season_best_md = md.order_by(parameter, additional_parameter)[:5]
+        season_best_fw = fw.order_by(parameter, additional_parameter)[:3]
+        ### Every team has to have at least one GKP, two DEFs and MIDs and one
+        ### FWD's; The remaining five places in the squad should be filled by 
+        ### the players with the highest score, regardless of their position
+        core_of_squad = (season_best_gk | season_best_df[:2] | \
+            season_best_md[:2] | season_best_fw[:1])
+        rest_of_squad = (season_best_df[2:] | season_best_md[2:] | \
+            season_best_fw[1:]).order_by(parameter, additional_parameter)[:5]
         ### Add all querries together and order by postion
-        ball = (ball_gk | ball_df | ball_md | ball_fw).order_by('position_id')
+        season_best = (core_of_squad | rest_of_squad).order_by('position_id')
 
-        return ball
+        return season_best
 
     def gw_best_eleven(self, phistory_raw, parameter: str, 
         additional_parameter = 'bps'):
