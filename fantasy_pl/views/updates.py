@@ -237,7 +237,7 @@ def update_userteam(user, players):
     for p in players:
         element = Player.objects.get(id=p['element'])
         pos = element.position.name_short.lower()
-        num = pos_d[pos]
+        num = position_dictionary[pos]
         key = f'{pos}{num}'
         elem = {
             f'{key}': element,

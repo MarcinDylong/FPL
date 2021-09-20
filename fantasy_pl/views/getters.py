@@ -133,7 +133,7 @@ def get_fpl_user_transfers(player_id: int):
     return data
 
 
-def get_fpl_user_picks(player_id: int, gw: int):
+def get_fpl_user_picks(player_id: int, gameweek_id: int):
     """Retrieve user team for given gameweek
 
     Args:
@@ -146,8 +146,9 @@ def get_fpl_user_picks(player_id: int, gw: int):
     Returns:
         dict: Dictionary with data about user team
     """    
-    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/event/{gw}/picks/'
+    base_url = f'https://fantasy.premierleague.com/api/entry/{player_id}/event/{gameweek_id}/picks/'
     response = requests.get(base_url)
+    print(base_url)
 
     if response.status_code != 200:
         raise Exception('Response was code ' + str(response.status_code))
