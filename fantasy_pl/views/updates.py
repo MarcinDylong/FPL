@@ -332,12 +332,12 @@ def update_user_picks(user):
     userfpl = UserFpl.objects.get(user=user)
     fpl_id = userfpl.fpl
     start = userfpl.started_event
-    end = userfpl.current_event + 1
+    end = userfpl.current_event
     userfplseason = UserFplSeason.objects.filter(userfpl=userfpl) 
 
-    for i in range(start, end):
+    for i in range(start, end + 1):
         try:
-            data = get_fpl_user_picks(player_id=fpl_id, gw=i)
+            data = get_fpl_user_picks(player_id=fpl_id, gameweek_id=i)
             ufs = userfplseason.get(event_id=i)
         except:
             continue

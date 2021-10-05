@@ -634,7 +634,7 @@ class UserProfileTrans(View):
             .order_by('event_id')
         userFplPick = UserFplPicks.objects.filter(user=userSeason.last()) \
             .order_by('id').last()
-        gw = Fixtures.objects.filter(finished=True).order_by('event_id') \
+        gameweek_id = Fixtures.objects.filter(finished=True).order_by('event_id') \
             .last().event_id
 
         ## Prepare yLimits for team value charts 
@@ -679,7 +679,7 @@ class UserProfileTrans(View):
                     break
             else:
                 pick['since'] = userFpl.started_event
-            pick['streak'] = gw - pick['since']
+            pick['streak'] = gameweek_id - pick['since']
 
             picks.append(pick)
 

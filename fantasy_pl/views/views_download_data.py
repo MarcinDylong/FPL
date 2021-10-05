@@ -36,7 +36,7 @@ def DownloadUserteamView(request):
     form = GetUserTeamForm(request.POST)
     if form.is_valid():
         player_id = form.cleaned_data['fpl_id']
-        last_event = Event.objects.filter(finished=False).first()
+        last_event = Event.objects.filter(finished=True).last()
         gameweek_id = last_event.id
         try:
             team = get_fpl_user_picks(player_id, gameweek_id)
@@ -45,7 +45,7 @@ def DownloadUserteamView(request):
             update_userteam(user, players)
         except Exception as e:
             messages.error(request, f"Failure downloading your team "
-                                    f"for gw {gw}: {format(e)}")
+                                    f"for gameweek {gameweek_id}: {format(e)}")
 
         return redirect('/user-team/')
 
@@ -202,6 +202,7 @@ class GetAllDataView(PermissionRequiredMixin, View):
                 ctx = self.prepare_context(ctx)
             ctx['form'] = GetAllDataForm
             return render(request, 'get_data.html', ctx)
+
 
 class GetDataView(PermissionRequiredMixin, View):
     """

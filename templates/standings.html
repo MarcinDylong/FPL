@@ -111,7 +111,7 @@
                                                 <tr class="center" align="center">
                                                     <td>{{t.position}}</td>
                                                     <td><a class="text-dark" href="{% url 'fpl:team' t.id %}">{{t.name}}</a></td>
-                                                    {% for k,v in t.next_5_games.items %}
+                                                    {% for k,v in t.next_games.items %}
                                                     <td class="text-dark">
                                                         <a class='golink' href="{% url 'fantasy_pl:team' v.opponent.id %}">
                                                             <h6 class="mb-1">{{ v.opponent }} - {{ v.where }}</h6>

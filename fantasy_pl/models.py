@@ -93,24 +93,44 @@ class Team(models.Model):
         return next_game
 
     
-    def next_5_games(self):
+    def next_games(self, number_of_games=5):
         games = Fixtures.objects.filter(finished=False).order_by('kickoff_time')
-        next_5 = games.filter(Q(team_h_id=self.id) | Q(team_a_id=self.id))[:5]
-        games = {}
-        for n in next_5:
+        next_games = games.filter(
+            Q(team_h_id=self.id) | Q(team_a_id=self.id)
+            )[:number_of_games]
+        games_features = {}
+        for n in next_games:
             if n.team_a_id == self.id:
-                games[n.id] = {'opponent': n.team_h,
+                games_features[n.id] = {'opponent': n.team_h,
                                'diff': n.team_a_difficulty,
                                'kickoff': n.kickoff_time,
-                               'where': '(A)'
+                               'where': '(A)',
+                               'overall_strength_difference': 
+                                    n.team_a.strength_overall_away \
+                                    - n.team_h.strength_overall_home,
+                               'attack_strength_difference': 
+                                    n.team_a.strength_attack_away \
+                                    - n.team_h.strength_attack_home,
+                               'defence_strength_difference': 
+                                    n.team_a.strength_defence_away \
+                                    - n.team_h.strength_defence_home 
                                }
             else:
-                games[n.id] = {'opponent': n.team_a,
+                games_features[n.id] = {'opponent': n.team_a,
                                'diff': n.team_h_difficulty,
                                'kickoff': n.kickoff_time,
-                               'where': '(H)'
+                               'where': '(H)',
+                               'overall_strength_difference': 
+                                    n.team_h.strength_overall_away \
+                                    - n.team_a.strength_overall_home,
+                               'attack_strength_difference': 
+                                    n.team_h.strength_attack_away \
+                                    - n.team_a.strength_attack_home,
+                               'defence_strength_difference': 
+                                    n.team_h.strength_defence_away \
+                                    - n.team_a.strength_defence_home
                                }
-        return games
+        return games_features
 
 
 class Position(models.Model):
