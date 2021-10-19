@@ -49,7 +49,7 @@ class IndexView(LoginRequiredMixin, View):
         core_of_squad = (season_best_gk | season_best_df[:3] | \
             season_best_md[:2] | season_best_fw[:1])
         rest_of_squad = (season_best_df[3:] | season_best_md[2:] | \
-            season_best_fw[1:]).order_by(parameter, additional_parameter)[:5]
+            season_best_fw[1:]).order_by(parameter, additional_parameter)[:4]
         ### Add all querries together and order by postion
         season_best = (core_of_squad | rest_of_squad).order_by('position_id')
 
@@ -79,10 +79,10 @@ class IndexView(LoginRequiredMixin, View):
         ### Every team has to have at least one GKP, two DEFs and MIDs and one
         ### FWD's; The remaining five places in the squad should be filled by 
         ### the players with the highest score, regardless of their position
-        core_of_squad = (gw_best_gk | gw_best_df[:2] | gw_best_md[:2] | \
+        core_of_squad = (gw_best_gk | gw_best_df[:3] | gw_best_md[:2] | \
             gw_best_fw[:1])
         rest_of_squad = (gw_best_df[2:] | gw_best_md[2:] | gw_best_fw[1:]) \
-            .order_by(parameter, additional_parameter)[:5]
+            .order_by(parameter, additional_parameter)[:4]
         ### Add all querries together and order by postion
         best_gw_squad = (core_of_squad | rest_of_squad).order_by('position')
 
