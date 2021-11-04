@@ -654,7 +654,7 @@ class UserProfileTrans(View):
             tran['diff'] = round(tran['element_out_cost'] - tran['element_in_cost'], 1)
         transfers = sorted(transfers, key=lambda i: i['event'], reverse=True)
 
-        ## Prepare picks dict with actual squad with GW when this players join
+        ## Prepare picks dict with actual squad with info when players join
         ## team and how long are they in team
         # Extract actual players from UserFplPicks
         userPicks = [
@@ -679,7 +679,7 @@ class UserProfileTrans(View):
                     break
             else:
                 pick['since'] = userFpl.started_event
-            pick['streak'] = gameweek_id - pick['since']
+            pick['streak'] = gameweek_id - pick['since'] + 1
 
             picks.append(pick)
 
