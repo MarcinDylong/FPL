@@ -81,7 +81,7 @@ class IndexView(LoginRequiredMixin, View):
         ### the players with the highest score, regardless of their position
         core_of_squad = (gw_best_gk | gw_best_df[:3] | gw_best_md[:2] | \
             gw_best_fw[:1])
-        rest_of_squad = (gw_best_df[2:] | gw_best_md[2:] | gw_best_fw[1:]) \
+        rest_of_squad = (gw_best_df[3:] | gw_best_md[2:] | gw_best_fw[1:]) \
             .order_by(parameter, additional_parameter)[:4]
         ### Add all querries together and order by postion
         best_gw_squad = (core_of_squad | rest_of_squad).order_by('position')
@@ -126,6 +126,7 @@ class IndexView(LoginRequiredMixin, View):
                 )
         except:
             pass
+        ctx['gameweek_id'] = gameweek_id
         return render(request, 'index.html', ctx)
 
 
