@@ -124,7 +124,7 @@
                                         <i class="fas fa-dollar-sign text-c-purple f-50"></i>
                                     </div>
                                     <div class="col">
-                                        <h3 class="f-w-300">{{ profile.last_deadline_value }}</h3>
+                                        <h3 class="f-w-300">{{ profile.last_deadline_value|subtract:profile.last_deadline_bank }}</h3>
                                         <span class="text-dark d-block text-uppercase">Total team value</span>
                                     </div>
                                 </div>
@@ -256,9 +256,9 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center m-b-0">
-                                            {% if profile.summary_overall_rank < prev.overall_rank %} 
+                                            {% if profile.summary_overall_rank < previous_gameweek.overall_rank %} 
                                             <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i>
-                                            {% elif profile.summary_overall_rank == prev.overall_rank %}
+                                            {% elif profile.summary_overall_rank == previous_gameweek.overall_rank %}
                                             <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
                                             {% else %}
                                             <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow""></i> 
@@ -283,9 +283,9 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center m-b-0">
-                                            {% if profile.summary_event_points > prev.points %}
+                                            {% if profile.summary_event_points > previous_gameweek.points %}
                                             <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i> 
-                                            {% elif profile.summary_event_points == prev.points %}
+                                            {% elif profile.summary_event_points == previous_gameweek.points %}
                                             <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
                                             {% else %}
                                             <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow"></i> 
@@ -310,9 +310,9 @@
                                 <div class="row d-flex align-items-center">
                                     <div class="col-9">
                                         <h3 class="f-w-300 d-flex align-items-center m-b-0">
-                                            {% if profile.summary_event_rank < prev.rank %} 
+                                            {% if profile.summary_event_rank < previous_gameweek.rank %} 
                                             <i class="feather icon-arrow-up text-c-green f-30 m-r-10 toolTip" data-value="upArrow"></i>
-                                            {% elif profile.summary_event_rank == prev.rank %}
+                                            {% elif profile.summary_event_rank == previous_gameweek.rank %}
                                             <i class="feather icon-minus text-muted f-30 m-r-10 toolTip" data-value="nullArrow"></i> 
                                             {% else %}
                                             <i class="feather icon-arrow-down text-c-red f-30 m-r-10 toolTip" data-value="downArrow"></i> 

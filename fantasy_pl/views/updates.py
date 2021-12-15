@@ -22,19 +22,19 @@ def update_teams(teams):
         teams (dict): Retrieved data from API
     """    
     
-    perf = league_table_scraper()
+    performance = league_table_scraper()
     for t in teams:
-        t_perf = perf[t['pulse_id']]
+        team_performance = performance[t['pulse_id']]
         defaults = {
-            'position': t_perf[0],
-            'played': t_perf[1],
-            'win': t_perf[2],
-            'draw': t_perf[3],
-            'loss': t_perf[4],
-            'gf': t_perf[5],
-            'ga': t_perf[6],
-            'gd': t_perf[7],
-            'points': t_perf[8],
+            'position': team_performance[0],
+            'played': team_performance[1],
+            'win': team_performance[2],
+            'draw': team_performance[3],
+            'loss': team_performance[4],
+            'gf': team_performance[5],
+            'ga': team_performance[6],
+            'gd': team_performance[7],
+            'points': team_performance[8],
             'form': t['form'],
             'short_name': t['short_name'],
             'strength': t['strength'],
@@ -85,7 +85,8 @@ def update_players(players):
             'dreamteam_count': p['dreamteam_count'],
             'position': Position.objects.get(id=p['element_type']),
             'ep_next': float(p['ep_next']),
-            'ep_this': float(p['ep_this']),
+            'ep_this': float(p['ep_this']) 
+                if p['ep_this'] != None else 0,
             'event_points': p['event_points'],
             'form': p['form'],
             'in_dreamteam': p['in_dreamteam'],
@@ -232,18 +233,18 @@ def update_userteam(user, players):
         event (model_instance): instance of GW from Event model
     """    
     defaults = {}
-    pos_d = {'gkp':1, 'def':1, 'mid':1 ,'fwd':1}
+    position_dictionary = {'gkp':1, 'def':1, 'mid':1 ,'fwd':1}
     for p in players:
         element = Player.objects.get(id=p['element'])
         pos = element.position.name_short.lower()
-        num = pos_d[pos]
+        num = position_dictionary[pos]
         key = f'{pos}{num}'
         elem = {
             f'{key}': element,
             f'{key}_pos': p['position'],
         }
         defaults.update(elem)
-        pos_d[pos] += 1
+        position_dictionary[pos] += 1
 
     ust = UserTeam.objects.update_or_create(
         user=user,
@@ -309,7 +310,7 @@ def update_user_season(user, user_fpl_season):
             'overall_rank': season['overall_rank'],
             'bank': season['bank']/10,
             'value': season['value'] / 10,
-            'money': season['bank']/10 + season['value']/10,
+            'money': season['value']/10 - season['bank']/10,
             'event_transfers': season['event_transfers'],
             'event_transfers_cost': season['event_transfers_cost'],
             'points_on_bench': season['points_on_bench']
@@ -331,12 +332,12 @@ def update_user_picks(user):
     userfpl = UserFpl.objects.get(user=user)
     fpl_id = userfpl.fpl
     start = userfpl.started_event
-    end = userfpl.current_event + 1
+    end = userfpl.current_event
     userfplseason = UserFplSeason.objects.filter(userfpl=userfpl) 
 
-    for i in range(start, end):
+    for i in range(start, end + 1):
         try:
-            data = get_fpl_user_picks(player_id=fpl_id, gw=i)
+            data = get_fpl_user_picks(player_id=fpl_id, gameweek_id=i)
             ufs = userfplseason.get(event_id=i)
         except:
             continue

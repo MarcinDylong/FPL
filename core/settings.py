@@ -9,17 +9,17 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR    = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROJECT_DIR = Path(__file__).parent
 
-SECRET_KEY = os.environ.get('SECRET_KEY')
+
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = config('DEBUG', default=True)
 
 
 # load production server from .env
-ALLOWED_HOSTS = '*'
+ALLOWED_HOSTS = config('ALLOWED_HOSTS')
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -77,16 +77,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 DATABASES = {
     'default': {
-        'HOST': 'db',
+        'HOST': 'localhost',
         'NAME': 'fpl_data',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'PASSWORD': 'coderslab',
         'PORT': 5432,
         'OPTIONS': {
             'client_encoding': 'UTF8'},
     }
 }
+
 
 # Password validation
 

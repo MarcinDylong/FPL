@@ -39,7 +39,7 @@
                                 <div class="input-group-sm mb-3">
                                     <form method="POST" action="{% url 'fpl:download_userteam' %}">
                                         <div class="nav-item input-group mb-3" style="background-color: transparent">
-                                            {% csrf_token %} {{ form_gut }}
+                                            {% csrf_token %} {{ form_get_user_team }}
                                             <div class="input-group-prepend">
                                                 <button class="btn btn-primary" type="submit">Go</button>
                                             </div>
@@ -136,7 +136,7 @@
                                     </div>
                                     <!--[ UserTeam Form ] end-->
                                     <!--[ UserTeam Table ] start-->
-                                    {% if uteam %}
+                                    {% if user_team %}
                                     <div class="col-md-9">
                                         <div class="table-responsive">
                                             <table class="table table-hr table-striped table-bordered table-hover" id="players" style="padding: 1.2rem 0.75rem;">
@@ -152,7 +152,7 @@
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    {% for u in uteam %}
+                                                    {% for u in user_team %}
                                                         <tr class="unread center" align="center">
                                                             <td>{{ u.id }}</td>
                                                             <td>{{ u.position.name_short }}</td>
@@ -180,7 +180,7 @@
                     </div>
                 </div>
                 <!-- [ Team Form and List ] end -->
-                {% if uteam %}
+                {% if user_team %}
                 <!-- [ Team Charts ] end -->
                 <div class="row">
                     <div class="col-xl-6">
@@ -236,7 +236,7 @@ $(document).ready(function() {
 new Morris.Bar({
         element: 'ppg2cost',
         data: [
-            {% for u in uteam %} 
+            {% for u in user_team %} 
                 {
                     Player: '{{ u.ppg_chart_str }}',
                     Ratio: '{{ u.ratio }}'
@@ -253,7 +253,7 @@ new Morris.Bar({
 new Morris.Donut({
         element: 'cost',
         data: [
-            {% for u in uteam %} 
+            {% for u in user_team %} 
                 {
                     label: '{{ u }}',
                     value: '{{ u.now_cost }}'

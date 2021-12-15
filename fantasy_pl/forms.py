@@ -44,7 +44,7 @@ class GetAllDataForm(forms.Form):
         choices=choices_all_data)
 
 
-class GetUserteamForm(forms.Form):
+class GetUserTeamForm(forms.Form):
     fpl_id = forms.IntegerField(label=False,
                                 widget=forms.NumberInput(
                                     attrs={'class': 'form-control',
