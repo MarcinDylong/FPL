@@ -106,10 +106,10 @@ class IndexView(LoginRequiredMixin, View):
             .order_by('chance_of_playing_this_round')
         ctx['availability'] = availability
         ### Transfers In of current GW
-        transfers_in = players_raw.order_by('-transfers_in_event')[:5]
+        transfers_in = players_raw.order_by('-transfers_in_event')[:10]
         ctx['transfers_in'] = transfers_in
         ### Transfers Out of current GW
-        transfers_out = players_raw.order_by('-transfers_out_event')[:5]
+        transfers_out = players_raw.order_by('-transfers_out_event')[:10]
         ctx['transfers_out'] = transfers_out
         try:
             ctx['season_bests'] = self.season_best_eleven(
@@ -165,7 +165,7 @@ class TeamView(View):
 
     def get(self, request, id):
         team = Team.objects.get(id=id)
-        players = Player.objects.filter(team=team.id)
+        players = Player.objects.filter(team=team.id).exclude(news__icontains = 'Transferred to')
         ## Games played
         played_away = PlayerHistory.objects.filter(team_a=team) \
             .filter(is_home=False).filter(finished=True) \
