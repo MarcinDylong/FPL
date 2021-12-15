@@ -2,8 +2,10 @@ import json
 import time
 import bs4 as bs
 import urllib.request
-
+import re
 import requests
+
+from typing import List, Tuple, Dict
 
 '''
     Functions for retrieving data from Fantasy Premier League API
@@ -183,6 +185,97 @@ def league_table_scraper():
              range(len(pulse_id))}
 
     return table
+
+
+def team_name_scrapper(season: str='2021') -> List[str]:
+    """ Import names of teams used in understat.com
+
+    Args:
+        season (str, optional): Year of season start. Defaults to '2021'.
+
+    Returns:
+        List[str]: Names of teams
+    """
+
+    teams = []
+    
+    ## Request url
+    source_url = f'https://understat.com/league/EPL/2021'
+    source = urllib.request.urlopen(source_url)
+    soup = bs.BeautifulSoup(source, 'lxml')
+
+    ## Extract data from URL
+    table = soup.find_all('script')[2]
+    table_content = table.contents
+    table_split = table_content[0].split('=')
+    table_json = re.findall(r'JSON\.parse\(\'(.*)\'\)',table_split[1])
+    decoded_table = codecs.escape_decode(table_json[0], 'hex')[0].decode('utf-8')
+    table_data = json.loads(decoded_table)
+    
+    ## Append team names to list
+    for key in table_data.keys():
+        teams.append(table_data[key]['title'])
+
+    return teams
+
+
+def team_understat_scrapper(team:str) -> Tuple[List[Dict], Dict]:
+    """Scrap understats for given team and players from that team
+
+
+    Args:
+        team (str): team name
+
+    Returns:
+        Tuple[List[Dict], Dict]: List of dictionaries with understats for all 
+            EPL players and dictionary with understats for all EPL Teams.
+    """
+    
+    ## Request url for team
+    source_url = f'https://understat.com/team/{team}/2021'
+    source = urllib.request.urlopen(source_url)
+    soup = bs.BeautifulSoup(source, 'lxml')
+
+    ## Extract scripts with data for team
+    scripts = soup.find_all('script')
+
+    '''
+        Scripts content:
+        [1] - Team calendar
+        [2] - Team stats
+        [3] - Individual players stats
+    '''
+
+    ## Extract JSON for individual players data
+    players_script = scripts[3]
+    players_script_content = players_script.contents
+    split_players = players_script_content[0].split('=')
+    players_content_type = split_players[0].strip()
+    players_content = re.findall(r'JSON\.parse\(\'(.*)\'\)',split_players[1])
+    decoded_players_content = codecs.escape_decode(players_content[0], 'hex')[0].decode('utf-8')
+    players_data = json.loads(decoded_players_content)
+
+    ## Extract JSON with team data
+    team_script = scripts[2]
+    team_script_content = team_script.contents
+    split_team = team_script_content[0].split('=')
+    team_content_type = split_team[0].strip()
+    team_content = re.findall(r'JSON\.parse\(\'(.*)\'\)',split_team[1])
+    decoded_team_content = codecs.escape_decode(team_content[0], 'hex')[0].decode('utf-8')
+    team_data = json.loads(decoded_team_content)
+    
+    return players_data, team_data
+
+
+def create_players_understat_list() -> List:
+    team_names = team_name_scrapper()
+    all_players = list()
+    for team in team_names:
+        team_name = '_'.join(team.split(' '))
+        players, team = team_understat_scrapper(team_name)
+        all_players.extend(players)
+        
+    return all_players
 
 
 def download_json():
