@@ -32,7 +32,7 @@ jedi==0.17.2
 joblib==1.0.1
 jsonfield==3.1.0
 lazy-object-proxy==1.4.3
-lxml==4.6.5
+lxml==4.9.1
 mccabe==0.6.1
 numpy==1.22.0
 packaging==20.4
