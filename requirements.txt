@@ -25,7 +25,7 @@ httplib2==0.19.0
 idna==2.10
 inflection==0.5.1
 iniconfig==1.1.1
-ipython==7.31.1
+ipython==8.10.0
 ipython-genutils==0.2.0
 isort==5.6.4
 jedi==0.17.2
